@@ -1,0 +1,105 @@
+# Dependencies
+node_modules/
+vendor/
+frontend/node_modules/
+backend/vendor/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+backend/.env
+config/**/*.env
+
+# Build outputs
+frontend/dist/
+frontend/build/
+frontend/.vite/
+*.log
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+backend/logs/*.log
+!backend/logs/.gitkeep
+
+# Testing
+coverage/
+.nyc_output/
+tests/reports/
+
+# Uploads
+backend/uploads/profiles/*.jpg
+backend/uploads/profiles/*.png
+backend/uploads/receipts/*
+backend/uploads/assignments/*
+backend/uploads/materials/*
+!backend/uploads/**/.gitkeep
+
+# Database
+*.sql.backup
+*.sql.bak
+database/backups/*.sql
+!database/schema.sql
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/
+
+# OS
+Thumbs.db
+Desktop.ini
+.Spotlight-V100
+.Trashes
+
+# Package manager
+package-lock.json
+yarn.lock
+composer.lock
+
+# Build artifacts
+*.min.js
+*.min.css
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Sensitive data
+config/production/*.key
+config/production/*.pem
+*.key
+*.pem
+*.cert
+
+# Misc
+.env.backup
+.phpunit.result.cache
+
+# Docker
+.env
+.env.production
+docker-compose.override.yml
+backups/
+ssl/
+
+# Docker volumes (if mounted locally)
+data/
+volumes/

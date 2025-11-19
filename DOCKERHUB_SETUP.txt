@@ -1,0 +1,39 @@
+========================================
+Docker Hub Images Successfully Pushed!
+========================================
+
+Your images are now on Docker Hub:
+- greninjaop/icp-backend:dev
+- greninjaop/icp-frontend:dev
+
+IMPORTANT: Make repositories PRIVATE
+========================================
+
+1. Go to: https://hub.docker.com/repositories/greninjaop
+
+2. Click on "icp-backend"
+   - Click "Settings" tab
+   - Scroll down to "Make repository private"
+   - Click "Make Private" button
+   - Confirm
+
+3. Click on "icp-frontend"
+   - Click "Settings" tab
+   - Scroll down to "Make repository private"
+   - Click "Make Private" button
+   - Confirm
+
+========================================
+To Pull Images on Another Machine:
+========================================
+
+1. Login:
+   docker login -u greninjaop
+
+2. Pull images:
+   docker pull greninjaop/icp-backend:dev
+   docker pull greninjaop/icp-frontend:dev
+
+3. Run with docker-compose (update image names in docker-compose.yml)
+
+========================================

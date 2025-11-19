@@ -1,0 +1,84 @@
+# Development Docker Compose - Optimized for Fast Development
+# Hot reload enabled, volume mounts for live code changes
+
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: icp_dev_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-studentportal}
+      MYSQL_USER: ${DB_USER:-dev_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-dev_pass}
+    volumes:
+      - db_data_dev:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    ports:
+      - "3306:3306"
+    networks:
+      - icp_dev_network
+    command: --default-authentication-plugin=mysql_native_password
+
+  # PHP Backend with Hot Reload
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend.dev
+    container_name: icp_dev_backend
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: ${DB_NAME:-studentportal}
+      DB_USER: ${DB_USER:-dev_user}
+      DB_PASSWORD: ${DB_PASSWORD:-dev_pass}
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_key_for_development}
+      APP_ENV: development
+      PHP_MEMORY_LIMIT: 512M
+      PHP_UPLOAD_MAX_FILESIZE: 50M
+      PHP_POST_MAX_SIZE: 50M
+    volumes:
+      # Mount source code for live editing
+      - ./backend:/var/www/html:cached
+      - backend_logs_dev:/var/www/html/logs
+    ports:
+      - "8080:8080"
+    networks:
+      - icp_dev_network
+
+  # React Frontend with Vite Hot Reload
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.dev
+    container_name: icp_dev_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:8080
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      # Mount source code for live editing
+      - ./frontend:/app:cached
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+      - "3002:3002"
+    networks:
+      - icp_dev_network
+    stdin_open: true
+    tty: true
+
+networks:
+  icp_dev_network:
+    driver: bridge
+
+volumes:
+  db_data_dev:
+    driver: local
+  backend_logs_dev:
+    driver: local

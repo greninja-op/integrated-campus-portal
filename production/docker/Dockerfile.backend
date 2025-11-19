@@ -1,0 +1,71 @@
+# Multi-stage build for PHP Backend
+FROM php:8.2-fpm-alpine AS base
+
+# Install system dependencies and PHP extensions
+RUN apk add --no-cache \
+    nginx \
+    supervisor \
+    mysql-client \
+    libzip-dev \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+    pdo \
+    pdo_mysql \
+    mysqli \
+    zip \
+    gd \
+    opcache
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Production stage
+FROM base AS production
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy composer files first for better caching
+COPY backend/composer.json backend/composer.lock* ./
+
+# Install PHP dependencies (production only)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+
+# Copy application files
+COPY backend/ .
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /var/www/html/logs \
+    /var/www/html/uploads/temp \
+    /var/www/html/uploads/profiles \
+    /var/www/html/uploads/receipts \
+    /var/www/html/uploads/assignments \
+    /run/nginx \
+    /var/log/supervisor \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/logs \
+    && chmod -R 775 /var/www/html/uploads
+
+# Copy nginx configuration
+COPY docker/nginx/backend.conf /etc/nginx/http.d/default.conf
+
+# Copy PHP-FPM configuration
+COPY docker/php/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
+
+# Copy supervisor configuration
+COPY docker/supervisor/supervisord.conf /etc/supervisord.conf
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD php-fpm-healthcheck || exit 1
+
+# Expose port
+EXPOSE 8080
+
+# Use supervisor to run nginx and php-fpm
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

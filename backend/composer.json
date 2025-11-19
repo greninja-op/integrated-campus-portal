@@ -1,0 +1,14 @@
+{
+    "name": "studentportal/backend",
+    "description": "Student Portal Backend API",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "tecnickcom/tcpdf": "^6.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "StudentPortal\\": "includes/"
+        }
+    }
+}
