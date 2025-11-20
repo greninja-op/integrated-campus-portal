@@ -73,6 +73,24 @@ services:
     stdin_open: true
     tty: true
 
+  # phpMyAdmin for Database Management
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: icp_dev_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+      UPLOAD_LIMIT: 50M
+    ports:
+      - "8081:80"
+    networks:
+      - icp_dev_network
+
 networks:
   icp_dev_network:
     driver: bridge

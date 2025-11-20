@@ -183,6 +183,20 @@ try {
             throw new Exception('Failed to create teacher record');
         }
         
+        $teacherDbId = $db->lastInsertId();
+
+        // Handle subject assignments if provided
+        if (isset($data['assigned_subjects']) && is_array($data['assigned_subjects']) && !empty($data['assigned_subjects'])) {
+            $subjectQuery = "INSERT INTO teacher_subjects (teacher_id, subject_id, is_active) VALUES (:teacher_id, :subject_id, 1)";
+            $subjectStmt = $db->prepare($subjectQuery);
+
+            foreach ($data['assigned_subjects'] as $subjectId) {
+                $subjectStmt->bindParam(':teacher_id', $teacherDbId, PDO::PARAM_INT);
+                $subjectStmt->bindParam(':subject_id', $subjectId, PDO::PARAM_INT);
+                $subjectStmt->execute();
+            }
+        }
+
         // Commit transaction
         $db->commit();
         

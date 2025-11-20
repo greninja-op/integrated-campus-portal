@@ -38,19 +38,19 @@ try {
         sendError('teacher_id is required', 'validation_error', 400);
     }
     
-    $teacherIdToUpdate = (int) $data['teacher_id'];
+    $teacherIdToUpdate = trim($data['teacher_id']);
     
     // Get database connection
     $database = new Database();
     $db = $database->getConnection();
     
-    // Verify teacher exists and get current data
+    // Verify teacher exists and get current data (search by teacher_id string, not database id)
     $checkQuery = "SELECT t.*, u.id as user_id, u.username, u.email 
                    FROM teachers t 
                    JOIN users u ON t.user_id = u.id 
-                   WHERE t.id = :teacher_id";
+                   WHERE t.teacher_id = :teacher_id";
     $checkStmt = $db->prepare($checkQuery);
-    $checkStmt->bindParam(':teacher_id', $teacherIdToUpdate, PDO::PARAM_INT);
+    $checkStmt->bindParam(':teacher_id', $teacherIdToUpdate, PDO::PARAM_STR);
     $checkStmt->execute();
     
     if ($checkStmt->rowCount() === 0) {
@@ -59,6 +59,7 @@ try {
     
     $existingTeacher = $checkStmt->fetch(PDO::FETCH_ASSOC);
     $userId = $existingTeacher['user_id'];
+    $teacherDbId = $existingTeacher['id']; // Store the database ID for updates
     
     // Start transaction
     $db->beginTransaction();
@@ -114,7 +115,7 @@ try {
         
         // Update teacher table
         $teacherUpdates = [];
-        $teacherParams = [':teacher_id' => $teacherIdToUpdate];
+        $teacherParams = [':teacher_id' => $teacherDbId];
         
         $teacherFields = [
             'first_name', 'last_name', 'date_of_birth', 'gender', 'phone', 'address',
@@ -159,6 +160,27 @@ try {
             $teacherStmt->execute();
         }
         
+        // Handle subject assignments if provided
+        if (isset($data['assigned_subjects']) && is_array($data['assigned_subjects'])) {
+            // Delete existing assignments
+            $deleteSubjectsQuery = "DELETE FROM teacher_subjects WHERE teacher_id = :teacher_id";
+            $deleteSubjectsStmt = $db->prepare($deleteSubjectsQuery);
+            $deleteSubjectsStmt->bindParam(':teacher_id', $teacherDbId, PDO::PARAM_INT);
+            $deleteSubjectsStmt->execute();
+
+            // Insert new assignments
+            if (!empty($data['assigned_subjects'])) {
+                $insertSubjectQuery = "INSERT INTO teacher_subjects (teacher_id, subject_id, is_active) VALUES (:teacher_id, :subject_id, 1)";
+                $insertSubjectStmt = $db->prepare($insertSubjectQuery);
+
+                foreach ($data['assigned_subjects'] as $subjectId) {
+                    $insertSubjectStmt->bindParam(':teacher_id', $teacherDbId, PDO::PARAM_INT);
+                    $insertSubjectStmt->bindParam(':subject_id', $subjectId, PDO::PARAM_INT);
+                    $insertSubjectStmt->execute();
+                }
+            }
+        }
+
         // Commit transaction
         $db->commit();
         
@@ -168,7 +190,7 @@ try {
                      JOIN users u ON t.user_id = u.id 
                      WHERE t.id = :teacher_id";
         $getStmt = $db->prepare($getQuery);
-        $getStmt->bindParam(':teacher_id', $teacherIdToUpdate, PDO::PARAM_INT);
+        $getStmt->bindParam(':teacher_id', $teacherDbId, PDO::PARAM_INT);
         $getStmt->execute();
         $updatedTeacher = $getStmt->fetch(PDO::FETCH_ASSOC);
         

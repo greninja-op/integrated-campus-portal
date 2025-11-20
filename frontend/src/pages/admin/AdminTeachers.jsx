@@ -393,10 +393,7 @@ export default function AdminTeachers() {
                     <td className="px-4 py-3 text-slate-800 dark:text-white">{teacher.qualification}</td>
                     <td className="px-4 py-3">
                       <button 
-                        onClick={() => {
-                          handleEdit(teacher)
-                          navigate('/admin/teachers/add')
-                        }}
+                        onClick={() => navigate('/admin/teachers/add', { state: { teacher } })}
                         className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 mr-2 transition-all"
                       >
                         <i className="fas fa-edit"></i>

@@ -1,29 +1,35 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import ThemeToggle from '../../components/ThemeToggle'
 import CustomSelect from '../../components/CustomSelect'
+import CustomAlert from '../../components/CustomAlert'
 import api from '../../services/api'
 
 export default function AdminAddTeacher() {
   const navigate = useNavigate()
+  const location = useLocation()
   const user = api.getCurrentUser()
   
+  const editTeacher = location.state?.teacher
+  const isEditMode = !!editTeacher
+
   const [loading, setLoading] = useState(false)
   const [subjects, setSubjects] = useState([])
   const [filteredSubjects, setFilteredSubjects] = useState([])
+  const [alert, setAlert] = useState({ show: false, message: '', type: 'success' })
   
   // Form data
   const [formData, setFormData] = useState({
-    teacher_id: '',
-    full_name: '',
-    username: '',
-    email: '',
+    teacher_id: editTeacher?.teacher_id || '',
+    full_name: editTeacher?.full_name || '',
+    username: editTeacher?.username || '',
+    email: editTeacher?.email || '',
     password: '',
-    department: 'BCA',
-    specialization: '',
-    phone: '',
-    qualification: 'Ph.D.',
+    department: editTeacher?.department || 'BCA',
+    specialization: editTeacher?.specialization || '',
+    phone: editTeacher?.phone || '',
+    qualification: editTeacher?.qualification || 'Ph.D.',
     assigned_subjects: []
   })
 
@@ -62,11 +68,16 @@ export default function AdminAddTeacher() {
   const handleInputChange = (e) => {
     const { name, value } = e.target
     
-    // Auto-generate username from full name
+    // Auto-generate username from full name (keep spaces, lowercase)
     if (name === 'full_name') {
-      const username = value.toLowerCase().replace(/\s+/g, '.')
+      const username = value.toLowerCase()
       setFormData(prev => ({ ...prev, [name]: value, username }))
-    } else {
+    }
+    // Auto-lowercase email
+    else if (name === 'email') {
+      setFormData(prev => ({ ...prev, [name]: value.toLowerCase() }))
+    }
+    else {
       setFormData(prev => ({ ...prev, [name]: value }))
     }
   }
@@ -85,7 +96,7 @@ export default function AdminAddTeacher() {
     
     // Validate at least one subject is assigned
     if (formData.assigned_subjects.length === 0) {
-      alert('Please assign at least one subject to the teacher')
+      setAlert({ show: true, message: 'Please assign at least one subject to the teacher', type: 'warning' })
       return
     }
     
@@ -108,13 +119,23 @@ export default function AdminAddTeacher() {
       submitData.designation = 'Teacher'
     }
 
-    const response = await api.addTeacher(submitData)
+    const response = isEditMode
+      ? await api.updateTeacher(editTeacher.teacher_id, submitData)
+      : await api.addTeacher(submitData)
     
     if (response.success) {
-      alert('Teacher added successfully!')
-      navigate('/admin/teachers')
+      setAlert({
+        show: true,
+        message: isEditMode ? 'Teacher updated successfully!' : 'Teacher added successfully!',
+        type: 'success'
+      })
+      setTimeout(() => navigate('/admin/teachers'), 1500)
     } else {
-      alert(response.message || response.error || 'Failed to add teacher')
+      setAlert({
+        show: true,
+        message: response.message || response.error || (isEditMode ? 'Failed to update teacher' : 'Failed to add teacher'),
+        type: 'error'
+      })
       setLoading(false)
     }
   }
@@ -142,7 +163,7 @@ export default function AdminAddTeacher() {
             <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
           </button>
           <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
-            Add New Teacher
+            {isEditMode ? 'Edit Teacher' : 'Add New Teacher'}
           </h1>
         </div>
         <div className="flex items-center gap-4">
@@ -245,20 +266,22 @@ export default function AdminAddTeacher() {
           {/* Password */}
           <div>
             <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-              Password <span className="text-red-500">*</span>
+              Password {!isEditMode && <span className="text-red-500">*</span>}
             </label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              placeholder="Enter password"
-              required
+              placeholder={isEditMode ? "Leave blank to keep current password" : "Enter password"}
+              required={!isEditMode}
               minLength="8"
               title="Password must be at least 8 characters"
               className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
             />
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Minimum 8 characters</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              {isEditMode ? 'Leave blank to keep current password' : 'Minimum 8 characters'}
+            </p>
           </div>
 
           {/* Qualification */}
@@ -367,7 +390,7 @@ export default function AdminAddTeacher() {
               className="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all disabled:opacity-50"
             >
               <i className="fas fa-save mr-2"></i>
-              {loading ? 'Adding...' : 'Add Teacher'}
+              {loading ? (isEditMode ? 'Updating...' : 'Adding...') : (isEditMode ? 'Update Teacher' : 'Add Teacher')}
             </button>
             <button
               type="button"
@@ -380,6 +403,14 @@ export default function AdminAddTeacher() {
           </div>
         </form>
       </motion.div>
+
+      {/* Custom Alert */}
+      <CustomAlert
+        show={alert.show}
+        message={alert.message}
+        type={alert.type}
+        onClose={() => setAlert({ ...alert, show: false })}
+      />
     </motion.div>
   )
 }

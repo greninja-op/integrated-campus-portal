@@ -188,7 +188,7 @@ function validateUsername($username) {
         return false;
     }
     
-    // Remove whitespace
+    // Trim leading/trailing whitespace only
     $username = trim($username);
     
     // Check length (3-50 characters)
@@ -197,8 +197,8 @@ function validateUsername($username) {
         return false;
     }
     
-    // Only allow alphanumeric, underscore, and hyphen
-    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $username)) {
+    // Allow alphanumeric, underscore, hyphen, and spaces
+    if (!preg_match('/^[a-zA-Z0-9_\- ]+$/', $username)) {
         return false;
     }
     

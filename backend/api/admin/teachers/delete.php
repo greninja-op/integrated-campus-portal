@@ -37,18 +37,18 @@ try {
         sendError('teacher_id is required', 'validation_error', 400);
     }
     
-    $teacherId = (int) $data['teacher_id'];
+    $teacherId = trim($data['teacher_id']);
     
     // Get database connection
     $database = new Database();
     $db = $database->getConnection();
     
-    // Verify teacher exists and get user_id
+    // Verify teacher exists and get user_id (search by teacher_id string)
     $checkQuery = "SELECT user_id, teacher_id, first_name, last_name 
                    FROM teachers 
-                   WHERE id = :teacher_id";
+                   WHERE teacher_id = :teacher_id";
     $checkStmt = $db->prepare($checkQuery);
-    $checkStmt->bindParam(':teacher_id', $teacherId, PDO::PARAM_INT);
+    $checkStmt->bindParam(':teacher_id', $teacherId, PDO::PARAM_STR);
     $checkStmt->execute();
     
     if ($checkStmt->rowCount() === 0) {
