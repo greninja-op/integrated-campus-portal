@@ -1,3 +1,4 @@
+import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AnimatePresence } from 'motion/react'
 import Login from './pages/Login'
@@ -29,14 +30,57 @@ import api from './services/api'
 
 // Protected Route wrapper
 function ProtectedRoute({ children, allowedRoles = [] }) {
-  const isAuthenticated = api.isAuthenticated()
-  const user = api.getCurrentUser()
+  const [isVerifying, setIsVerifying] = React.useState(true)
+  const [isValid, setIsValid] = React.useState(false)
   
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
+  React.useEffect(() => {
+    const verifyAuth = async () => {
+      const isAuthenticated = api.isAuthenticated()
+      const user = api.getCurrentUser()
+      
+      if (!isAuthenticated || !user) {
+        setIsValid(false)
+        setIsVerifying(false)
+        return
+      }
+      
+      // Verify token with backend
+      try {
+        const response = await api.authenticatedGet('/auth/verify.php')
+        if (response.success) {
+          // Check role
+          if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
+            setIsValid(false)
+          } else {
+            setIsValid(true)
+          }
+        } else {
+          // Token invalid, clear storage
+          localStorage.removeItem('user')
+          localStorage.removeItem('token')
+          setIsValid(false)
+        }
+      } catch (error) {
+        // Token invalid or network error
+        localStorage.removeItem('user')
+        localStorage.removeItem('token')
+        setIsValid(false)
+      }
+      setIsVerifying(false)
+    }
+    
+    verifyAuth()
+  }, [allowedRoles])
+  
+  if (isVerifying) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl">Loading...</div>
+      </div>
+    )
   }
   
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
+  if (!isValid) {
     return <Navigate to="/login" replace />
   }
   
