@@ -290,7 +290,8 @@ function calculateLateFine($dueDate, $finePerDay, $maxFine) {
     $fine = $daysLate * (float) $finePerDay;
     
     // Cap at maximum fine
-    if ($fine > (float) $maxFine) {
+    // If maxFine is 0, it means no limit
+    if ($maxFine > 0 && $fine > (float) $maxFine) {
         $fine = (float) $maxFine;
     }
     

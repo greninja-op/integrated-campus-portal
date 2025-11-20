@@ -191,17 +191,16 @@ function calculateCGPAFromDB($db, $studentId, $sessionId) {
     try {
         // Optimized single query to calculate CGPA
         // Sum(GradePoint * CreditHours) / Sum(CreditHours)
+        // Note: CGPA should be cumulative across all sessions/semesters, so we remove session_id constraint
         $query = "SELECT 
                     SUM(m.grade_point * s.credit_hours) as total_points,
                     SUM(s.credit_hours) as total_credits
                   FROM marks m
                   JOIN subjects s ON m.subject_id = s.id
-                  WHERE m.student_id = :student_id
-                  AND m.session_id = :session_id";
+                  WHERE m.student_id = :student_id";
         
         $stmt = $db->prepare($query);
         $stmt->bindParam(':student_id', $studentId, PDO::PARAM_INT);
-        $stmt->bindParam(':session_id', $sessionId, PDO::PARAM_INT);
         $stmt->execute();
         
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
