@@ -670,6 +670,18 @@ class ApiService {
     }
   }
 
+  // Admin - Get All Subjects
+  async getAllSubjects(params = {}) {
+    try {
+      const queryParams = new URLSearchParams(params).toString();
+      const endpoint = `/admin/subjects/list.php${queryParams ? '?' + queryParams : ''}`;
+      return await this.authenticatedGet(endpoint);
+    } catch (error) {
+      console.error('Get subjects error:', error);
+      return { success: false, message: 'Failed to fetch subjects' };
+    }
+  }
+
   // Upload Material
   async uploadMaterial(formData) {
     try {

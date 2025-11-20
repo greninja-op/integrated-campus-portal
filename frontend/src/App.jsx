@@ -12,6 +12,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
 import AdminStudents from './pages/admin/AdminStudents'
 import AdminTeachers from './pages/admin/AdminTeachers'
+import AdminAddTeacher from './pages/admin/AdminAddTeacher'
 import AdminNotices from './pages/admin/AdminNotices'
 import AdminFeeManagement from './pages/admin/AdminFeeManagement'
 import AdminCourses from './pages/admin/AdminCourses'
@@ -64,6 +65,7 @@ function App() {
           <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/students" element={<ProtectedRoute allowedRoles={['admin']}><AdminStudents /></ProtectedRoute>} />
           <Route path="/admin/teachers" element={<ProtectedRoute allowedRoles={['admin']}><AdminTeachers /></ProtectedRoute>} />
+          <Route path="/admin/teachers/add" element={<ProtectedRoute allowedRoles={['admin']}><AdminAddTeacher /></ProtectedRoute>} />
           <Route path="/admin/notices" element={<ProtectedRoute allowedRoles={['admin']}><AdminNotices /></ProtectedRoute>} />
           <Route path="/admin/fee-management" element={<ProtectedRoute allowedRoles={['admin']}><AdminFeeManagement /></ProtectedRoute>} />
           <Route path="/admin/courses" element={<ProtectedRoute allowedRoles={['admin']}><AdminCourses /></ProtectedRoute>} />

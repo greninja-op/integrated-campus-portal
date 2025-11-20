@@ -34,8 +34,12 @@ export default function AdminTeachers() {
     department: 'BCA',
     specialization: '',
     phone: '',
-    qualification: 'Ph.D.'
+    qualification: 'Ph.D.',
+    assigned_subjects: [] // Array of subject IDs
   })
+  
+  const [subjects, setSubjects] = useState([])
+  const [filteredSubjects, setFilteredSubjects] = useState([])
 
   const departments = ['BCA', 'BBA', 'B.Com']
   const qualifications = ['Ph.D.', 'M.Tech', 'M.Sc.', 'B.Tech']
@@ -50,7 +54,16 @@ export default function AdminTeachers() {
       return
     }
     fetchTeachers()
+    fetchSubjects()
   }, [])
+  
+  // Filter subjects when department changes
+  useEffect(() => {
+    if (formData.department) {
+      const filtered = subjects.filter(s => s.department === formData.department)
+      setFilteredSubjects(filtered)
+    }
+  }, [formData.department, subjects])
 
   const fetchTeachers = async () => {
     setLoading(true)
@@ -81,6 +94,17 @@ export default function AdminTeachers() {
       console.error('Error fetching teachers:', error)
     } finally {
       setLoading(false)
+    }
+  }
+  
+  const fetchSubjects = async () => {
+    try {
+      const response = await api.getAllSubjects()
+      if (response.success && response.data) {
+        setSubjects(response.data.subjects || [])
+      }
+    } catch (error) {
+      console.error('Error fetching subjects:', error)
     }
   }
   
@@ -118,6 +142,15 @@ export default function AdminTeachers() {
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+  
+  const handleSubjectToggle = (subjectId) => {
+    setFormData(prev => ({
+      ...prev,
+      assigned_subjects: prev.assigned_subjects.includes(subjectId)
+        ? prev.assigned_subjects.filter(id => id !== subjectId)
+        : [...prev.assigned_subjects, subjectId]
+    }))
   }
 
   const handleSubmit = async (e) => {
@@ -167,7 +200,8 @@ export default function AdminTeachers() {
         department: 'BCA',
         specialization: '',
         phone: '',
-        qualification: 'Ph.D.'
+        qualification: 'Ph.D.',
+        assigned_subjects: []
       })
       fetchTeachers()
     } else {
@@ -233,7 +267,8 @@ export default function AdminTeachers() {
       department: 'BCA',
       specialization: '',
       phone: '',
-      qualification: 'Ph.D.'
+      qualification: 'Ph.D.',
+      assigned_subjects: []
     })
   }
 
@@ -282,14 +317,104 @@ export default function AdminTeachers() {
       {!urlDepartment && (
         <div className="mb-6">
           <button
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={() => navigate('/admin/teachers/add')}
             className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold shadow-lg flex items-center gap-2 transition-all"
           >
-            <i className={`fas ${showAddForm ? 'fa-times' : 'fa-plus'}`}></i>
-            {showAddForm ? 'Cancel' : 'Add New Teacher'}
+            <i className="fas fa-plus"></i>
+            Add New Teacher
           </button>
         </div>
       )}
+
+      {/* Teachers List */}
+      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+            All Teachers
+          </h2>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name..."
+              className="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+            />
+            <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            )}
+          </div>
+          {searchQuery && (
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+              Found {filteredTeachers.length} teacher{filteredTeachers.length !== 1 ? 's' : ''}
+            </p>
+          )}
+        </div>
+        
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
+          </div>
+        ) : filteredTeachers.length === 0 ? (
+          <div className="text-center py-12">
+            <i className="fas fa-chalkboard-teacher text-6xl text-slate-400 mb-4"></i>
+            <p className="text-slate-600 dark:text-slate-400">
+              No teachers found. Add your first teacher!
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b-2 border-slate-300 dark:border-slate-600">
+                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Teacher ID</th>
+                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Name</th>
+                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Department</th>
+                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Qualification</th>
+                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredTeachers.map((teacher, index) => (
+                  <tr key={index} className="border-b border-slate-200 dark:border-slate-700 hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all">
+                    <td className="px-4 py-3 text-slate-800 dark:text-white">{teacher.teacher_id}</td>
+                    <td className="px-4 py-3 text-slate-800 dark:text-white">{teacher.full_name}</td>
+                    <td className="px-4 py-3 text-slate-800 dark:text-white">{teacher.department}</td>
+                    <td className="px-4 py-3 text-slate-800 dark:text-white">{teacher.qualification}</td>
+                    <td className="px-4 py-3">
+                      <button 
+                        onClick={() => {
+                          handleEdit(teacher)
+                          navigate('/admin/teachers/add')
+                        }}
+                        className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 mr-2 transition-all"
+                      >
+                        <i className="fas fa-edit"></i>
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(teacher.teacher_id)}
+                        className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* Add Teacher Form */}
       {showAddForm && (
@@ -435,6 +560,47 @@ export default function AdminTeachers() {
               />
             </div>
 
+            {/* Assigned Subjects */}
+            <div className="md:col-span-2">
+              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                Assign Subjects <span className="text-slate-500 text-sm">(Select subjects this teacher will teach)</span>
+              </label>
+              <div className="bg-white/50 dark:bg-gray-700/50 rounded-lg border border-gray-300 dark:border-gray-600 p-4 max-h-64 overflow-y-auto">
+                {filteredSubjects.length === 0 ? (
+                  <p className="text-slate-500 dark:text-slate-400 text-center py-4">
+                    No subjects available for {formData.department} department. Please add subjects first.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {filteredSubjects.map(subject => (
+                      <label
+                        key={subject.id}
+                        className="flex items-start gap-3 p-3 rounded-lg hover:bg-white/50 dark:hover:bg-gray-600/50 cursor-pointer transition-all"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.assigned_subjects.includes(subject.id)}
+                          onChange={() => handleSubjectToggle(subject.id)}
+                          className="mt-1 w-4 h-4 text-green-500 rounded focus:ring-green-500"
+                        />
+                        <div className="flex-1">
+                          <div className="font-semibold text-slate-800 dark:text-white">
+                            {subject.subject_name}
+                          </div>
+                          <div className="text-sm text-slate-600 dark:text-slate-400">
+                            {subject.subject_code} • Semester {subject.semester}
+                          </div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                Selected: {formData.assigned_subjects.length} subject(s)
+              </p>
+            </div>
+
             {/* Submit Button */}
             <div className="md:col-span-2 flex gap-4">
               <button
@@ -459,133 +625,7 @@ export default function AdminTeachers() {
         </motion.div>
       )}
 
-      {/* Teachers List */}
-      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
-            {urlDepartment ? 'Filtered Teachers' : 'All Teachers'}
-          </h2>
-          {urlDepartment && (
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-green-500/20 text-green-600 dark:text-green-400 rounded-lg font-semibold text-sm">
-                {urlDepartment}
-              </span>
-              <button
-                onClick={() => navigate('/admin/teachers')}
-                className="px-3 py-1 bg-slate-500/20 text-slate-600 dark:text-slate-400 rounded-lg font-semibold text-sm hover:bg-slate-500/30"
-              >
-                Clear Filter
-              </button>
-            </div>
-          )}
-        </div>
 
-        {/* Department Filter - Only show in manage mode (not when URL filtered) */}
-        {!urlDepartment && (
-          <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Department Filter */}
-            <select
-              value={filterDepartment}
-              onChange={(e) => setFilterDepartment(e.target.value)}
-              className="px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
-            >
-              <option value="all">All Departments</option>
-              {departments.map(dept => (
-                <option key={dept} value={dept}>{dept}</option>
-              ))}
-            </select>
-
-            {/* Clear Filter Button */}
-            {filterDepartment !== 'all' && (
-              <button
-                onClick={() => setFilterDepartment('all')}
-                className="px-4 py-3 bg-slate-500/20 hover:bg-slate-500/30 text-slate-600 dark:text-slate-400 rounded-lg font-semibold transition-all"
-              >
-                <i className="fas fa-times mr-2"></i>
-                Clear Filter
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Search Bar */}
-        <div className="mb-6">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name..."
-              className="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
-            />
-            <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
-              >
-                <i className="fas fa-times"></i>
-              </button>
-            )}
-          </div>
-          {searchQuery && (
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-              Found {filteredTeachers.length} teacher{filteredTeachers.length !== 1 ? 's' : ''}
-            </p>
-          )}
-        </div>
-        
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-          </div>
-        ) : filteredTeachers.length === 0 ? (
-          <div className="text-center py-12">
-            <i className="fas fa-chalkboard-teacher text-6xl text-slate-400 mb-4"></i>
-            <p className="text-slate-600 dark:text-slate-400">
-              {urlDepartment ? 'No teachers found in this department.' : 'No teachers found. Add your first teacher!'}
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b-2 border-slate-300 dark:border-slate-600">
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Teacher ID</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Name</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Department</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Qualification</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTeachers.map((teacher, index) => (
-                  <tr key={index} className="border-b border-slate-200 dark:border-slate-700 hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all">
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">{teacher.teacher_id}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">{teacher.full_name}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">{teacher.department}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">{teacher.qualification}</td>
-                    <td className="px-4 py-3">
-                      <button 
-                        onClick={() => handleEdit(teacher)}
-                        className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 mr-2 transition-all"
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(teacher.teacher_id)}
-                        className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (

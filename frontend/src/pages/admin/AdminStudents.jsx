@@ -467,9 +467,35 @@ export default function AdminStudents() {
           exit={{ opacity: 0, height: 0 }}
           className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mb-6"
         >
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
-            {isEditMode ? 'Edit Student' : 'Add New Student'}
-          </h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+              {isEditMode ? 'Edit Student' : 'Add New Student'}
+            </h2>
+            <button
+              type="button"
+              onClick={() => {
+                setFormData({
+                  student_id: '',
+                  full_name: '',
+                  username: '',
+                  email: '',
+                  password: '',
+                  department: 'BCA',
+                  semester: '1',
+                  year: new Date().getFullYear(),
+                  phone: '',
+                  date_of_birth: '',
+                  address: '',
+                  gender: 'other'
+                })
+                setFormKey(Date.now())
+              }}
+              className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold text-sm"
+            >
+              <i className="fas fa-eraser mr-2"></i>
+              Clear Form
+            </button>
+          </div>
           <form key={`form-${formKey}`} onSubmit={handleSubmit} className="space-y-6" autoComplete="off">
             {/* Profile Photo Upload */}
             <div className="flex items-center gap-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -566,9 +592,12 @@ export default function AdminStudents() {
                 name="username"
                 value={formData.username}
                 onChange={handleInputChange}
-                onFocus={(e) => e.target.removeAttribute('readonly')}
+                onFocus={(e) => {
+                  e.target.removeAttribute('readonly')
+                  setFieldsReadOnly(false)
+                }}
                 placeholder="e.g., john.doe"
-                autoComplete="off"
+                autoComplete="new-username"
                 readOnly={fieldsReadOnly}
                 required
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
@@ -602,9 +631,13 @@ export default function AdminStudents() {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                onFocus={(e) => e.target.removeAttribute('readonly')}
+                onFocus={(e) => {
+                  e.target.removeAttribute('readonly')
+                  setFieldsReadOnly(false)
+                }}
                 placeholder="Enter password"
                 autoComplete="new-password"
+                data-form-type="other"
                 readOnly={fieldsReadOnly}
                 required
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
