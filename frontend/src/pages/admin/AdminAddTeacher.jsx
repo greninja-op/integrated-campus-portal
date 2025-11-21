@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import ThemeToggle from '../../components/ThemeToggle'
 import CustomSelect from '../../components/CustomSelect'
 import CustomAlert from '../../components/CustomAlert'
+import ImageCropper from '../../components/ImageCropper'
 import api from '../../services/api'
 
 export default function AdminAddTeacher() {
@@ -22,6 +23,7 @@ export default function AdminAddTeacher() {
   // Image upload state
   const [selectedImage, setSelectedImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
+  const [showCropper, setShowCropper] = useState(false)
   
   // Form data
   const [formData, setFormData] = useState({
@@ -49,6 +51,11 @@ export default function AdminAddTeacher() {
       return
     }
     fetchSubjects()
+    
+    // Load existing profile image if editing
+    if (editTeacher?.profile_image) {
+      setImagePreview(`http://localhost:8080${editTeacher.profile_image}`)
+    }
   }, [])
 
   useEffect(() => {
@@ -95,21 +102,10 @@ export default function AdminAddTeacher() {
     }))
   }
   
-  const handleImageSelect = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        showAlert('Image size should be less than 5MB', 'Image size should be less than 5MB', 'error')
-        return
-      }
-      setSelectedImage(file)
-      setImagePreview(URL.createObjectURL(file))
-    }
-  }
-
-  const handleRemoveImage = () => {
-    setSelectedImage(null)
-    setImagePreview(null)
+  const handleImageCropped = (blob) => {
+    setSelectedImage(blob)
+    setImagePreview(URL.createObjectURL(blob))
+    setShowCropper(false)
   }
 
   const handleSubmit = async (e) => {
@@ -240,14 +236,14 @@ export default function AdminAddTeacher() {
           <div className="flex items-center gap-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
             <div>
               {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="Profile Preview"
+                <img 
+                  src={imagePreview} 
+                  alt="Preview" 
                   className="w-24 h-24 rounded-full object-cover border-4 border-green-500"
                 />
               ) : (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-white text-3xl font-bold">
-                  <i className="fas fa-user"></i>
+                <div className="w-24 h-24 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                  <i className="fas fa-user text-4xl text-gray-500 dark:text-gray-400"></i>
                 </div>
               )}
             </div>
@@ -256,29 +252,29 @@ export default function AdminAddTeacher() {
                 Profile Photo (Optional)
               </label>
               <div className="flex gap-3">
-                <label className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold cursor-pointer transition-all">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageSelect}
-                    className="hidden"
-                  />
+                <button
+                  type="button"
+                  onClick={() => setShowCropper(true)}
+                  className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold text-sm"
+                >
                   <i className="fas fa-camera mr-2"></i>
                   {imagePreview ? 'Change Photo' : 'Upload Photo'}
-                </label>
+                </button>
                 {imagePreview && (
                   <button
                     type="button"
-                    onClick={handleRemoveImage}
-                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+                    onClick={() => {
+                      setImagePreview(null)
+                      setSelectedImage(null)
+                    }}
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold text-sm"
                   >
-                    <i className="fas fa-times mr-2"></i>
-                    Remove
+                    <i className="fas fa-trash"></i>
                   </button>
                 )}
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-                Max size: 5MB. Supported formats: JPG, PNG, GIF
+                Image will be auto-cropped to circular format
               </p>
             </div>
           </div>
@@ -509,6 +505,14 @@ export default function AdminAddTeacher() {
         type={alert.type}
         onClose={() => setAlert({ ...alert, show: false })}
       />
+
+      {/* Image Cropper Modal */}
+      {showCropper && (
+        <ImageCropper
+          onImageCropped={handleImageCropped}
+          onCancel={() => setShowCropper(false)}
+        />
+      )}
     </motion.div>
   )
 }

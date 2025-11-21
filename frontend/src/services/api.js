@@ -307,6 +307,16 @@ class ApiService {
     }
   }
 
+  // Teacher - Get Profile
+  async getTeacherProfile() {
+    try {
+      return await this.authenticatedGet('/teacher/get_profile.php');
+    } catch (error) {
+      console.error('Get teacher profile error:', error);
+      return { success: false, message: 'Failed to fetch profile' };
+    }
+  }
+
   // Teacher - Get Students
   async getTeacherStudents(params = {}) {
     try {
@@ -360,7 +370,19 @@ class ApiService {
     }
   }
 
-  // Student - Get Attendance History
+  // Student - Get Attendance (new enhanced version)
+  async getStudentAttendance(params = {}) {
+    try {
+      const queryParams = new URLSearchParams(params).toString();
+      const endpoint = `/student/get_attendance.php${queryParams ? '?' + queryParams : ''}`;
+      return await this.authenticatedGet(endpoint);
+    } catch (error) {
+      console.error('Get student attendance error:', error);
+      return { success: false, message: 'Failed to fetch attendance' };
+    }
+  }
+
+  // Student - Get Attendance History (legacy)
   async getAttendanceHistory(studentId = null) {
     try {
       const queryParams = studentId ? `?student_id=${studentId}` : '';
@@ -514,7 +536,9 @@ class ApiService {
         address: teacherData.address,
         department: teacherData.department,
         designation: teacherData.designation || 'Assistant Professor',
-        qualification: teacherData.qualification || 'M.Tech'
+        qualification: teacherData.qualification || 'M.Tech',
+        profile_image: teacherData.profile_image || null,
+        assigned_subjects: teacherData.assigned_subjects || []
       }
       
       return await this.authenticatedPost('/admin/teachers/create.php', payload);
@@ -546,6 +570,7 @@ class ApiService {
         designation: teacherData.designation || 'Assistant Professor',
         qualification: teacherData.qualification || 'M.Tech',
         specialization: teacherData.specialization || '',
+        profile_image: teacherData.profile_image || null,
         assigned_subjects: teacherData.assigned_subjects || []
       }
       

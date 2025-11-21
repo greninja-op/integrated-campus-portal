@@ -62,6 +62,7 @@ try {
     $qualification = isset($data['qualification']) ? trim($data['qualification']) : null;
     $specialization = isset($data['specialization']) ? trim($data['specialization']) : null;
     $experienceYears = isset($data['experience_years']) ? (int) $data['experience_years'] : 0;
+    $profileImage = isset($data['profile_image']) ? trim($data['profile_image']) : null;
     
     // Check for manual teacher_id
     $manualTeacherId = isset($data['teacher_id']) && !empty(trim($data['teacher_id'])) ? trim($data['teacher_id']) : null;
@@ -157,11 +158,11 @@ try {
         $teacherQuery = "INSERT INTO teachers 
                         (user_id, teacher_id, first_name, last_name, date_of_birth, gender, 
                          phone, address, joining_date, department, designation, qualification,
-                         specialization, experience_years)
+                         specialization, experience_years, profile_image)
                         VALUES 
                         (:user_id, :teacher_id, :first_name, :last_name, :date_of_birth, :gender,
                          :phone, :address, :joining_date, :department, :designation, :qualification,
-                         :specialization, :experience_years)";
+                         :specialization, :experience_years, :profile_image)";
         
         $teacherStmt = $db->prepare($teacherQuery);
         $teacherStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
@@ -178,6 +179,7 @@ try {
         $teacherStmt->bindParam(':qualification', $qualification, PDO::PARAM_STR);
         $teacherStmt->bindParam(':specialization', $specialization, PDO::PARAM_STR);
         $teacherStmt->bindParam(':experience_years', $experienceYears, PDO::PARAM_INT);
+        $teacherStmt->bindParam(':profile_image', $profileImage, PDO::PARAM_STR);
         
         if (!$teacherStmt->execute()) {
             throw new Exception('Failed to create teacher record');

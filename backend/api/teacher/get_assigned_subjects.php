@@ -27,35 +27,50 @@ try {
     $database = new Database();
     $db = $database->getConnection();
     
-    // Get teacher profile to find department
-    $stmt = $db->prepare("SELECT department FROM teachers WHERE user_id = ?");
-    $stmt->execute([$user['user_id']]);
-    $teacher = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Get teacher ID from teachers table
+    $teacherQuery = "SELECT id, department FROM teachers WHERE user_id = :user_id";
+    $teacherStmt = $db->prepare($teacherQuery);
+    $teacherStmt->bindParam(':user_id', $user['user_id'], PDO::PARAM_INT);
+    $teacherStmt->execute();
     
-    if (!$teacher) {
+    if ($teacherStmt->rowCount() === 0) {
         sendError('Teacher profile not found', 'not_found', 404);
     }
     
+    $teacher = $teacherStmt->fetch(PDO::FETCH_ASSOC);
+    $teacherId = $teacher['id'];
     $department = $teacher['department'];
     
-    // Query subjects by department
-    // Since we don't have a specific teacher_subjects assignment table yet,
-    // we assume a teacher can view/manage all subjects in their department.
+    // Get semester filter if provided
+    $semester = isset($_GET['semester']) ? (int)$_GET['semester'] : null;
+    
+    // Query only subjects assigned to this teacher
     $query = "SELECT 
-                id,
-                subject_code,
-                subject_name,
-                credit_hours,
-                semester,
-                department,
-                created_at as assigned_at
-              FROM subjects
-              WHERE department = :department
-              ORDER BY semester, subject_code";
+                s.id,
+                s.subject_code,
+                s.subject_name,
+                s.credit_hours,
+                s.semester,
+                s.department,
+                ts.created_at as assigned_at
+              FROM subjects s
+              JOIN teacher_subjects ts ON s.id = ts.subject_id
+              WHERE ts.teacher_id = :teacher_id 
+              AND ts.is_active = 1";
+    
+    if ($semester) {
+        $query .= " AND s.semester = :semester";
+    }
+    
+    $query .= " ORDER BY s.semester, s.subject_code";
               
     $stmt = $db->prepare($query);
-    $stmt->bindParam(':department', $department);
     $stmt->bindParam(':teacher_id', $teacherId, PDO::PARAM_INT);
+    
+    if ($semester) {
+        $stmt->bindParam(':semester', $semester, PDO::PARAM_INT);
+    }
+    
     $stmt->execute();
     
     $subjects = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -63,7 +78,9 @@ try {
     // Format response
     $response = [
         'count' => count($subjects),
-        'subjects' => $subjects
+        'subjects' => $subjects,
+        'teacher_id' => $teacherId,
+        'department' => $department
     ];
     
     sendSuccess($response);

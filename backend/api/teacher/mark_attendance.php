@@ -34,7 +34,7 @@ if (!$data) {
 
 try {
     // Validate required fields
-    $required = ['subject_id', 'attendance_date', 'attendance'];
+    $required = ['subject_id', 'date', 'attendance'];
     $missing = validateRequired($required, $data);
     
     if (!empty($missing)) {
@@ -43,7 +43,7 @@ try {
     
     // Validate data types and format
     $subjectId = (int) $data['subject_id'];
-    $attendanceDate = trim($data['attendance_date']);
+    $attendanceDate = trim($data['date']);
     $attendanceRecords = $data['attendance'];
     
     // Validate date format
@@ -52,13 +52,28 @@ try {
     }
     
     // Check if date is not in the future
-    if (strtotime($attendanceDate) > time()) {
+    $today = date('Y-m-d');
+    if ($attendanceDate > $today) {
         sendError('Cannot mark attendance for future dates', 'future_date', 400);
     }
     
-    // Validate attendance array
-    if (!is_array($attendanceRecords) || empty($attendanceRecords)) {
-        sendError('Attendance records must be a non-empty array', 'invalid_attendance', 400);
+    // Only allow marking attendance for today
+    if ($attendanceDate !== $today) {
+        sendError('Can only mark attendance for today', 'invalid_date', 400);
+    }
+    
+    // Validate attendance - can be array or object
+    if (!is_array($attendanceRecords) && !is_object($attendanceRecords)) {
+        sendError('Attendance records must be an array or object', 'invalid_attendance', 400);
+    }
+    
+    // Convert object to array if needed
+    if (is_object($attendanceRecords)) {
+        $attendanceRecords = (array) $attendanceRecords;
+    }
+    
+    if (empty($attendanceRecords)) {
+        sendError('Attendance records cannot be empty', 'invalid_attendance', 400);
     }
     
     // Get database connection
@@ -96,20 +111,28 @@ try {
     $db->beginTransaction();
     
     try {
-        foreach ($attendanceRecords as $record) {
-            // Validate record structure
-            if (!isset($record['student_id']) || !isset($record['status'])) {
+        foreach ($attendanceRecords as $studentId => $status) {
+            // Handle both array and object formats
+            // Format: { "student_id": "status" } or [{"student_id": 1, "status": "present"}]
+            if (is_array($status) && isset($status['status'])) {
+                // Array format with status key
+                $actualStatus = $status['status'];
+                $remarks = isset($status['remarks']) ? trim($status['remarks']) : null;
+            } else if (is_string($status)) {
+                // Simple key-value format
+                $actualStatus = $status;
+                $remarks = null;
+            } else {
                 $errorCount++;
                 continue;
             }
             
-            $studentId = (int) $record['student_id'];
-            $status = strtolower(trim($record['status']));
-            $remarks = isset($record['remarks']) ? trim($record['remarks']) : null;
+            $studentId = (int) $studentId;
+            $actualStatus = strtolower(trim($actualStatus));
             
             // Validate status
             $validStatuses = ['present', 'absent', 'late', 'excused'];
-            if (!in_array($status, $validStatuses)) {
+            if (!in_array($actualStatus, $validStatuses)) {
                 $errorCount++;
                 continue;
             }
@@ -140,7 +163,7 @@ try {
             $stmt->bindParam(':subject_id', $subjectId, PDO::PARAM_INT);
             $stmt->bindParam(':session_id', $sessionId, PDO::PARAM_INT);
             $stmt->bindParam(':attendance_date', $attendanceDate, PDO::PARAM_STR);
-            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+            $stmt->bindParam(':status', $actualStatus, PDO::PARAM_STR);
             $stmt->bindParam(':remarks', $remarks, PDO::PARAM_STR);
             $stmt->bindParam(':marked_by', $user['user_id'], PDO::PARAM_INT);
             
@@ -151,7 +174,7 @@ try {
                 } else {
                     $updatedCount++;
                 }
-                $statusCounts[$status]++;
+                $statusCounts[$actualStatus]++;
             }
         }
         
