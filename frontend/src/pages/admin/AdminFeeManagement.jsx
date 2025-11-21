@@ -534,7 +534,6 @@ Thank you.`,
           
           {filteredPendingStudents.length === 0 ? (
             <div className="text-center py-12">
-              <i className="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
               <p className="text-slate-600 dark:text-slate-400 text-lg">No pending payments found with current filters!</p>
             </div>
           ) : (

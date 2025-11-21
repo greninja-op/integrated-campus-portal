@@ -19,6 +19,10 @@ export default function AdminAddTeacher() {
   const [filteredSubjects, setFilteredSubjects] = useState([])
   const [alert, setAlert] = useState({ show: false, message: '', type: 'success' })
   
+  // Image upload state
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
+  
   // Form data
   const [formData, setFormData] = useState({
     teacher_id: editTeacher?.teacher_id || '',
@@ -30,7 +34,7 @@ export default function AdminAddTeacher() {
     specialization: editTeacher?.specialization || '',
     phone: editTeacher?.phone || '',
     qualification: editTeacher?.qualification || 'Ph.D.',
-    assigned_subjects: []
+    assigned_subjects: editTeacher?.assigned_subjects?.map(s => s.id) || []
   })
 
   const departments = ['BCA', 'BBA', 'B.Com']
@@ -90,6 +94,23 @@ export default function AdminAddTeacher() {
         : [...prev.assigned_subjects, subjectId]
     }))
   }
+  
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        showAlert('Image size should be less than 5MB', 'Image size should be less than 5MB', 'error')
+        return
+      }
+      setSelectedImage(file)
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null)
+    setImagePreview(null)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -102,7 +123,34 @@ export default function AdminAddTeacher() {
     
     setLoading(true)
     
+    let profileImageUrl = null
+    
+    // Upload image if selected
+    if (selectedImage) {
+      if (!selectedImage || !(selectedImage instanceof Blob)) {
+        showAlert('Invalid image data', 'Invalid image data. Please try uploading again.', 'error')
+        setLoading(false)
+        return
+      }
+      
+      const uploadResponse = await api.uploadImage(selectedImage)
+      
+      if (uploadResponse.success) {
+        profileImageUrl = uploadResponse.image_url
+      } else {
+        showAlert('Upload failed', 'Failed to upload image: ' + (uploadResponse.error || 'Unknown error'), 'error')
+        setLoading(false)
+        return
+      }
+    }
+    
     const submitData = { ...formData }
+    
+    // Add profile image if uploaded
+    if (profileImageUrl) {
+      submitData.profile_image = profileImageUrl
+    }
+    
     const nameParts = submitData.full_name.trim().split(' ')
     submitData.first_name = nameParts[0]
     submitData.last_name = nameParts.slice(1).join(' ') || '.'
@@ -187,7 +235,55 @@ export default function AdminAddTeacher() {
         animate={{ opacity: 1, height: 'auto' }}
         className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg"
       >
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Profile Photo Upload */}
+          <div className="flex items-center gap-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+            <div>
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Profile Preview"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-green-500"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-white text-3xl font-bold">
+                  <i className="fas fa-user"></i>
+                </div>
+              )}
+            </div>
+            <div className="flex-1">
+              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                Profile Photo (Optional)
+              </label>
+              <div className="flex gap-3">
+                <label className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold cursor-pointer transition-all">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="hidden"
+                  />
+                  <i className="fas fa-camera mr-2"></i>
+                  {imagePreview ? 'Change Photo' : 'Upload Photo'}
+                </label>
+                {imagePreview && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+                  >
+                    <i className="fas fa-times mr-2"></i>
+                    Remove
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                Max size: 5MB. Supported formats: JPG, PNG, GIF
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Teacher ID */}
           <div>
             <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
@@ -342,7 +438,9 @@ export default function AdminAddTeacher() {
           </div>
 
           {/* Assigned Subjects */}
-          <div className="md:col-span-2">
+          </div>
+
+          <div>
             <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
               Assign Subjects <span className="text-red-500">*</span> <span className="text-slate-500 text-sm">(Select at least one subject)</span>
             </label>

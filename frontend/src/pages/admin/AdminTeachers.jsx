@@ -40,6 +40,10 @@ export default function AdminTeachers() {
   
   const [subjects, setSubjects] = useState([])
   const [filteredSubjects, setFilteredSubjects] = useState([])
+  
+  // Image upload state
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
 
   const departments = ['BCA', 'BBA', 'B.Com']
   const qualifications = ['Ph.D.', 'M.Tech', 'M.Sc.', 'B.Tech']
@@ -85,7 +89,8 @@ export default function AdminTeachers() {
           phone: t.phone,
           qualification: t.qualification || 'M.Tech',
           designation: t.designation || 'Assistant Professor',
-          profile_image: t.profile_image
+          profile_image: t.profile_image,
+          assigned_subjects: t.assigned_subjects || []
         }))
         setTeachers(mappedTeachers)
         filterTeachers(mappedTeachers)
@@ -152,13 +157,56 @@ export default function AdminTeachers() {
         : [...prev.assigned_subjects, subjectId]
     }))
   }
+  
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be less than 5MB')
+        return
+      }
+      setSelectedImage(file)
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null)
+    setImagePreview(null)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     
+    let profileImageUrl = null
+    
+    // Upload image if selected
+    if (selectedImage) {
+      if (!selectedImage || !(selectedImage instanceof Blob)) {
+        alert('Invalid image data. Please try uploading again.')
+        setLoading(false)
+        return
+      }
+      
+      const uploadResponse = await api.uploadImage(selectedImage)
+      
+      if (uploadResponse.success) {
+        profileImageUrl = uploadResponse.image_url
+      } else {
+        alert('Failed to upload image: ' + (uploadResponse.error || 'Unknown error'))
+        setLoading(false)
+        return
+      }
+    }
+    
     // Prepare data for submission
     const submitData = { ...formData }
+    
+    // Add profile image if uploaded
+    if (profileImageUrl) {
+      submitData.profile_image = profileImageUrl
+    }
     
     // Split full_name into first_name and last_name
     if (submitData.full_name) {
@@ -191,6 +239,8 @@ export default function AdminTeachers() {
       setShowAddForm(false)
       setIsEditMode(false)
       setEditingTeacher(null)
+      setSelectedImage(null)
+      setImagePreview(null)
       setFormData({
         teacher_id: '',
         full_name: '',
@@ -223,7 +273,8 @@ export default function AdminTeachers() {
       department: teacher.department,
       specialization: teacher.specialization || '',
       phone: teacher.phone || '',
-      qualification: teacher.qualification || 'Ph.D.'
+      qualification: teacher.qualification || 'Ph.D.',
+      assigned_subjects: teacher.assigned_subjects?.map(s => s.id) || []
     })
     setShowAddForm(true)
   }
@@ -258,6 +309,8 @@ export default function AdminTeachers() {
     setIsEditMode(false)
     setEditingTeacher(null)
     setShowAddForm(false)
+    setSelectedImage(null)
+    setImagePreview(null)
     setFormData({
       teacher_id: '',
       full_name: '',
@@ -424,7 +477,55 @@ export default function AdminTeachers() {
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">
             {isEditMode ? 'Edit Teacher' : 'Add New Teacher'}
           </h2>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Profile Photo Upload */}
+            <div className="flex items-center gap-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg md:col-span-2">
+              <div>
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Profile Preview"
+                    className="w-24 h-24 rounded-full object-cover border-4 border-green-500"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-white text-3xl font-bold">
+                    <i className="fas fa-user"></i>
+                  </div>
+                )}
+              </div>
+              <div className="flex-1">
+                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                  Profile Photo (Optional)
+                </label>
+                <div className="flex gap-3">
+                  <label className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold cursor-pointer transition-all">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      className="hidden"
+                    />
+                    <i className="fas fa-camera mr-2"></i>
+                    {imagePreview ? 'Change Photo' : 'Upload Photo'}
+                  </label>
+                  {imagePreview && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+                    >
+                      <i className="fas fa-times mr-2"></i>
+                      Remove
+                    </button>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                  Max size: 5MB. Supported formats: JPG, PNG, GIF
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Teacher ID */}
             <div>
               <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
@@ -556,9 +657,10 @@ export default function AdminTeachers() {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
               />
             </div>
+            </div>
 
             {/* Assigned Subjects */}
-            <div className="md:col-span-2">
+            <div>
               <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
                 Assign Subjects <span className="text-slate-500 text-sm">(Select subjects this teacher will teach)</span>
               </label>

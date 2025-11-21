@@ -115,7 +115,7 @@ try {
         
         // Update teacher table
         $teacherUpdates = [];
-        $teacherParams = [':teacher_id' => $teacherDbId];
+        $teacherParams = [':where_teacher_id' => $teacherDbId];
         
         $teacherFields = [
             'first_name', 'last_name', 'date_of_birth', 'gender', 'phone', 'address',
@@ -152,7 +152,7 @@ try {
         
         // Execute teacher update if there are changes
         if (!empty($teacherUpdates)) {
-            $teacherQuery = "UPDATE teachers SET " . implode(', ', $teacherUpdates) . ", updated_at = NOW() WHERE id = :teacher_id";
+            $teacherQuery = "UPDATE teachers SET " . implode(', ', $teacherUpdates) . ", updated_at = NOW() WHERE id = :where_teacher_id";
             $teacherStmt = $db->prepare($teacherQuery);
             foreach ($teacherParams as $key => $value) {
                 $teacherStmt->bindValue($key, $value);
@@ -162,11 +162,15 @@ try {
         
         // Handle subject assignments if provided
         if (isset($data['assigned_subjects']) && is_array($data['assigned_subjects'])) {
+            logError('Updating subjects for teacher: ' . $teacherDbId . ', subjects: ' . json_encode($data['assigned_subjects']));
+            
             // Delete existing assignments
             $deleteSubjectsQuery = "DELETE FROM teacher_subjects WHERE teacher_id = :teacher_id";
             $deleteSubjectsStmt = $db->prepare($deleteSubjectsQuery);
             $deleteSubjectsStmt->bindParam(':teacher_id', $teacherDbId, PDO::PARAM_INT);
             $deleteSubjectsStmt->execute();
+            
+            logError('Deleted existing assignments, affected rows: ' . $deleteSubjectsStmt->rowCount());
             
             // Insert new assignments
             if (!empty($data['assigned_subjects'])) {
@@ -177,8 +181,11 @@ try {
                     $insertSubjectStmt->bindParam(':teacher_id', $teacherDbId, PDO::PARAM_INT);
                     $insertSubjectStmt->bindParam(':subject_id', $subjectId, PDO::PARAM_INT);
                     $insertSubjectStmt->execute();
+                    logError('Inserted subject: ' . $subjectId . ' for teacher: ' . $teacherDbId);
                 }
             }
+        } else {
+            logError('No assigned_subjects in request data or not an array');
         }
         
         // Commit transaction

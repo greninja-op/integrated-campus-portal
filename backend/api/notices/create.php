@@ -47,7 +47,7 @@ $semester = isset($data['semester']) && !empty($data['semester']) ? (int)$data['
 $attachmentUrl = isset($data['attachment_url']) ? trim($data['attachment_url']) : null;
 
 // Validate type
-$validTypes = ['general', 'academic', 'exam', 'event', 'holiday'];
+$validTypes = ['general', 'academic', 'exam', 'event', 'holiday', 'sports'];
 if (!in_array($type, $validTypes)) {
     sendError('Invalid notice type', 'invalid_type', 400);
 }

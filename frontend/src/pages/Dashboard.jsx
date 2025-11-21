@@ -224,30 +224,47 @@ export default function Dashboard() {
               const hoverColor = style.hoverColor
               
               // Truncate content for preview
-              const contentPreview = notice.content.length > 100 
-                ? notice.content.substring(0, 100) + '...' 
+              const contentPreview = notice.content.length > 150 
+                ? notice.content.substring(0, 150) + '...' 
                 : notice.content
               
               return (
                 <div 
                   key={index}
                   onClick={() => navigate('/notice')}
-                  className={`bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-lg ${hoverColor} transition-all cursor-pointer`}
+                  className={`bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg ${hoverColor} transition-all cursor-pointer`}
                 >
-                  <div className="flex gap-3">
-                    <div className={`w-10 h-10 rounded-full ${bgColor} flex items-center justify-center text-white flex-shrink-0`}>
-                      <i className={iconClass}></i>
+                  <div className="flex gap-4 mb-3">
+                    <div className={`w-12 h-12 rounded-full ${bgColor} flex items-center justify-center text-white flex-shrink-0`}>
+                      <i className={`${iconClass} text-lg`}></i>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-slate-800 dark:text-white mb-1 truncate">
+                      <h4 className="text-lg font-bold text-slate-800 dark:text-white mb-2">
                         {notice.title}
                       </h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
                         {contentPreview}
                       </p>
+                      {notice.created_at && (
+                        <p className="text-xs text-slate-500 dark:text-slate-500">
+                          {new Date(notice.created_at).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                          })}
+                        </p>
+                      )}
                     </div>
-                    <i className="fas fa-chevron-right text-slate-400 flex-shrink-0"></i>
                   </div>
+                  {notice.image_url && (
+                    <div className="mt-3 rounded-lg overflow-hidden">
+                      <img 
+                        src={`http://localhost:8080${notice.image_url}`}
+                        alt={notice.title}
+                        className="w-full h-40 object-cover"
+                      />
+                    </div>
+                  )}
                 </div>
               )
             })

@@ -544,7 +544,9 @@ class ApiService {
         address: teacherData.address,
         department: teacherData.department,
         designation: teacherData.designation || 'Assistant Professor',
-        qualification: teacherData.qualification || 'M.Tech'
+        qualification: teacherData.qualification || 'M.Tech',
+        specialization: teacherData.specialization || '',
+        assigned_subjects: teacherData.assigned_subjects || []
       }
       
       // Only include password if it's being changed
@@ -572,27 +574,25 @@ class ApiService {
   // Upload Image
   async uploadImage(file) {
     try {
-      console.log('Uploading file:', file);
-      console.log('File type:', file.type);
-      console.log('File size:', file.size);
-      
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append('file', file);
       
+      const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/upload/upload_image.php`, {
         method: 'POST',
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: formData,
       });
       
-      console.log('Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
       
-      if (!response.ok) {
-        return { success: false, error: data.error || 'Upload failed' };
+      if (data.success) {
+        return { success: true, image_url: data.data.file_path };
       }
       
-      return data;
+      return { success: false, error: data.message || 'Upload failed' };
     } catch (error) {
       console.error('Upload image error:', error);
       return { success: false, error: 'Failed to upload image: ' + error.message };

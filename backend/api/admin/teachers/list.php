@@ -115,11 +115,21 @@ try {
     
     $teachers = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Convert to proper types
+    // Get assigned subjects for each teacher
     foreach ($teachers as &$teacher) {
         if ($teacher['experience_years']) {
             $teacher['experience_years'] = (int) $teacher['experience_years'];
         }
+        
+        // Fetch assigned subjects
+        $subjectsQuery = "SELECT s.id, s.subject_code, s.subject_name, s.semester, s.department
+                          FROM teacher_subjects ts
+                          JOIN subjects s ON ts.subject_id = s.id
+                          WHERE ts.teacher_id = :teacher_id AND ts.is_active = 1";
+        $subjectsStmt = $db->prepare($subjectsQuery);
+        $subjectsStmt->bindParam(':teacher_id', $teacher['id'], PDO::PARAM_INT);
+        $subjectsStmt->execute();
+        $teacher['assigned_subjects'] = $subjectsStmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     // Calculate pagination
