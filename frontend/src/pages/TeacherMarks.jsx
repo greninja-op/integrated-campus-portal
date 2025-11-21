@@ -208,23 +208,18 @@ export default function TeacherMarks() {
         <p className="text-slate-600 dark:text-slate-400 mb-8">Enter test and exam marks for students</p>
 
         {/* Add Marks Card */}
-        <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-8 mb-8 text-white shadow-2xl">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
-                <i className="fas fa-pen text-4xl"></i>
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold mb-2">Add Marks</h2>
-                <p className="text-green-100">Enter test and exam marks</p>
-              </div>
+        <div 
+          onClick={handleOpenModal}
+          className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-8 mb-8 text-white shadow-2xl cursor-pointer hover:shadow-2xl transition-all"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
+              <i className="fas fa-pen text-4xl"></i>
             </div>
-            <button
-              onClick={handleOpenModal}
-              className="px-8 py-4 bg-white text-green-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
-            >
-              Open
-            </button>
+            <div>
+              <h2 className="text-3xl font-bold mb-2">Add Marks</h2>
+              <p className="text-green-100">Enter test and exam marks</p>
+            </div>
           </div>
         </div>
 
@@ -274,7 +269,7 @@ export default function TeacherMarks() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl max-w-4xl w-full my-8 shadow-2xl min-h-[600px] max-h-[90vh] flex flex-col"
+            className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full my-8 shadow-2xl max-h-[85vh] flex flex-col"
           >
             <div className="flex justify-between items-center p-8 pb-4">
               <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Add Marks</h2>
@@ -409,7 +404,7 @@ export default function TeacherMarks() {
                 </div>
 
                 <div className="space-y-3">
-                  {students.map(student => (
+                  {students.filter(s => s.semester === parseInt(selectedSemester)).map(student => (
                     <div key={student.id} className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
                       <div className="flex-1">
                         <p className="font-semibold text-slate-800 dark:text-white">{student.name}</p>
@@ -459,7 +454,7 @@ export default function TeacherMarks() {
                 </div>
 
                 <div className="space-y-3">
-                  {students.map(student => (
+                  {students.filter(s => s.semester === parseInt(selectedSemester)).map(student => (
                     <div 
                       key={student.id} 
                       onClick={() => setSelectedStudent(student)}
