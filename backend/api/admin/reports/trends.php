@@ -117,14 +117,15 @@ try {
     } elseif ($metric === 'performance') {
         if ($period === 'monthly') {
             // Monthly performance trends (based on marks entry date)
+            // Schema has entered_at for marks creation timestamp
             $query = "SELECT 
-                DATE_FORMAT(m.created_at, '%Y-%m') as period,
+                DATE_FORMAT(m.entered_at, '%Y-%m') as period,
                 ROUND(AVG(m.grade_point), 2) as average_gpa,
                 COUNT(DISTINCT m.student_id) as student_count,
                 COUNT(*) as marks_count
             FROM marks m
             WHERE m.session_id = :session_id
-            GROUP BY DATE_FORMAT(m.created_at, '%Y-%m')
+            GROUP BY DATE_FORMAT(m.entered_at, '%Y-%m')
             ORDER BY period";
         } else {
             // Semester performance trends

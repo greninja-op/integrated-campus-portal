@@ -72,26 +72,24 @@ export default function TeacherViewResults() {
       if (studentsRes.success) {
         const studentList = studentsRes.data.students || []
         
-        // For now, we'll mock the results as we don't have a "get marks by subject" API yet
-        // In a real app, we would fetch marks for this subject
-        // TODO: Implement /teacher/get_marks.php?subject_code=...
+        // Fetch results from real API
+        const response = await api.authenticatedGet(
+          `/teacher/get_subject_results.php?subject_code=${selectedSubject}&semester=${selectedSemester}&department=${teacherDepartment}`
+        )
         
-        // Mocking results for demonstration
-        const mockedResults = studentList.map(student => ({
-          id: student.id,
-          rollNo: student.student_id,
-          name: `${student.first_name} ${student.last_name}`,
-          internal1: Math.floor(Math.random() * 20) + 20, // Mock data
-          internal2: Math.floor(Math.random() * 20) + 20, // Mock data
-          assignment: Math.floor(Math.random() * 10) + 5, // Mock data
-          attendance: Math.floor(Math.random() * 5) + 0, // Mock data
-          total: 0 // Calculated later
-        })).map(r => ({
-          ...r,
-          total: r.internal1 + r.internal2 + r.assignment + r.attendance
-        }))
-
-        setResults(mockedResults)
+        if (response.success && response.data?.results) {
+          const formattedResults = response.data.results.map(r => ({
+            id: r.id,
+            rollNo: r.roll_number,
+            name: r.full_name,
+            internal: r.internal_marks || '-',
+            external: r.external_marks || '-',
+            total: r.total_marks || '-',
+            grade: r.letter_grade || '-',
+            remarks: r.remarks || '-'
+          }))
+          setResults(formattedResults)
+        }
       }
     } catch (error) {
       console.error('Error fetching results:', error)
@@ -194,11 +192,10 @@ export default function TeacherViewResults() {
                 <tr className="bg-slate-50 dark:bg-gray-700/50 text-slate-600 dark:text-slate-300 text-sm uppercase tracking-wider">
                   <th className="p-4 font-semibold">Roll No</th>
                   <th className="p-4 font-semibold">Student Name</th>
-                  <th className="p-4 font-semibold text-center">Internal 1 (40)</th>
-                  <th className="p-4 font-semibold text-center">Internal 2 (40)</th>
-                  <th className="p-4 font-semibold text-center">Assignment (15)</th>
-                  <th className="p-4 font-semibold text-center">Attendance (5)</th>
-                  <th className="p-4 font-semibold text-center">Total (100)</th>
+                  <th className="p-4 font-semibold text-center">Internal</th>
+                  <th className="p-4 font-semibold text-center">External</th>
+                  <th className="p-4 font-semibold text-center">Total</th>
+                  <th className="p-4 font-semibold text-center">Grade</th>
                   <th className="p-4 font-semibold text-center">Status</th>
                 </tr>
               </thead>
@@ -207,19 +204,24 @@ export default function TeacherViewResults() {
                   <tr key={result.id} className="hover:bg-slate-50 dark:hover:bg-gray-700/30 transition-colors">
                     <td className="p-4 text-slate-800 dark:text-white font-medium">{result.rollNo}</td>
                     <td className="p-4 text-slate-800 dark:text-white">{result.name}</td>
-                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.internal1}</td>
-                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.internal2}</td>
-                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.assignment}</td>
-                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.attendance}</td>
+                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.internal}</td>
+                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.external}</td>
                     <td className="p-4 text-center font-bold text-purple-600 dark:text-purple-400">{result.total}</td>
+                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.grade}</td>
                     <td className="p-4 text-center">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        result.total >= 40 
-                          ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
-                          : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
-                      }`}>
-                        {result.total >= 40 ? 'PASS' : 'FAIL'}
-                      </span>
+                      {result.total !== '-' ? (
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          parseFloat(result.total) >= 40
+                            ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
+                            : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                        }`}>
+                          {parseFloat(result.total) >= 40 ? 'PASS' : 'FAIL'}
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                          N/A
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}

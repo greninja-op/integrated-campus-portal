@@ -338,10 +338,10 @@ export default function TeacherUploadMaterials() {
                       {material.subject} - Semester {material.semester}
                     </h4>
                     <p className="text-sm text-slate-600 dark:text-slate-400">
-                      {material.type === 'notes' ? 'Notes' : `Question Paper (${material.year})`} • {material.fileName}
+                      {material.material_type === 'notes' ? 'Notes' : `Question Paper (${material.year})`} • {material.file_name}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-500">
-                      {new Date(material.uploadedAt).toLocaleDateString()}
+                      {new Date(material.uploaded_at).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
