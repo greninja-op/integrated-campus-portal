@@ -219,7 +219,7 @@ export default function AdminCourses() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -495,3 +495,4 @@ export default function AdminCourses() {
     </motion.div>
   )
 }
+

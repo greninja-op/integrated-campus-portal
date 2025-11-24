@@ -398,3 +398,439 @@ This document tracks all changes made to the ICP (Integrated Campus Portal) proj
 - Responsive chart implementations
 - State management improvements
 - Better error handling and user feedback
+
+
+---
+
+## 📅 November 22, 2025
+
+### 1. Study Materials System Creation
+**Request:** "need to create study materials system for uploading and viewing materials"
+
+**Changes Made:**
+- **Database**: Created study_materials table
+- **Backend**: Built upload and retrieval APIs
+- **Frontend**: Created upload and viewing pages
+- **Files Changed:**
+  - `ICP/database/create_materials_table.py` (Created)
+  - `ICP/backend/api/materials/upload.php` (Created)
+  - `ICP/backend/api/materials/get_by_department.php` (Created)
+  - `ICP/frontend/src/pages/AdminUploadMaterials.jsx` (Created)
+  - `ICP/frontend/src/pages/TeacherUploadMaterials.jsx` (Created)
+  - `ICP/frontend/src/pages/StudentMaterials.jsx` (Created)
+  - `ICP/frontend/src/pages/TeacherViewMaterials.jsx` (Created)
+
+**What Changed:**
+- Created `study_materials` table with fields:
+  - department, semester, subject, material_type (notes/question_papers/syllabus)
+  - unit, year, description, file info (name, path, url, size)
+  - uploaded_by, timestamps
+- Built upload system with duplicate detection for question papers
+- Implemented file validation (PDF, DOC, DOCX, PPT, PPTX)
+- Added department-based filtering for students
+- Teachers and admins can upload materials
+- Students can view and download materials from their department
+
+**Technical Details:**
+- File uploads stored in `backend/uploads/materials/`
+- Duplicate detection prevents overwriting existing question papers
+- File size validation and type checking
+- Proper error handling and user feedback
+
+---
+
+### 2. Exam Type Categorization
+**Request:** "add exam type field to materials - internal 1, internal 2, semester exam"
+
+**Changes Made:**
+- **Database**: Added exam_type column to study_materials table
+- **Backend**: Updated upload API to handle exam type
+- **Frontend**: Added exam type selection in upload forms
+- **Files Changed:**
+  - `ICP/database/migrations/06_add_exam_type.sql` (Created)
+  - `ICP/backend/api/materials/upload.php` (Modified)
+  - `ICP/frontend/src/pages/AdminUploadMaterials.jsx` (Modified)
+  - `ICP/frontend/src/pages/TeacherUploadMaterials.jsx` (Modified)
+  - `ICP/frontend/src/pages/StudentMaterials.jsx` (Modified)
+  - `ICP/frontend/src/pages/TeacherViewMaterials.jsx` (Modified)
+
+**What Changed:**
+- Added `exam_type` ENUM field: 'internal_1', 'internal_2', 'semester'
+- Updated existing records to have 'semester' as default
+- Upload forms now include exam type dropdown
+- Materials list displays exam type badges with color coding:
+  - Internal 1: Orange badge
+  - Internal 2: Orange badge
+  - Semester Exam: Orange badge
+- Helps students identify materials by exam type
+
+**Migration Details:**
+```sql
+ALTER TABLE study_materials 
+ADD COLUMN exam_type ENUM('internal_1', 'internal_2', 'semester') NULL AFTER year;
+```
+
+---
+
+### 3. Materials Access Control Fix
+**Request:** "students should see all materials from their department, not just current semester"
+
+**Changes Made:**
+- **Backend**: Removed semester restriction in materials API
+- **Files Changed:**
+  - `ICP/backend/api/materials/get_by_department.php` (Modified)
+
+**What Changed:**
+- Removed semester check in query
+- Students can now view ALL materials from their department
+- Allows access to previous semester materials for revision
+- Still restricted by department for security
+
+**Business Logic:**
+- Students see materials from all semesters in their department
+- Helps with revision and preparation
+- Department-based access control maintained
+
+---
+
+### 4. File Serving System with JWT Authentication
+**Request:** "files not loading due to CORS issues"
+
+**Changes Made:**
+- **Backend**: Created dedicated view and download endpoints
+- **Files Changed:**
+  - `ICP/backend/api/materials/view.php` (Created)
+  - `ICP/backend/api/materials/download.php` (Created)
+  - `ICP/frontend/src/services/api.js` (Modified)
+
+**What Changed:**
+- Created `view.php` endpoint for viewing files in browser
+- Created `download.php` endpoint for downloading files
+- JWT authentication via query parameter: `?token=<jwt>`
+- Proper CORS headers for cross-origin access
+- Department verification to ensure students only access their materials
+- File path validation to prevent directory traversal attacks
+
+**Technical Implementation:**
+```php
+// JWT token passed as query parameter
+$token = $_GET['token'] ?? '';
+$user = verifyTokenFromQuery($token);
+
+// Verify department access
+if ($user['role'] === 'student') {
+    // Check if student's department matches material department
+}
+
+// Serve file with proper headers
+header('Content-Type: ' . $mimeType);
+header('Content-Disposition: inline; filename="' . $fileName . '"');
+readfile($filePath);
+```
+
+---
+
+### 5. Parent/Guardian Fields Enhancement
+**Request:** "need two parent entries instead of one guardian"
+
+**Changes Made:**
+- **Database**: Added parent1 and parent2 fields to students table
+- **Files Changed:**
+  - `ICP/database/migrations/05_add_parent_fields.sql` (Created)
+  - `ICP/frontend/src/pages/admin/AdminStudents.jsx` (Modified)
+  - `ICP/backend/api/admin/students/create.php` (Modified)
+
+**What Changed:**
+- Added fields: parent1_name, parent1_phone, parent1_relationship
+- Added fields: parent2_name, parent2_phone, parent2_relationship
+- Migrated existing guardian data to parent1 fields
+- Updated student forms to include both parent entries
+- Relationship dropdown: Father, Mother, Guardian, Other
+
+**Migration Details:**
+```sql
+ALTER TABLE students
+ADD COLUMN parent1_name VARCHAR(100),
+ADD COLUMN parent1_phone VARCHAR(15),
+ADD COLUMN parent1_relationship VARCHAR(50),
+ADD COLUMN parent2_name VARCHAR(100),
+ADD COLUMN parent2_phone VARCHAR(15),
+ADD COLUMN parent2_relationship VARCHAR(50);
+```
+
+---
+
+## 📅 November 23, 2025
+
+### 1. Dashboard Attendance Display
+**Request:** "change dashboard to show attendance percentage instead of GPA"
+
+**Changes Made:**
+- **Frontend**: Replaced GPA display with attendance percentage
+- **Files Changed:**
+  - `ICP/frontend/src/pages/Dashboard.jsx` (Modified)
+
+**What Changed:**
+- Removed GPA calculation and display
+- Added attendance percentage calculation from all subjects
+- Color-coded progress ring:
+  - Green: >75% attendance
+  - Yellow: 60-75% attendance
+  - Red: <60% attendance
+- Shows total classes and attended classes
+- More relevant metric for students to track
+
+**UI Changes:**
+- Large circular progress indicator with percentage
+- Color changes based on attendance level
+- Displays "X/Y classes attended" below percentage
+- Smooth animations on load
+
+---
+
+### 2. Notice Image Layout Fix
+**Request:** "notice images should display on right side of cards"
+
+**Changes Made:**
+- **Frontend**: Restructured notice card layout
+- **Files Changed:**
+  - `ICP/frontend/src/pages/Notice.jsx` (Modified)
+
+**What Changed:**
+- Changed flex layout to display images on RIGHT side
+- Fixed image container sizing and positioning
+- Added proper background styling
+- Images now display consistently across all notices
+- Better visual hierarchy with text on left, image on right
+
+**UI Implementation:**
+```jsx
+<div className="flex gap-4">
+  <div className="flex-1">
+    {/* Notice content */}
+  </div>
+  {notice.attachment_url && (
+    <div className="w-48 h-48">
+      <img src={notice.attachment_url} />
+    </div>
+  )}
+</div>
+```
+
+---
+
+### 3. GPA Trend Analysis Fix
+**Request:** "analysis page showing empty graphs for future semesters"
+
+**Changes Made:**
+- **Frontend**: Modified to show only completed semesters
+- **Files Changed:**
+  - `ICP/frontend/src/pages/Analysis.jsx` (Modified)
+
+**What Changed:**
+- Only displays semesters BEFORE student's current semester
+- If student in semester 3, shows only semesters 1 and 2
+- Prevents empty graphs for future semesters
+- Better data visualization with actual data only
+- Cleaner charts without null/empty values
+
+**Logic:**
+```javascript
+// Filter to show only completed semesters
+const completedSemesters = allSemesters.filter(
+  sem => sem.semester < currentSemester
+);
+```
+
+---
+
+### 4. Date Picker Component Creation
+**Request:** "need calendar date picker for fee management"
+
+**Changes Made:**
+- **Frontend**: Created CalendarDatePicker component
+- **Files Changed:**
+  - `ICP/frontend/src/components/CalendarDatePicker.jsx` (Created)
+  - `ICP/frontend/src/pages/admin/AdminFees.jsx` (Modified)
+
+**What Changed:**
+- Created reusable calendar date picker component
+- Used for fee management due dates
+- Kept manual date inputs for student forms (DOB, joining date)
+- Different components for different use cases
+- Better UX for date selection in fee management
+
+**Component Features:**
+- Calendar popup with month/year navigation
+- Date selection with visual feedback
+- Dark mode support
+- Smooth animations
+- Accessible keyboard navigation
+
+---
+
+### 5. Student Management Delete Fix
+**Request:** "delete functionality not working in student management"
+
+**Changes Made:**
+- **Frontend**: Fixed delete functionality
+- **Backend**: Ensured proper cascade delete
+- **Files Changed:**
+  - `ICP/frontend/src/pages/admin/AdminStudents.jsx` (Modified)
+  - `ICP/backend/api/admin/students/delete.php` (Verified)
+
+**What Changed:**
+- Fixed delete confirmation dialog
+- Proper API call with student ID
+- Maintained debug logging for troubleshooting
+- Ensured proper error handling
+- User feedback with success/error alerts
+- Database cascade delete removes related records
+
+**Technical Details:**
+- Foreign key constraints handle cascade delete
+- Removes student from: students, marks, attendance, payments tables
+- Removes associated user account
+- Proper transaction handling
+
+---
+
+### 6. Notice Priority System Enhancement
+**Request:** "add priority levels to notices"
+
+**Changes Made:**
+- **Database**: Added priority and category fields
+- **Frontend**: Added priority badges and color coding
+- **Files Changed:**
+  - `ICP/database/migrations/add_category_priority_to_notices.sql` (Created)
+  - `ICP/frontend/src/pages/Notice.jsx` (Modified)
+  - `ICP/frontend/src/pages/admin/AdminNotices.jsx` (Modified)
+  - `ICP/backend/api/notices/get_all.php` (Modified)
+
+**What Changed:**
+- Added `priority` ENUM: 'low', 'normal', 'high', 'urgent'
+- Added `category` ENUM: 'general', 'academic', 'event', 'exam', 'holiday', 'sports'
+- Color-coded priority badges:
+  - Low: Gray
+  - Normal: Blue
+  - High: Orange
+  - Urgent: Red
+- Category icons for visual identification
+- Better notice organization and filtering
+
+**Migration Details:**
+```sql
+ALTER TABLE notices 
+ADD COLUMN category ENUM('general', 'academic', 'event', 'exam', 'holiday', 'sports') DEFAULT 'general',
+ADD COLUMN priority ENUM('low', 'normal', 'high', 'urgent') DEFAULT 'normal';
+```
+
+---
+
+## 📅 November 24, 2025
+
+### 1. AI Memory File Creation
+**Request:** "create ai memory file for context transfer between sessions"
+
+**Changes Made:**
+- **Documentation**: Created comprehensive AI memory file
+- **Files Changed:**
+  - `ICP/AI_MEMORY.md` (Created)
+
+**What Changed:**
+- Created complete project context document
+- Includes all development history from November 20-24
+- Documents user communication style and preferences
+- Complete database schema with all fields
+- Full API structure with all endpoints
+- Frontend structure with all pages and components
+- Code patterns and examples
+- Known issues and solutions
+- Current work status and future plans
+
+**Purpose:**
+- Enables seamless context transfer when switching AI models
+- New AI can read file and understand entire project
+- Documents decision-making patterns
+- Preserves development history
+- Helps maintain consistency across sessions
+
+**Content Sections:**
+- Project Overview
+- Development History (day-by-day)
+- User Communication Style
+- Current System State
+- Database Schema
+- API Structure
+- Frontend Structure
+- Authentication Flow
+- Known Issues & Workarounds
+- Current Work & Next Steps
+- Critical Code Patterns
+
+---
+
+### 2. Project Comments Update
+**Request:** "update project comments with everything from recent days"
+
+**Changes Made:**
+- **Documentation**: Updated PROJECT_COMMENTS.md with all recent changes
+- **Files Changed:**
+  - `ICP/PROJECT_COMMENTS.md` (Modified)
+
+**What Changed:**
+- Added November 22 changes (study materials system)
+- Added November 23 changes (dashboard, notices, analysis)
+- Added November 24 changes (AI memory, documentation)
+- Complete record of all modifications
+- Organized by date and feature
+- Includes request context, changes made, files affected
+
+---
+
+## Summary of November 22-24, 2025 Changes
+
+**Major Features Implemented:**
+1. ✅ Complete study materials system with upload/download
+2. ✅ Exam type categorization for materials
+3. ✅ JWT-authenticated file serving system
+4. ✅ Dashboard attendance percentage display
+5. ✅ Notice priority and category system
+6. ✅ GPA trend analysis for completed semesters only
+7. ✅ Calendar date picker component
+8. ✅ Parent/guardian fields enhancement
+9. ✅ AI memory file for context transfer
+10. ✅ Complete documentation updates
+
+**Key Improvements:**
+- Better materials organization by exam type
+- Secure file access with JWT authentication
+- More relevant dashboard metrics (attendance vs GPA)
+- Cleaner analysis page without empty data
+- Better notice organization with priorities
+- Comprehensive documentation for AI context
+
+**Technical Achievements:**
+- Proper file serving with CORS and authentication
+- Database migrations for schema changes
+- Reusable components (CalendarDatePicker)
+- Better data filtering and access control
+- Complete project documentation
+- Context preservation for AI assistants
+
+**Files Created:**
+- `ICP/AI_MEMORY.md` - Complete project context
+- `ICP/database/migrations/06_add_exam_type.sql` - Exam type migration
+- `ICP/database/migrations/05_add_parent_fields.sql` - Parent fields migration
+- `ICP/database/migrations/add_category_priority_to_notices.sql` - Notice enhancements
+- `ICP/backend/api/materials/view.php` - File viewing endpoint
+- `ICP/backend/api/materials/download.php` - File download endpoint
+- `ICP/frontend/src/components/CalendarDatePicker.jsx` - Date picker component
+- Multiple materials-related pages and APIs
+
+**System Status:**
+- All core features working and tested
+- Documentation complete and up-to-date
+- Ready for new feature requests
+- Stable development environment
+- Context preserved for future sessions

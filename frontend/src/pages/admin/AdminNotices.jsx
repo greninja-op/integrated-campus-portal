@@ -10,7 +10,7 @@ export default function AdminNotices() {
   const user = api.getCurrentUser()
   
   const [notices, setNotices] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
@@ -188,7 +188,7 @@ export default function AdminNotices() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -249,11 +249,7 @@ export default function AdminNotices() {
 
       {/* Notices List */}
       <div className="space-y-6">
-        {loading && notices.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-          </div>
-        ) : notices.length === 0 ? (
+        {notices.length === 0 ? (
           <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-12 border border-white/20 shadow-lg text-center">
             <i className="fas fa-bullhorn text-6xl text-slate-400 mb-4"></i>
             <p className="text-slate-600 dark:text-slate-400 text-lg">No notices posted yet. Create your first notice!</p>
@@ -539,3 +535,4 @@ export default function AdminNotices() {
     </motion.div>
   )
 }
+

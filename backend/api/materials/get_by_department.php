@@ -34,9 +34,6 @@ try {
         if (!$profile || $profile['department'] !== $dept) {
             sendError('Access denied to other departments', 'forbidden', 403);
         }
-        
-        // Student Semester Restriction (can see materials up to current semester)
-        $maxSemester = $profile['semester'];
     } 
     elseif ($user['role'] === 'teacher') {
         $stmt = $db->prepare("SELECT department FROM teachers WHERE user_id = ?");
@@ -48,25 +45,15 @@ try {
         }
     }
 
-    // Build Query
+    // Build Query - Students can now see all materials from their department
     $query = "SELECT m.*, u.username as uploader_name 
               FROM study_materials m 
               JOIN users u ON m.uploaded_by = u.id 
-              WHERE m.department = :dept";
-
-    if ($user['role'] === 'student') {
-        $query .= " AND m.semester <= :maxSem";
-    }
-
-    $query .= " ORDER BY m.semester DESC, m.uploaded_at DESC";
+              WHERE m.department = :dept
+              ORDER BY m.semester DESC, m.uploaded_at DESC";
 
     $stmt = $db->prepare($query);
     $stmt->bindValue(':dept', $dept);
-    
-    if ($user['role'] === 'student') {
-        $stmt->bindValue(':maxSem', $maxSemester);
-    }
-
     $stmt->execute();
     $materials = $stmt->fetchAll(PDO::FETCH_ASSOC);
     

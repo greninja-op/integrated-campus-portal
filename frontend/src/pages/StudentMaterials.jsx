@@ -66,8 +66,8 @@ export default function StudentMaterials() {
         
         // Filter by selected subject and type
         const filtered = allMaterials.filter(m => 
-          m.subject_name === selectedSubject && 
-          m.type === selectedType
+          m.subject === selectedSubject && 
+          m.material_type === selectedType
         )
         
         // Extract unique units or years
@@ -112,9 +112,9 @@ export default function StudentMaterials() {
         
         // Filter by subject, type, and unit/year
         const filtered = allMaterials.filter(m => 
-          m.subject_name === selectedSubject && 
-          m.type === selectedType &&
-          m.unit === selectedUnitOrYear // Assuming unit field holds year for question papers too
+          m.subject === selectedSubject && 
+          m.material_type === selectedType &&
+          (selectedType === 'notes' ? m.unit === selectedUnitOrYear : m.year === selectedUnitOrYear)
         )
         
         setMaterials(filtered)
@@ -141,13 +141,56 @@ export default function StudentMaterials() {
     }
   }
 
-  const handleDownload = (material) => {
-    // ============================================
-    // BACKEND TODO: Download material
-    // API: GET /api/materials/download/:materialId
-    // Backend verifies student's department and semester
-    // ============================================
-    window.open(material.file_url, '_blank')
+  const handleView = async (material) => {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await fetch(`http://localhost:8080/api/materials/view.php?id=${material.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (!response.ok) {
+        alert('Failed to load file')
+        return
+      }
+      
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      window.open(url, '_blank')
+    } catch (error) {
+      console.error('View error:', error)
+      alert('Failed to load file')
+    }
+  }
+
+  const handleDownload = async (material) => {
+    try {
+      const token = localStorage.getItem('token')
+      const response = await fetch(`http://localhost:8080/api/materials/download.php?id=${material.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (!response.ok) {
+        alert('Failed to download file')
+        return
+      }
+      
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = material.file_name || 'download.pdf'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Download error:', error)
+      alert('Failed to download file')
+    }
   }
 
   return (
@@ -156,7 +199,7 @@ export default function StudentMaterials() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.15 }}
         className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
       >
         {/* Top Header */}
@@ -381,13 +424,22 @@ export default function StudentMaterials() {
                             </p>
                           </div>
                         </div>
-                        <button
-                          onClick={() => handleDownload(material)}
-                          className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
-                        >
-                          <i className="fas fa-download"></i>
-                          Download
-                        </button>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleView(material)}
+                            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+                          >
+                            <i className="fas fa-eye"></i>
+                            View
+                          </button>
+                          <button
+                            onClick={() => handleDownload(material)}
+                            className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
+                          >
+                            <i className="fas fa-download"></i>
+                            Download
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -401,3 +453,4 @@ export default function StudentMaterials() {
     </>
   )
 }
+

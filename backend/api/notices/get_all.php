@@ -28,22 +28,48 @@ try {
         $student = $studentStmt->fetch(PDO::FETCH_ASSOC);
         
         if ($student) {
-            // Filter by audience
-            $whereConditions[] = "(target_audience IN ('all', 'students'))";
-            
-            // Filter by department (if notice has specific department)
-            $whereConditions[] = "(department IS NULL OR department = :department)";
+            // Students see:
+            // 1. All general notices (target_audience = 'all')
+            // 2. All student notices with NO department (general student notices)
+            // 3. Student notices for their department with NO semester (department-wide)
+            // 4. Student notices for their department AND semester (individual reminders)
+            $whereConditions[] = "(
+                (target_audience = 'all')
+                OR
+                (target_audience = 'students' AND department IS NULL)
+                OR
+                (target_audience = 'students' AND department = :department AND (semester IS NULL OR semester = :semester))
+            )";
             $params[':department'] = $student['department'];
-            
-            // Filter by semester (if notice has specific semester)
-            $whereConditions[] = "(semester IS NULL OR semester = :semester)";
             $params[':semester'] = $student['semester'];
         } else {
-            // Fallback if student record not found (shouldn't happen)
+            // Fallback if student record not found
             $whereConditions[] = "(target_audience = 'all')";
         }
-    } elseif ($user['role'] === 'teacher') {
-        $whereConditions[] = "(target_audience IN ('all', 'teachers', 'staff'))";
+    } elseif ($user['role'] === 'teacher' || $user['role'] === 'staff') {
+        // Get teacher details for department filtering
+        $teacherQuery = "SELECT department FROM teachers WHERE user_id = :user_id";
+        $teacherStmt = $db->prepare($teacherQuery);
+        $teacherStmt->execute([':user_id' => $user['user_id']]);
+        $teacher = $teacherStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($teacher) {
+            // Teachers see:
+            // 1. All general notices (target_audience = 'all' or 'teachers')
+            // 2. General student notices (department IS NULL)
+            // 3. Department-specific notices for their department (semester IS NULL - excludes individual reminders)
+            $whereConditions[] = "(
+                (target_audience IN ('all', 'teachers', 'staff')) 
+                OR 
+                (target_audience = 'students' AND department IS NULL)
+                OR
+                (target_audience = 'students' AND department = :teacher_dept AND semester IS NULL)
+            )";
+            $params[':teacher_dept'] = $teacher['department'];
+        } else {
+            // Fallback if teacher record not found
+            $whereConditions[] = "(target_audience IN ('all', 'teachers', 'staff') OR (target_audience = 'students' AND department IS NULL))";
+        }
     } else {
         // Admin sees everything
         // No additional filters needed

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../../components/ThemeToggle'
-import AnimatedDatePicker from '../../components/AnimatedDatePicker'
+import CalendarDatePicker from '../../components/CalendarDatePicker'
 import CustomAlert from '../../components/CustomAlert'
 import CustomSelect from '../../components/CustomSelect'
 import api from '../../services/api'
@@ -397,7 +397,7 @@ Thank you.`,
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -479,7 +479,7 @@ Thank you.`,
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 50 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+          transition={{ duration: 0.15, ease: "easeInOut" }}
           className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg"
         >
           <div className="flex justify-between items-center mb-6">
@@ -597,7 +597,7 @@ Thank you.`,
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+          transition={{ duration: 0.15, ease: "easeInOut" }}
           className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg"
         >
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Create and Send Fee Notice</h2>
@@ -689,14 +689,13 @@ Thank you.`,
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 }}
                 >
-                  <AnimatedDatePicker
+                  <CalendarDatePicker
                     name="lastDateNormal"
                     value={feeNotice.lastDateNormal}
                     onChange={handleInputChange}
-                    label={<><span className="text-red-500">*</span> Last Date (No Fine)</>}
-                    icon="fas fa-check-circle text-green-500"
-                    borderColor="teal"
-                    referenceDates={[]}
+                    label="Last Date (No Fine)"
+                    minDate={new Date().toISOString().split('T')[0]}
+                    required
                   />
                 </motion.div>
 
@@ -706,17 +705,13 @@ Thank you.`,
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 }}
                   >
-                    <AnimatedDatePicker
+                    <CalendarDatePicker
                       name="lastDateFine"
                       value={feeNotice.lastDateFine}
                       onChange={handleInputChange}
-                      label={<><span className="text-red-500">*</span> Last Date (With Fine)</>}
-                      icon="fas fa-exclamation-triangle text-orange-500"
-                      borderColor="orange"
-                      minDate={feeNotice.lastDateNormal}
-                      referenceDates={feeNotice.lastDateNormal ? [
-                        { date: feeNotice.lastDateNormal, color: 'teal', label: 'No Fine' }
-                      ] : []}
+                      label="Last Date (With Fine)"
+                      minDate={feeNotice.lastDateNormal || new Date().toISOString().split('T')[0]}
+                      required
                     />
                   </motion.div>
                   <motion.div
@@ -743,18 +738,13 @@ Thank you.`,
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5 }}
                   >
-                    <AnimatedDatePicker
+                    <CalendarDatePicker
                       name="lastDateSuperFine"
                       value={feeNotice.lastDateSuperFine}
                       onChange={handleInputChange}
-                      label={<><span className="text-red-500">*</span> Final Date (Super Fine)</>}
-                      icon="fas fa-ban text-red-500"
-                      borderColor="red"
-                      minDate={feeNotice.lastDateFine}
-                      referenceDates={[
-                        ...(feeNotice.lastDateNormal ? [{ date: feeNotice.lastDateNormal, color: 'teal', label: 'No Fine' }] : []),
-                        ...(feeNotice.lastDateFine ? [{ date: feeNotice.lastDateFine, color: 'orange', label: 'With Fine' }] : [])
-                      ]}
+                      label="Final Date (Super Fine)"
+                      minDate={feeNotice.lastDateFine || new Date().toISOString().split('T')[0]}
+                      required
                     />
                   </motion.div>
                   <motion.div
@@ -831,3 +821,4 @@ Thank you.`,
     </motion.div>
   )
 }
+

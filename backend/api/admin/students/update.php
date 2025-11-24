@@ -117,9 +117,11 @@ try {
         $studentParams = [':student_id' => $studentIdToUpdate];
         
         $studentFields = [
-            'first_name', 'last_name', 'date_of_birth', 'gender', 'phone', 'address',
+            'first_name', 'last_name', 'date_of_birth', 'gender', 'blood_group', 'phone', 'address',
             'semester', 'department', 'program', 'batch_year',
-            'guardian_name', 'guardian_phone', 'guardian_email', 'profile_image'
+            'guardian_name', 'guardian_phone', 'guardian_email', 'profile_image',
+            'parent1_name', 'parent1_phone', 'parent1_relationship',
+            'parent2_name', 'parent2_phone', 'parent2_relationship'
         ];
         
         foreach ($studentFields as $field) {

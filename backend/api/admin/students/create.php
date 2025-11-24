@@ -54,6 +54,7 @@ try {
     // Default DOB if missing
     $dateOfBirth = isset($data['date_of_birth']) && !empty($data['date_of_birth']) ? trim($data['date_of_birth']) : '2000-01-01';
     $gender = strtolower(trim($data['gender']));
+    $bloodGroup = isset($data['blood_group']) && !empty($data['blood_group']) ? trim($data['blood_group']) : null;
     $phone = isset($data['phone']) ? trim($data['phone']) : null;
     $address = isset($data['address']) ? trim($data['address']) : null;
     $enrollmentDate = isset($data['enrollment_date']) && !empty($data['enrollment_date']) ? trim($data['enrollment_date']) : date('Y-m-d');
@@ -64,6 +65,16 @@ try {
     $guardianName = isset($data['guardian_name']) ? trim($data['guardian_name']) : null;
     $guardianPhone = isset($data['guardian_phone']) ? trim($data['guardian_phone']) : null;
     $guardianEmail = isset($data['guardian_email']) ? trim($data['guardian_email']) : null;
+    
+    // Parent/Guardian fields
+    $parent1Name = isset($data['parent1_name']) && !empty(trim($data['parent1_name'])) ? trim($data['parent1_name']) : null;
+    $parent1Phone = isset($data['parent1_phone']) && !empty(trim($data['parent1_phone'])) ? trim($data['parent1_phone']) : null;
+    $parent1Relationship = isset($data['parent1_relationship']) && !empty(trim($data['parent1_relationship'])) ? trim($data['parent1_relationship']) : null;
+    $parent2Name = isset($data['parent2_name']) && !empty(trim($data['parent2_name'])) ? trim($data['parent2_name']) : null;
+    $parent2Phone = isset($data['parent2_phone']) && !empty(trim($data['parent2_phone'])) ? trim($data['parent2_phone']) : null;
+    $parent2Relationship = isset($data['parent2_relationship']) && !empty(trim($data['parent2_relationship'])) ? trim($data['parent2_relationship']) : null;
+    
+    // Note: Parent validation is handled on frontend - at least one parent is required there
     
     // Get student ID from request if provided
     $studentId = isset($data['student_id']) && !empty($data['student_id']) ? trim($data['student_id']) : null;
@@ -171,13 +182,17 @@ try {
         
         // Insert student record
         $studentQuery = "INSERT INTO students 
-                        (user_id, student_id, first_name, last_name, date_of_birth, gender, 
+                        (user_id, student_id, first_name, last_name, date_of_birth, gender, blood_group,
                          phone, address, enrollment_date, session_id, semester, department, 
-                         program, batch_year, guardian_name, guardian_phone, guardian_email)
+                         program, batch_year, guardian_name, guardian_phone, guardian_email,
+                         parent1_name, parent1_phone, parent1_relationship,
+                         parent2_name, parent2_phone, parent2_relationship)
                         VALUES 
-                        (:user_id, :student_id, :first_name, :last_name, :date_of_birth, :gender,
+                        (:user_id, :student_id, :first_name, :last_name, :date_of_birth, :gender, :blood_group,
                          :phone, :address, :enrollment_date, :session_id, :semester, :department,
-                         :program, :batch_year, :guardian_name, :guardian_phone, :guardian_email)";
+                         :program, :batch_year, :guardian_name, :guardian_phone, :guardian_email,
+                         :parent1_name, :parent1_phone, :parent1_relationship,
+                         :parent2_name, :parent2_phone, :parent2_relationship)";
         
         $studentStmt = $db->prepare($studentQuery);
         $studentStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
@@ -186,6 +201,7 @@ try {
         $studentStmt->bindParam(':last_name', $lastName, PDO::PARAM_STR);
         $studentStmt->bindParam(':date_of_birth', $dateOfBirth, PDO::PARAM_STR);
         $studentStmt->bindParam(':gender', $gender, PDO::PARAM_STR);
+        $studentStmt->bindParam(':blood_group', $bloodGroup, PDO::PARAM_STR);
         $studentStmt->bindParam(':phone', $phone, PDO::PARAM_STR);
         $studentStmt->bindParam(':address', $address, PDO::PARAM_STR);
         $studentStmt->bindParam(':enrollment_date', $enrollmentDate, PDO::PARAM_STR);
@@ -197,6 +213,12 @@ try {
         $studentStmt->bindParam(':guardian_name', $guardianName, PDO::PARAM_STR);
         $studentStmt->bindParam(':guardian_phone', $guardianPhone, PDO::PARAM_STR);
         $studentStmt->bindParam(':guardian_email', $guardianEmail, PDO::PARAM_STR);
+        $studentStmt->bindParam(':parent1_name', $parent1Name, PDO::PARAM_STR);
+        $studentStmt->bindParam(':parent1_phone', $parent1Phone, PDO::PARAM_STR);
+        $studentStmt->bindParam(':parent1_relationship', $parent1Relationship, PDO::PARAM_STR);
+        $studentStmt->bindParam(':parent2_name', $parent2Name, PDO::PARAM_STR);
+        $studentStmt->bindParam(':parent2_phone', $parent2Phone, PDO::PARAM_STR);
+        $studentStmt->bindParam(':parent2_relationship', $parent2Relationship, PDO::PARAM_STR);
         
         if (!$studentStmt->execute()) {
             throw new Exception('Failed to create student record');

@@ -14,7 +14,7 @@ export default function AdminDashboard() {
     activeNotices: 0
   })
   const [recentNotices, setRecentNotices] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [currentNoticeIndex, setCurrentNoticeIndex] = useState(0)
   
   // Student/Teacher drill-down states
@@ -59,20 +59,14 @@ export default function AdminDashboard() {
     navigate('/login')
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-      </div>
-    )
-  }
+  // Removed loading screen - show page immediately
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -165,28 +159,43 @@ export default function AdminDashboard() {
                     initial={{ opacity: 0, x: 100 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -100 }}
-                    transition={{ duration: 0.3 }}
-                    className="p-6 bg-white/20 dark:bg-gray-700/20 rounded-xl cursor-pointer hover:bg-white/30 dark:hover:bg-gray-700/30 transition-all min-h-[140px]"
+                    transition={{ duration: 0.15 }}
+                    className="p-6 bg-white dark:bg-gray-700 rounded-xl cursor-pointer hover:shadow-lg transition-all"
                     onClick={() => navigate('/admin/notices')}
                   >
-                    <div className="flex items-start gap-4">
-                      <div className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${
-                        recentNotices[currentNoticeIndex].category === 'urgent' ? 'bg-red-500' :
-                        recentNotices[currentNoticeIndex].category === 'event' ? 'bg-blue-500' :
-                        recentNotices[currentNoticeIndex].category === 'academic' ? 'bg-purple-500' :
-                        'bg-green-500'
-                      }`}></div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-slate-800 dark:text-white text-lg mb-2">
-                          {recentNotices[currentNoticeIndex].title}
-                        </h4>
-                        <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed line-clamp-3">
-                          {recentNotices[currentNoticeIndex].content}
-                        </p>
-                        <span className="text-sm text-slate-500 dark:text-slate-500 mt-3 inline-block">
-                          {new Date(recentNotices[currentNoticeIndex].date).toLocaleDateString()}
-                        </span>
+                    <div className="flex flex-col md:flex-row gap-6">
+                      {/* Notice Content */}
+                      <div className="flex-1">
+                        <div className="flex items-start gap-3 mb-4">
+                          <div className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${
+                            recentNotices[currentNoticeIndex].category === 'urgent' ? 'bg-red-500' :
+                            recentNotices[currentNoticeIndex].category === 'event' ? 'bg-blue-500' :
+                            recentNotices[currentNoticeIndex].category === 'academic' ? 'bg-purple-500' :
+                            'bg-green-500'
+                          }`}></div>
+                          <div className="flex-1">
+                            <h4 className="font-bold text-slate-800 dark:text-white text-xl mb-3">
+                              {recentNotices[currentNoticeIndex].title}
+                            </h4>
+                            <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed mb-3">
+                              {recentNotices[currentNoticeIndex].content}
+                            </p>
+                            <span className="text-sm text-slate-500 dark:text-slate-500">
+                              {new Date(recentNotices[currentNoticeIndex].date).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
                       </div>
+                      {/* Notice Image */}
+                      {recentNotices[currentNoticeIndex].attachment_url && (
+                        <div className="md:w-64 flex-shrink-0">
+                          <img 
+                            src={`http://localhost:8080${recentNotices[currentNoticeIndex].attachment_url}`}
+                            alt={recentNotices[currentNoticeIndex].title}
+                            className="w-full h-48 object-cover rounded-lg"
+                          />
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 </AnimatePresence>
@@ -470,3 +479,4 @@ export default function AdminDashboard() {
     </motion.div>
   )
 }
+

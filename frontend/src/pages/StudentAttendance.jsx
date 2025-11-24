@@ -12,7 +12,7 @@ export default function StudentAttendance() {
   const navigate = useNavigate()
   const user = api.getCurrentUser()
   
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState('daily') // 'daily' or 'summary'
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
@@ -437,3 +437,4 @@ export default function StudentAttendance() {
     </div>
   )
 }
+

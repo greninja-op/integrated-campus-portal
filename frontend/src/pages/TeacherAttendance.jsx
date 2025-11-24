@@ -12,7 +12,7 @@ export default function TeacherAttendance() {
   
   const [courses, setCourses] = useState([])
   const [students, setStudents] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [attendance, setAttendance] = useState({})
   const [showConfirmModal, setShowConfirmModal] = useState(false)
@@ -160,7 +160,7 @@ export default function TeacherAttendance() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -337,7 +337,7 @@ export default function TeacherAttendance() {
                         opacity: 1, 
                         x: 0
                       }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.15 }}
                       className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
                         attendance[studentId] === 'present'
                           ? 'border-green-400 dark:border-green-500 bg-green-50/50 dark:bg-green-900/20'
@@ -538,3 +538,4 @@ export default function TeacherAttendance() {
     </motion.div>
   )
 }
+

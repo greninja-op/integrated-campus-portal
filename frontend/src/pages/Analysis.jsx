@@ -16,7 +16,7 @@ export default function Analysis() {
     rank: 0,
     subjects: []
   })
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!user) {
@@ -47,13 +47,7 @@ export default function Analysis() {
     fetchData()
   }, [])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-      </div>
-    )
-  }
+  // Removed loading screen
 
   return (
     <>
@@ -61,7 +55,7 @@ export default function Analysis() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.15 }}
         className="min-h-screen pb-24 px-4 py-6 max-w-6xl mx-auto"
       >
       {/* Top Header */}
@@ -131,10 +125,10 @@ export default function Analysis() {
                 { semester: 'Sem 1', gpa: 7.2 },
                 { semester: 'Sem 2', gpa: 7.5 },
                 { semester: 'Sem 3', gpa: 7.8 },
-                { semester: 'Sem 4', gpa: 7.4 },
-                { semester: 'Sem 5', gpa: 8.1 },
-                { semester: 'Sem 6', gpa: stats.gpa !== '0.00' ? parseFloat(stats.gpa) : 8.2 },
-              ]}
+                ...(user.semester >= 4 ? [{ semester: 'Sem 4', gpa: 7.4 }] : []),
+                ...(user.semester >= 5 ? [{ semester: 'Sem 5', gpa: 8.1 }] : []),
+                ...(user.semester >= 6 ? [{ semester: 'Sem 6', gpa: stats.gpa !== '0.00' ? parseFloat(stats.gpa) : 8.2 }] : []),
+              ].slice(0, user.semester)}
               margin={{
                 top: 10,
                 right: 30,
@@ -221,3 +215,4 @@ export default function Analysis() {
     </>
   )
 }
+

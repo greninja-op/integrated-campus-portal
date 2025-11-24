@@ -245,3 +245,4 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
     </div>
   )
 }
+

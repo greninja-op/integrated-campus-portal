@@ -111,3 +111,4 @@ export default function CustomAlert({ show, message, type = 'success', onClose }
     </AnimatePresence>
   )
 }
+

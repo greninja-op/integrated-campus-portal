@@ -8,7 +8,7 @@ import api from '../services/api'
 export default function Result() {
   const navigate = useNavigate()
   const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const user = api.getCurrentUser()
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function Result() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.15 }}
         className="min-h-screen pb-24 px-4 py-6 max-w-6xl mx-auto"
       >
       {/* Top Header */}
@@ -136,3 +136,4 @@ export default function Result() {
     </>
   )
 }
+

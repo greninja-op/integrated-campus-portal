@@ -11,7 +11,7 @@ export default function TeacherViewMaterials() {
   const user = api.getCurrentUser()
   
   const [materials, setMaterials] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [filterType, setFilterType] = useState('all')
   const [filterSemester, setFilterSemester] = useState('all')
 
@@ -66,7 +66,7 @@ export default function TeacherViewMaterials() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -130,36 +130,66 @@ export default function TeacherViewMaterials() {
             <p>No materials found</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 gap-4">
             {materials.map(material => (
-              <div
+              <motion.div
                 key={material.id}
-                className="flex items-center justify-between p-4 bg-white/20 dark:bg-gray-700/20 rounded-lg hover:bg-white/30 dark:hover:bg-gray-700/30 transition-all"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-gradient-to-br from-white/40 to-white/20 dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur-xl rounded-2xl p-6 border border-white/30 dark:border-gray-700/30 shadow-lg hover:shadow-xl transition-all"
               >
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                    <i className="fas fa-file-pdf text-2xl text-purple-500"></i>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                      <i className="fas fa-file-pdf text-3xl text-white"></i>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-1">
+                        {material.subject} - Semester {material.semester}
+                      </h3>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="px-3 py-1 bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-full text-sm font-semibold">
+                          {material.material_type === 'notes' ? 'Notes' : 'Question Paper'}
+                        </span>
+                        {material.year && (
+                          <span className="px-3 py-1 bg-green-500/20 text-green-600 dark:text-green-400 rounded-full text-sm font-semibold">
+                            {material.year}
+                          </span>
+                        )}
+                        {material.exam_type && (
+                          <span className="px-3 py-1 bg-orange-500/20 text-orange-600 dark:text-orange-400 rounded-full text-sm font-semibold">
+                            {material.exam_type === 'internal_1' ? 'Internal 1' : material.exam_type === 'internal_2' ? 'Internal 2' : 'Semester Exam'}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
+                        <i className="fas fa-file mr-2"></i>
+                        {material.file_name}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-500">
+                        <i className="fas fa-clock mr-2"></i>
+                        Uploaded {material.uploaded_at ? new Date(material.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-slate-800 dark:text-white">
-                      {material.subject} - Semester {material.semester}
-                    </h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      {material.type === 'notes' ? 'Notes' : `Question Paper (${material.year})`} • {material.fileName}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-500">
-                      Uploaded by {material.uploadedBy} • {new Date(material.uploadedAt).toLocaleDateString()}
-                    </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => window.open(material.file_url, '_blank')}
+                      className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                    >
+                      <i className="fas fa-eye"></i>
+                      View
+                    </button>
+                    <button
+                      onClick={() => handleDownload(material)}
+                      className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                    >
+                      <i className="fas fa-download"></i>
+                      Download
+                    </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => handleDownload(material)}
-                  className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
-                >
-                  <i className="fas fa-download"></i>
-                  Download
-                </button>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
@@ -167,3 +197,4 @@ export default function TeacherViewMaterials() {
     </motion.div>
   )
 }
+

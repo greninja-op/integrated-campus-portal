@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import Navigation from '../components/Navigation'
@@ -10,7 +10,7 @@ export default function Payments() {
   const navigate = useNavigate()
   const [payments, setPayments] = useState([])
   const [summary, setSummary] = useState({ total_paid: 0, total_pending: 0 })
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const user = api.getCurrentUser()
 
   useEffect(() => {
@@ -95,9 +95,9 @@ export default function Payments() {
     if (payment.isFromNotice) {
       // Show payment modal/confirmation
       const confirmed = window.confirm(
-        `💳 Proceed to Payment?\n\n` +
+        `?? Proceed to Payment?\n\n` +
         `Fee: ${payment.description}\n` +
-        `Amount: ₹${payment.amount.toLocaleString()}\n\n` +
+        `Amount: ?${payment.amount.toLocaleString()}\n\n` +
         `You will be redirected to the payment gateway.\n` +
         `(In production, this would open QR Code/UPI/Card payment)`
       )
@@ -106,7 +106,7 @@ export default function Payments() {
       
       // Simulate payment processing
       const paymentSuccess = window.confirm(
-        `🔄 Processing Payment...\n\n` +
+        `?? Processing Payment...\n\n` +
         `Scan QR Code or enter payment details.\n\n` +
         `Click OK to simulate successful payment\n` +
         `Click Cancel to simulate failed payment`
@@ -134,13 +134,13 @@ export default function Payments() {
         
         if (updated) {
           localStorage.setItem('feePayments', JSON.stringify(updatedPayments))
-          alert('✅ Payment Successful!\n\nYour fee payment has been processed successfully.')
+          alert('? Payment Successful!\n\nYour fee payment has been processed successfully.')
           window.location.reload()
         } else {
-          alert('⚠️ Could not update payment status. Please contact support.')
+          alert('?? Could not update payment status. Please contact support.')
         }
       } else {
-        alert('❌ Payment Failed\n\nPlease try again or contact support.')
+        alert('? Payment Failed\n\nPlease try again or contact support.')
       }
     } else {
       // Handle API-based payments
@@ -156,13 +156,7 @@ export default function Payments() {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-      </div>
-    )
-  }
+  // Removed loading screen
 
   return (
     <>
@@ -170,7 +164,7 @@ export default function Payments() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.15 }}
         className="min-h-screen pb-24 px-4 py-6 max-w-6xl mx-auto"
       >
         {/* Top Header */}
@@ -275,7 +269,7 @@ export default function Payments() {
                               )}
                               {isOverdue && (
                                 <span className="ml-2 text-red-600 dark:text-red-400 font-bold">
-                                  ⚠️ OVERDUE
+                                  ?? OVERDUE
                                 </span>
                               )}
                             </p>
@@ -284,7 +278,7 @@ export default function Payments() {
                               <>
                                 <p className="text-slate-600 dark:text-slate-400">
                                   <i className="fas fa-info-circle mr-2"></i>
-                                  Fine: ₹{payment.feeDetails.fineAmount} | Super Fine: ₹{payment.feeDetails.superFineAmount}
+                                  Fine: ?{payment.feeDetails.fineAmount} | Super Fine: ?{payment.feeDetails.superFineAmount}
                                 </p>
                                 <p className="text-slate-600 dark:text-slate-400">
                                   <i className="fas fa-calendar-times mr-2"></i>
@@ -298,11 +292,11 @@ export default function Payments() {
                       </div>
                       <div className="text-right">
                         <p className="text-2xl font-bold text-slate-800 dark:text-white">
-                          ₹{payment.amount.toLocaleString()}
+                          ?{payment.amount.toLocaleString()}
                         </p>
                         {applicableFine > 0 && (
                           <p className="text-lg font-bold text-red-600 dark:text-red-400 mt-1">
-                            + ₹{applicableFine.toLocaleString()} ({fineLabel})
+                            + ?{applicableFine.toLocaleString()} ({fineLabel})
                           </p>
                         )}
                         {payment.status === 'paid' && (
@@ -412,3 +406,4 @@ export default function Payments() {
     </>
   )
 }
+

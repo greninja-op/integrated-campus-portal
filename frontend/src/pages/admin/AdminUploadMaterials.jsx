@@ -16,6 +16,7 @@ export default function AdminUploadMaterials() {
     materialType: 'notes',
     unit: '1', // For notes
     year: new Date().getFullYear().toString(), // For question papers
+    examType: 'internal_1', // For question papers
     description: ''
   })
   
@@ -23,7 +24,7 @@ export default function AdminUploadMaterials() {
   const [uploading, setUploading] = useState(false)
   const [toast, setToast] = useState({ show: false, message: '', type: '' })
   const [uploadedMaterials, setUploadedMaterials] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [availableSubjects, setAvailableSubjects] = useState([])
   const [loadingSubjects, setLoadingSubjects] = useState(false)
 
@@ -31,6 +32,11 @@ export default function AdminUploadMaterials() {
   const semesters = ['1', '2', '3', '4', '5', '6']
   const materialTypes = ['notes', 'question_papers']
   const units = ['1', '2', '3', '4', '5', '6', '7', '8']
+  const examTypes = [
+    { value: 'internal_1', label: 'Internal 1' },
+    { value: 'internal_2', label: 'Internal 2' },
+    { value: 'semester', label: 'Semester Exam' }
+  ]
   
   const departmentOptions = departments.map(dept => ({ value: dept, label: dept }))
   const semesterOptions = semesters.map(sem => ({ value: sem, label: `Semester ${sem}` }))
@@ -39,6 +45,7 @@ export default function AdminUploadMaterials() {
     label: type === 'notes' ? 'Notes' : 'Question Papers' 
   }))
   const unitOptions = units.map(unit => ({ value: unit, label: `Unit ${unit}` }))
+  const examTypeOptions = examTypes
   const subjectOptions = availableSubjects.map(subj => ({ 
     value: subj.subject_name, 
     label: subj.subject_name 
@@ -144,11 +151,12 @@ export default function AdminUploadMaterials() {
     uploadData.append('subject', formData.subject)
     uploadData.append('materialType', formData.materialType)
     
-    // Add unit for notes or year for question papers
+    // Add unit for notes or year/examType for question papers
     if (formData.materialType === 'notes') {
       uploadData.append('unit', formData.unit)
     } else {
       uploadData.append('year', formData.year)
+      uploadData.append('examType', formData.examType)
     }
     
     uploadData.append('description', formData.description)
@@ -204,7 +212,7 @@ export default function AdminUploadMaterials() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Toast Notification */}
@@ -297,7 +305,7 @@ export default function AdminUploadMaterials() {
               icon="fas fa-file-alt"
             />
 
-            {/* Unit (for Notes) or Year (for Question Papers) */}
+            {/* Unit (for Notes) */}
             {formData.materialType === 'notes' ? (
               <CustomSelect
                 name="unit"
@@ -309,21 +317,35 @@ export default function AdminUploadMaterials() {
                 icon="fas fa-list-ol"
               />
             ) : (
-              <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                  Year <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  name="year"
-                  value={formData.year}
+              <>
+                {/* Year for Question Papers */}
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                    Year <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="year"
+                    value={formData.year}
+                    onChange={handleInputChange}
+                    min="2020"
+                    max="2030"
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                  />
+                </div>
+                
+                {/* Exam Type for Question Papers */}
+                <CustomSelect
+                  name="examType"
+                  value={formData.examType}
                   onChange={handleInputChange}
-                  min="2020"
-                  max="2030"
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                  options={examTypeOptions}
+                  label={<>Exam Type <span className="text-red-500">*</span></>}
+                  placeholder="Select exam type"
+                  icon="fas fa-clipboard-list"
                 />
-              </div>
+              </>
             )}
 
             {/* Description */}
@@ -406,11 +428,7 @@ export default function AdminUploadMaterials() {
       <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
         <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Uploaded Materials</h2>
         
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-          </div>
-        ) : uploadedMaterials.length === 0 ? (
+        {uploadedMaterials.length === 0 ? (
           <div className="text-center py-12">
             <i className="fas fa-file-pdf text-6xl text-slate-400 mb-4"></i>
             <p className="text-slate-600 dark:text-slate-400">No materials uploaded yet</p>
@@ -468,3 +486,4 @@ export default function AdminUploadMaterials() {
     </motion.div>
   )
 }
+

@@ -197,8 +197,8 @@ function validateUsername($username) {
         return false;
     }
     
-    // Allow alphanumeric, underscore, hyphen, and spaces
-    if (!preg_match('/^[a-zA-Z0-9_\- ]+$/', $username)) {
+    // Allow alphanumeric, underscore, hyphen, dots, and spaces
+    if (!preg_match('/^[a-zA-Z0-9_\-\. ]+$/', $username)) {
         return false;
     }
     

@@ -335,7 +335,7 @@ export default function AdminTeachers() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -414,11 +414,7 @@ export default function AdminTeachers() {
           )}
         </div>
         
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-          </div>
-        ) : filteredTeachers.length === 0 ? (
+        {filteredTeachers.length === 0 ? (
           <div className="text-center py-12">
             <i className="fas fa-chalkboard-teacher text-6xl text-slate-400 mb-4"></i>
             <p className="text-slate-600 dark:text-slate-400">
@@ -767,3 +763,4 @@ export default function AdminTeachers() {
     </motion.div>
   )
 }
+

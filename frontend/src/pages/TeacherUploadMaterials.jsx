@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../components/ThemeToggle'
@@ -10,9 +10,11 @@ export default function TeacherUploadMaterials() {
   
   const [uploadType, setUploadType] = useState('notes')
   const [formData, setFormData] = useState({
+    department: 'BCA',
     subject: '',
     semester: '1',
     year: new Date().getFullYear().toString(),
+    examType: 'internal_1',
     file: null
   })
   const [uploading, setUploading] = useState(false)
@@ -26,27 +28,29 @@ export default function TeacherUploadMaterials() {
     fetchData()
   }, [teacherDepartment])
 
-  // Fetch subjects when semester changes
+  // Fetch subjects when department or semester changes
   useEffect(() => {
     const fetchSubjects = async () => {
-      if (formData.semester && teacherDepartment) {
+      const department = formData.department || teacherDepartment
+      if (formData.semester && department) {
         try {
-          const response = await api.authenticatedGet(`/admin/subjects/list.php?department=${teacherDepartment}`)
+          const semesterInt = parseInt(formData.semester)
+          const response = await api.authenticatedGet(`/admin/subjects/list.php?department=${department}&semester=${semesterInt}`)
           if (response.success && response.data?.subjects) {
-            const allSubjects = response.data.subjects
-            const semesterSubjects = allSubjects.filter(s => s.semester === formData.semester)
-            
-            const formattedSubjects = semesterSubjects.map(s => s.subject_name)
+            const formattedSubjects = response.data.subjects.map(s => s.subject_name)
             setAvailableSubjects(formattedSubjects)
           }
         } catch (error) {
           console.error('Error fetching subjects:', error)
+          setAvailableSubjects([])
         }
+      } else {
+        setAvailableSubjects([])
       }
     }
 
     fetchSubjects()
-  }, [formData.semester, teacherDepartment])
+  }, [formData.semester, formData.department, teacherDepartment])
 
   const fetchData = async () => {
     try {
@@ -66,12 +70,23 @@ export default function TeacherUploadMaterials() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0]
-    if (file && file.type === 'application/pdf') {
-      setFormData(prev => ({ ...prev, file }))
-    } else {
+    const maxSize = 50 * 1024 * 1024 // 50MB in bytes
+    
+    if (!file) return
+    
+    if (file.type !== 'application/pdf') {
       alert('Please select a PDF file')
       e.target.value = ''
+      return
     }
+    
+    if (file.size > maxSize) {
+      alert('File size exceeds 50MB limit. Please select a smaller file.')
+      e.target.value = ''
+      return
+    }
+    
+    setFormData(prev => ({ ...prev, file }))
   }
 
   const handleSubmit = async (e) => {
@@ -92,6 +107,7 @@ export default function TeacherUploadMaterials() {
       data.append('materialType', uploadType)
       if (uploadType === 'question_paper') {
         data.append('year', formData.year)
+        data.append('examType', formData.examType)
       }
       data.append('file', formData.file)
 
@@ -140,7 +156,7 @@ export default function TeacherUploadMaterials() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -256,21 +272,40 @@ export default function TeacherUploadMaterials() {
 
             {/* Year (only for question papers) */}
             {uploadType === 'question_paper' && (
-              <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                  Year <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  name="year"
-                  value={formData.year}
-                  onChange={handleInputChange}
-                  min="2020"
-                  max="2030"
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500 transition-all"
-                />
-              </div>
+              <>
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                    Year <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="year"
+                    value={formData.year}
+                    onChange={handleInputChange}
+                    min="2020"
+                    max="2030"
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500 transition-all"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                    Exam Type <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="examType"
+                    value={formData.examType}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500 transition-all"
+                  >
+                    <option value="internal_1">Internal 1</option>
+                    <option value="internal_2">Internal 2</option>
+                    <option value="semester">Semester Exam</option>
+                  </select>
+                </div>
+              </>
             )}
 
             {/* File Upload */}
@@ -287,7 +322,7 @@ export default function TeacherUploadMaterials() {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500 transition-all"
               />
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Max file size: 10MB | Format: PDF only
+                Max file size: 50MB | Format: PDF only
               </p>
             </div>
           </div>
@@ -359,3 +394,4 @@ export default function TeacherUploadMaterials() {
     </motion.div>
   )
 }
+

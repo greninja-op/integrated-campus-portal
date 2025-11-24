@@ -3,6 +3,11 @@ const API_BASE_URL = 'http://localhost:8080/api';
 
 // API Service for Student Portal
 class ApiService {
+  // Helper method to get token
+  getToken() {
+    return localStorage.getItem('token');
+  }
+
   // Helper method to get auth headers
   getAuthHeaders() {
     const token = localStorage.getItem('token');
@@ -686,12 +691,12 @@ class ApiService {
     try {
       const response = await this.authenticatedGet(`/admin/subjects/list.php?department=${department}&semester=${semester}`);
       if (response.success && response.data) {
-        return response.data.subjects || [];
+        return { success: true, subjects: response.data.subjects || [] };
       }
-      return [];
+      return { success: false, subjects: [] };
     } catch (error) {
       console.error('Error fetching subjects:', error);
-      return [];
+      return { success: false, subjects: [] };
     }
   }
 
@@ -707,7 +712,57 @@ class ApiService {
     }
   }
 
-  // Upload Material
+  // Get Materials (by department for teachers)
+  async getMaterials(department = null) {
+    try {
+      const endpoint = department 
+        ? `/materials/get_by_department.php?department=${department}`
+        : '/materials/get_all.php';
+      return await this.authenticatedGet(endpoint);
+    } catch (error) {
+      console.error('Get materials error:', error);
+      return { success: false, message: 'Failed to fetch materials' };
+    }
+  }
+
+  // Get Study Materials (admin - all materials)
+  async getStudyMaterials() {
+    try {
+      return await this.authenticatedGet('/materials/get_all.php');
+    } catch (error) {
+      console.error('Get study materials error:', error);
+      return { success: false, materials: [] };
+    }
+  }
+
+  // Upload Study Material (admin)
+  async uploadStudyMaterial(formData) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/materials/upload.php`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.getToken()}`
+        },
+        body: formData
+      });
+      return await response.json();
+    } catch (error) {
+      console.error('Upload study material error:', error);
+      return { success: false, error: 'Failed to upload material' };
+    }
+  }
+
+  // Delete Study Material (admin)
+  async deleteStudyMaterial(materialId) {
+    try {
+      return await this.authenticatedPost('/materials/delete.php', { id: materialId });
+    } catch (error) {
+      console.error('Delete study material error:', error);
+      return { success: false, error: 'Failed to delete material' };
+    }
+  }
+
+  // Upload Material (teacher)
   async uploadMaterial(formData) {
     try {
       const response = await fetch(`${API_BASE_URL}/materials/upload.php`, {

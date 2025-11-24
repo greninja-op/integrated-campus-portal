@@ -8,8 +8,9 @@ import api from '../services/api'
 export default function Dashboard() {
   const navigate = useNavigate()
   const [stats, setStats] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [notices, setNotices] = useState([])
+  const [attendancePercentage, setAttendancePercentage] = useState(0)
   const user = api.getCurrentUser()
 
   useEffect(() => {
@@ -31,7 +32,26 @@ export default function Dashboard() {
       }
     }
 
+    const fetchAttendance = async () => {
+      try {
+        const result = await api.getAttendance(user.student_id)
+        if (result.success && result.data) {
+          // Calculate overall attendance percentage
+          const subjects = result.data.subjects || []
+          if (subjects.length > 0) {
+            const totalPresent = subjects.reduce((sum, s) => sum + (s.present || 0), 0)
+            const totalClasses = subjects.reduce((sum, s) => sum + (s.total || 0), 0)
+            const percentage = totalClasses > 0 ? Math.round((totalPresent / totalClasses) * 100) : 0
+            setAttendancePercentage(percentage)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching attendance:', error)
+      }
+    }
+
     fetchStats()
+    fetchAttendance()
     
     // Load notices from API
     const loadNotices = async () => {
@@ -48,13 +68,7 @@ export default function Dashboard() {
     loadNotices()
   }, [])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-      </div>
-    )
-  }
+  // Removed loading screen - show page immediately
 
   return (
     <>
@@ -62,7 +76,7 @@ export default function Dashboard() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.15 }}
         className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
       >
       {/* Top Header */}
@@ -113,10 +127,10 @@ export default function Dashboard() {
 
           {/* Stats Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Academic Progress */}
-            <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-indigo-500/10 dark:hover:bg-indigo-500/20 transition-all cursor-pointer">
+            {/* Attendance Percentage */}
+            <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all cursor-pointer">
               <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4">
-                Academic Progress
+                Attendance Percentage
               </h3>
               <div className="flex flex-col items-center">
                 <div className="relative w-36 h-36">
@@ -134,20 +148,20 @@ export default function Dashboard() {
                       cy="70"
                       r="60"
                       fill="none"
-                      stroke="#3b82f6"
+                      stroke={attendancePercentage >= 75 ? '#22c55e' : attendancePercentage >= 60 ? '#eab308' : '#ef4444'}
                       strokeWidth="12"
                       strokeDasharray="377"
-                      strokeDashoffset="75"
+                      strokeDashoffset={377 - (377 * attendancePercentage / 100)}
                       strokeLinecap="round"
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-bold text-slate-800 dark:text-white">{stats?.gpa || '0.0'}</span>
-                    <span className="text-sm text-slate-600 dark:text-slate-400">GPA</span>
+                    <span className="text-4xl font-bold text-slate-800 dark:text-white">{attendancePercentage}%</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-400">Overall</span>
                   </div>
                 </div>
                 <p className="mt-4 text-center text-slate-600 dark:text-slate-400">
-                  Great job! Keep up the excellent work.
+                  {attendancePercentage >= 75 ? 'Great attendance! Keep it up.' : attendancePercentage >= 60 ? 'Good, but try to improve.' : 'Attendance is low. Please attend regularly.'}
                 </p>
               </div>
             </div>
@@ -256,14 +270,11 @@ export default function Dashboard() {
                       )}
                     </div>
                   </div>
-                  {notice.image_url && (
-                    <div className="mt-3 rounded-lg overflow-hidden">
-                      <img 
-                        src={`http://localhost:8080${notice.image_url}`}
-                        alt={notice.title}
-                        className="w-full h-40 object-cover"
-                      />
-                    </div>
+                  {/* Show content preview instead of image */}
+                  {notice.content && (
+                    <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                      {notice.content}
+                    </p>
                   )}
                 </div>
               )
@@ -276,3 +287,4 @@ export default function Dashboard() {
     </>
   )
 }
+

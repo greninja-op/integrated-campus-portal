@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../components/ThemeToggle'
+import CustomSelect from '../components/CustomSelect'
 import api from '../services/api'
 
 export default function TeacherStudentList() {
@@ -9,7 +10,7 @@ export default function TeacherStudentList() {
   const user = api.getCurrentUser()
   
   const [students, setStudents] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   
   useEffect(() => {
     if (!user || (user.role !== 'staff' && user.role !== 'teacher')) {
@@ -193,7 +194,11 @@ export default function TeacherStudentList() {
     return currentYear - yearsPassed
   }
 
-
+  // Generate batch label with year range (e.g., "2025-2028")
+  const getBatchLabel = (admissionYear) => {
+    const graduationYear = admissionYear + 3 // 3-year degree program
+    return `${admissionYear}-${graduationYear}`
+  }
 
   // Filter students by department, semester, and batch
   const filteredStudents = students.filter(student => {
@@ -227,7 +232,7 @@ export default function TeacherStudentList() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -244,130 +249,114 @@ export default function TeacherStudentList() {
         <div className="flex items-center gap-4">
           <ThemeToggle />
           <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
-          <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white">
+          <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white shadow-lg">
             <i className="fas fa-users text-lg"></i>
           </div>
         </div>
       </header>
 
-      {/* Stats Banner */}
-      <div className="bg-gradient-to-r from-red-500 to-rose-600 rounded-2xl p-6 mb-8 text-white shadow-2xl">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
-              <i className="fas fa-users text-3xl"></i>
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">My Students - {teacherDepartment}</h2>
-              <p className="text-red-100">Students in your department</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="text-5xl font-bold">{filteredStudents.length}</p>
-            <p className="text-red-100">Students</p>
-          </div>
-        </div>
+      {/* Page Title - Exact Design */}
+      <div className="mb-8">
+        <h1 className="text-5xl font-bold text-slate-900 dark:text-white mb-3">Student List</h1>
+        <p className="text-lg text-slate-600 dark:text-slate-400">Manage your students and view their academic progress.</p>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mb-6">
+      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mb-6 relative z-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
           <div className="relative md:col-span-2 lg:col-span-1">
-            <i className="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+            <i className="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 z-10"></i>
             <input
               type="text"
               placeholder="Search students..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white/50 dark:bg-gray-700/50 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full pl-12 pr-4 py-3 bg-white/50 dark:bg-gray-700/50 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00a9ff]"
             />
           </div>
 
           {/* Semester Filter */}
-          <select
+          <CustomSelect
+            name="semester"
             value={filterSemester}
             onChange={(e) => setFilterSemester(e.target.value)}
-            className="px-4 py-3 bg-white/50 dark:bg-gray-700/50 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
-            <option value="all">All Semesters</option>
-            <option value="1">Semester 1</option>
-            <option value="2">Semester 2</option>
-            <option value="3">Semester 3</option>
-            <option value="4">Semester 4</option>
-            <option value="5">Semester 5</option>
-            <option value="6">Semester 6</option>
-          </select>
+            options={[
+              { value: 'all', label: 'All Semesters' },
+              { value: '1', label: 'Semester 1' },
+              { value: '2', label: 'Semester 2' },
+              { value: '3', label: 'Semester 3' },
+              { value: '4', label: 'Semester 4' },
+              { value: '5', label: 'Semester 5' },
+              { value: '6', label: 'Semester 6' }
+            ]}
+            placeholder="Select Semester"
+          />
 
           {/* Batch/Admission Year Filter */}
-          <select
+          <CustomSelect
+            name="batch"
             value={filterBatch}
             onChange={(e) => setFilterBatch(e.target.value)}
-            className="px-4 py-3 bg-white/50 dark:bg-gray-700/50 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
-            <option value="all">All Batches</option>
-            <option value="2024">2024 Batch</option>
-            <option value="2023">2023 Batch</option>
-            <option value="2022">2022 Batch</option>
-            <option value="2021">2021 Batch</option>
-          </select>
+            options={[
+              { value: 'all', label: 'All Batches' },
+              { value: '2025', label: '2025-2028 Batch' },
+              { value: '2024', label: '2024-2027 Batch' },
+              { value: '2023', label: '2023-2026 Batch' },
+              { value: '2022', label: '2022-2025 Batch' },
+              { value: '2021', label: '2021-2024 Batch' }
+            ]}
+            placeholder="Select Batch"
+          />
         </div>
       </div>
 
       {/* Students Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
         {filteredStudents.map((student) => (
           <motion.div
             key={student.id}
             whileHover={{ scale: 1.02, y: -5 }}
-            onClick={() => setSelectedStudent(student)}
-            className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg cursor-pointer hover:bg-red-500/10 dark:hover:bg-red-500/20 transition-all"
+            onClick={() => {
+              setSelectedStudent(student)
+              setShowFullDetails(true)
+            }}
+            className="overflow-hidden rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] cursor-pointer hover:shadow-[0_20px_60px_rgb(0,0,0,0.3)] hover:-translate-y-2 transition-all duration-300"
           >
-            {/* Profile Section */}
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center text-white font-bold text-xl">
-                {student.name.split(' ').map(n => n[0]).join('')}
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-800 dark:text-white">{student.name}</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">{student.rollNo}</p>
-              </div>
-            </div>
-
-            {/* Quick Info */}
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                <i className="fas fa-envelope w-4"></i>
-                <span className="truncate">{student.email}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                <i className="fas fa-building w-4"></i>
-                <span>{student.department}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                <i className="fas fa-layer-group w-4"></i>
-                <span>Semester {student.semester}</span>
+            {/* Red Header - Compact */}
+            <div className="relative bg-gradient-to-r from-red-500 via-rose-600 to-red-600 p-5 text-white shadow-[inset_0_-2px_10px_rgba(0,0,0,0.2)]">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-red-200/50 flex items-center justify-center text-white font-bold text-base shadow-[0_4px_15px_rgba(0,0,0,0.3)]">
+                  {student.name.split(' ').map(n => n[0]).join('')}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold drop-shadow-sm">{student.name}</h3>
+                  <p className="text-sm text-red-50">{student.rollNo}</p>
+                  <p className="text-xs text-red-100">Department</p>
+                </div>
               </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className={`${getAttendanceBgColor(student.attendance)} rounded-lg p-3`}>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Attendance</p>
-                <p className={`text-xl font-bold ${getAttendanceColor(student.attendance)}`}>
-                  {student.attendance}%
-                </p>
+            {/* Light Red Body with 3D depth */}
+            <div className="relative bg-red-50 dark:bg-red-900/20 p-5 shadow-[inset_0_2px_8px_rgba(0,0,0,0.06)]">
+              {/* Department Icon and Name */}
+              <div className="flex items-center gap-2 mb-4">
+                <i className="fas fa-building text-slate-800 dark:text-slate-200 text-sm"></i>
+                <span className="text-sm font-bold text-slate-800 dark:text-slate-200">{student.department}</span>
               </div>
-              <div className="bg-blue-500/20 rounded-lg p-3">
-                <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">CGPA</p>
-                <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{student.cgpa}</p>
+
+              {/* Stats Grid with 3D depth */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Attendance</p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">{student.attendance}%</p>
+                </div>
+                <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">CGPA</p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">{student.cgpa}</p>
+                </div>
               </div>
             </div>
-
-            {/* View Details Button */}
-            <button className="w-full mt-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all">
-              View Details
-            </button>
           </motion.div>
         ))}
       </div>
@@ -394,16 +383,16 @@ export default function TeacherStudentList() {
                 showFullDetails ? 'w-full max-w-6xl max-h-[90vh]' : 'w-full max-w-2xl'
               } transition-all duration-300`}
             >
-              {/* Modal Header */}
-              <div className="bg-gradient-to-r from-red-500 to-rose-600 p-6 text-white">
+              {/* Modal Header - Red, Compact */}
+              <div className="bg-gradient-to-r from-red-500 via-rose-600 to-red-600 p-5 text-white">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-2xl border-4 border-white/30">
+                    <div className="w-16 h-16 rounded-full bg-red-200/50 flex items-center justify-center text-white font-bold text-xl shadow-lg">
                       {selectedStudent.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold">{selectedStudent.name}</h2>
-                      <p className="text-red-100">{selectedStudent.rollNo}</p>
+                      <p className="text-red-50">{selectedStudent.rollNo}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -454,20 +443,31 @@ export default function TeacherStudentList() {
                       </div>
                     </div>
 
-                    {/* Quick Stats */}
-                    <div>
-                      <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Performance Overview</h3>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className={`${getAttendanceBgColor(selectedStudent.attendance)} rounded-xl p-4`}>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">Attendance</p>
-                          <p className={`text-3xl font-bold ${getAttendanceColor(selectedStudent.attendance)}`}>
-                            {selectedStudent.attendance}%
-                          </p>
+                    {/* Quick Stats - Purple Theme */}
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 border border-red-200 dark:border-red-800">
+                        <div className="flex items-center gap-2 mb-2">
+                          <i className="fas fa-calendar-check text-red-500"></i>
+                          <p className="text-xs text-slate-600 dark:text-slate-400">Attendance</p>
                         </div>
-                        <div className="bg-blue-500/20 rounded-xl p-4">
-                          <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">CGPA</p>
-                          <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">{selectedStudent.cgpa}</p>
+                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{selectedStudent.attendance}%</p>
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-1 cursor-pointer hover:underline">View Full Attendance →</p>
+                      </div>
+                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                        <div className="flex items-center gap-2 mb-2">
+                          <i className="fas fa-chart-line text-blue-500"></i>
+                          <p className="text-xs text-slate-600 dark:text-slate-400">CGPA</p>
                         </div>
+                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{selectedStudent.cgpa}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Out of 10.0</p>
+                      </div>
+                      <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
+                        <div className="flex items-center gap-2 mb-2">
+                          <i className="fas fa-book text-purple-500"></i>
+                          <p className="text-xs text-slate-600 dark:text-slate-400">Courses</p>
+                        </div>
+                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{selectedStudent.courses.length}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Enrolled</p>
                       </div>
                     </div>
 
@@ -611,3 +611,4 @@ export default function TeacherStudentList() {
     </motion.div>
   )
 }
+

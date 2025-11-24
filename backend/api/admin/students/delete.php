@@ -46,9 +46,9 @@ try {
     // Verify student exists and get user_id
     $checkQuery = "SELECT user_id, student_id, first_name, last_name 
                    FROM students 
-                   WHERE id = :student_id";
+                   WHERE student_id = :student_id";
     $checkStmt = $db->prepare($checkQuery);
-    $checkStmt->bindParam(':student_id', $studentId, PDO::PARAM_INT);
+    $checkStmt->bindParam(':student_id', $studentId);
     $checkStmt->execute();
     
     if ($checkStmt->rowCount() === 0) {

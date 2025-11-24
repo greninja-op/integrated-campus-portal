@@ -67,7 +67,7 @@ export default function Login() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen flex items-center justify-center p-4"
     >
       {/* Theme Toggle - Top Right Corner */}
@@ -118,9 +118,9 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all disabled:transform-none"
+            className="w-full py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500 disabled:opacity-70 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all disabled:transform-none"
           >
-            {isLoading ? 'Logging in...' : 'Log In'}
+            Log In
           </button>
 
           <div 
@@ -198,3 +198,4 @@ export default function Login() {
     </motion.div>
   )
 }
+

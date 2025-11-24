@@ -7,7 +7,7 @@ import api from '../services/api'
 export default function TeacherNotice() {
   const navigate = useNavigate()
   const [notices, setNotices] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const user = api.getCurrentUser()
 
   const categories = {
@@ -60,20 +60,14 @@ export default function TeacherNotice() {
     return colors[priority] || colors.normal
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-      </div>
-    )
-  }
+  // Removed loading screen
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -167,9 +161,10 @@ export default function TeacherNotice() {
               {notice.image_url && (
                 <div className="md:w-80 md:flex-shrink-0">
                   <img
-                    src={notice.image_url}
+                    src={`http://localhost:8080${notice.image_url}`}
                     alt={notice.title}
                     className="w-full h-full object-cover"
+                    onError={(e) => e.target.style.display = 'none'}
                   />
                 </div>
               )}
@@ -180,3 +175,4 @@ export default function TeacherNotice() {
     </motion.div>
   )
 }
+

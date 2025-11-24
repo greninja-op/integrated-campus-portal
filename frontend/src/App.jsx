@@ -72,12 +72,9 @@ function ProtectedRoute({ children, allowedRoles = [] }) {
     verifyAuth()
   }, [allowedRoles])
   
+  // Skip loading screen - render immediately
   if (isVerifying) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl">Loading...</div>
-      </div>
-    )
+    return null
   }
   
   if (!isValid) {
@@ -131,3 +128,4 @@ function App() {
 }
 
 export default App
+

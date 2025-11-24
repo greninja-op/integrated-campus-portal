@@ -18,7 +18,7 @@ export default function AdminStudents() {
   const [showAddForm, setShowAddForm] = useState(false)
   const [students, setStudents] = useState([])
   const [filteredStudents, setFilteredStudents] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -48,8 +48,15 @@ export default function AdminStudents() {
     date_of_birth: '',
     address: '',
     gender: 'other',
+    blood_group: '',
     enrollment_date: new Date().toISOString().split('T')[0],
-    program: 'Bachelors'
+    program: 'Bachelors',
+    parent1_name: '',
+    parent1_phone: '',
+    parent1_relationship: '',
+    parent2_name: '',
+    parent2_phone: '',
+    parent2_relationship: ''
   })
 
   const departments = ['BCA', 'BBA', 'B.Com']
@@ -175,12 +182,19 @@ export default function AdminStudents() {
     }
     
     // Frontend validation for Phone: exactly 10 digits only
-    if (name === 'phone') {
+    if (name === 'phone' || name === 'parent1_phone' || name === 'parent2_phone') {
       // Remove all non-digit characters
       const digitsOnly = value.replace(/\D/g, '')
       // Limit to 10 digits
       const limitedValue = digitsOnly.slice(0, 10)
       setFormData(prev => ({ ...prev, [name]: limitedValue }))
+      return
+    }
+    
+    // Auto-generate username from full_name
+    if (name === 'full_name') {
+      const username = value.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9.]/g, '')
+      setFormData(prev => ({ ...prev, [name]: value, username: username }))
       return
     }
     
@@ -264,7 +278,17 @@ export default function AdminStudents() {
       year: new Date().getFullYear(),
       phone: '',
       date_of_birth: '',
-      address: ''
+      address: '',
+      gender: 'other',
+      blood_group: '',
+      enrollment_date: new Date().toISOString().split('T')[0],
+      program: 'Bachelors',
+      parent1_name: '',
+      parent1_phone: '',
+      parent1_relationship: '',
+      parent2_name: '',
+      parent2_phone: '',
+      parent2_relationship: ''
     })
     setSelectedImage(null)
     setImagePreview(null)
@@ -272,6 +296,30 @@ export default function AdminStudents() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    // Validate at least one parent/guardian - all three fields must be filled
+    const hasParent1 = formData.parent1_name.trim() && formData.parent1_phone.trim() && formData.parent1_relationship.trim()
+    const hasParent2 = formData.parent2_name.trim() && formData.parent2_phone.trim() && formData.parent2_relationship.trim()
+    
+    if (!hasParent1 && !hasParent2) {
+      showToast('At least one parent/guardian information is required', 'error')
+      return
+    }
+    
+    // Validate that if any parent field is filled, all three must be filled
+    const parent1Partial = (formData.parent1_name.trim() || formData.parent1_phone.trim() || formData.parent1_relationship.trim()) && !hasParent1
+    const parent2Partial = (formData.parent2_name.trim() || formData.parent2_phone.trim() || formData.parent2_relationship.trim()) && !hasParent2
+    
+    if (parent1Partial) {
+      showToast('Please complete all fields for Parent/Guardian 1', 'error')
+      return
+    }
+    
+    if (parent2Partial) {
+      showToast('Please complete all fields for Parent/Guardian 2', 'error')
+      return
+    }
+    
     setLoading(true)
     
     let profileImageUrl = isEditMode ? (imagePreview || null) : null
@@ -319,7 +367,14 @@ export default function AdminStudents() {
     // Map year to batch_year
     submitData.batch_year = submitData.year
 
-    console.log('Submitting student data:', submitData)
+    console.log('=== SUBMITTING STUDENT DATA ===')
+    console.log('Parent 1 Name:', submitData.parent1_name)
+    console.log('Parent 1 Phone:', submitData.parent1_phone)
+    console.log('Parent 1 Relationship:', submitData.parent1_relationship)
+    console.log('Parent 2 Name:', submitData.parent2_name)
+    console.log('Parent 2 Phone:', submitData.parent2_phone)
+    console.log('Parent 2 Relationship:', submitData.parent2_relationship)
+    console.log('Full submit data:', submitData)
     const response = isEditMode 
       ? await api.updateStudent(editingStudent.student_id, submitData) // Use original student_id to find record
       : await api.addStudent(submitData)
@@ -341,7 +396,17 @@ export default function AdminStudents() {
         year: new Date().getFullYear(),
         phone: '',
         date_of_birth: '',
-        address: ''
+        address: '',
+        gender: 'other',
+        blood_group: '',
+        enrollment_date: new Date().toISOString().split('T')[0],
+        program: 'Bachelors',
+        parent1_name: '',
+        parent1_phone: '',
+        parent1_relationship: '',
+        parent2_name: '',
+        parent2_phone: '',
+        parent2_relationship: ''
       })
       setSelectedImage(null)
       setImagePreview(null)
@@ -365,7 +430,7 @@ export default function AdminStudents() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.15 }}
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
@@ -436,7 +501,17 @@ export default function AdminStudents() {
                   year: new Date().getFullYear(),
                   phone: '',
                   date_of_birth: '',
-                  address: ''
+                  address: '',
+                  gender: 'other',
+                  blood_group: '',
+                  enrollment_date: new Date().toISOString().split('T')[0],
+                  program: 'Bachelors',
+                  parent1_name: '',
+                  parent1_phone: '',
+                  parent1_relationship: '',
+                  parent2_name: '',
+                  parent2_phone: '',
+                  parent2_relationship: ''
                 })
                 setSelectedImage(null)
                 setImagePreview(null)
@@ -486,7 +561,16 @@ export default function AdminStudents() {
                   phone: '',
                   date_of_birth: '',
                   address: '',
-                  gender: 'other'
+                  gender: 'other',
+                  blood_group: '',
+                  enrollment_date: new Date().toISOString().split('T')[0],
+                  program: 'Bachelors',
+                  parent1_name: '',
+                  parent1_phone: '',
+                  parent1_relationship: '',
+                  parent2_name: '',
+                  parent2_phone: '',
+                  parent2_relationship: ''
                 })
                 setFormKey(Date.now())
               }}
@@ -666,10 +750,10 @@ export default function AdminStudents() {
               icon="fas fa-calendar-alt"
             />
 
-            {/* Year */}
+            {/* Year of Admission */}
             <div>
               <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                Year <span className="text-red-500">*</span>
+                Year of Admission <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -711,22 +795,37 @@ export default function AdminStudents() {
             />
 
             {/* Gender */}
-            <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                Gender <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
+            <CustomSelect
+              name="gender"
+              value={formData.gender}
+              onChange={handleInputChange}
+              options={[
+                { value: 'male', label: 'Male' },
+                { value: 'female', label: 'Female' },
+                { value: 'other', label: 'Other' }
+              ]}
+              label={<>Gender <span className="text-red-500">*</span></>}
+              placeholder="Select gender"
+            />
+
+            {/* Blood Group */}
+            <CustomSelect
+              name="blood_group"
+              value={formData.blood_group}
+              onChange={handleInputChange}
+              options={[
+                { value: 'A+', label: 'A+' },
+                { value: 'A-', label: 'A-' },
+                { value: 'B+', label: 'B+' },
+                { value: 'B-', label: 'B-' },
+                { value: 'AB+', label: 'AB+' },
+                { value: 'AB-', label: 'AB-' },
+                { value: 'O+', label: 'O+' },
+                { value: 'O-', label: 'O-' }
+              ]}
+              label="Blood Group"
+              placeholder="Select blood group"
+            />
 
             {/* Address */}
             <div className="md:col-span-2">
@@ -738,9 +837,140 @@ export default function AdminStudents() {
                 value={formData.address}
                 onChange={handleInputChange}
                 placeholder="Enter full address"
-                rows="3"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                rows="4"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all resize-none"
               ></textarea>
+            </div>
+
+            {/* Parent/Guardian Information */}
+            <div className="md:col-span-2 space-y-6 bg-slate-100 dark:bg-slate-800/50 p-6 rounded-xl">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+                  <i className="fas fa-users mr-2"></i>
+                  Parent/Guardian Information
+                </h3>
+                <span className="text-sm text-red-500 font-medium">* At least one required</span>
+              </div>
+
+              {/* Parent 1 */}
+              <div className="bg-white dark:bg-slate-700/50 p-5 rounded-lg border border-slate-200/30 dark:border-slate-600/30">
+                <h4 className="text-md font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center">
+                  <i className="fas fa-user-circle mr-2 text-blue-500"></i>
+                  Parent/Guardian 1
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="parent1_name"
+                      value={formData.parent1_name}
+                      onChange={handleInputChange}
+                      placeholder="Enter parent name"
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="parent1_phone"
+                      value={formData.parent1_phone}
+                      onChange={handleInputChange}
+                      placeholder="9876543210"
+                      pattern="\d{10}"
+                      maxLength="10"
+                      minLength="10"
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                      Relationship
+                    </label>
+                    <CustomSelect
+                      name="parent1_relationship"
+                      value={formData.parent1_relationship}
+                      onChange={handleInputChange}
+                      options={[
+                        { value: 'Father', label: 'Father' },
+                        { value: 'Mother', label: 'Mother' },
+                        { value: 'Guardian', label: 'Guardian' },
+                        { value: 'Uncle', label: 'Uncle' },
+                        { value: 'Aunt', label: 'Aunt' },
+                        { value: 'Grandfather', label: 'Grandfather' },
+                        { value: 'Grandmother', label: 'Grandmother' },
+                        { value: 'Other', label: 'Other' }
+                      ]}
+                      placeholder="Select relationship"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Parent 2 */}
+              <div className="bg-white dark:bg-slate-700/50 p-5 rounded-lg border border-slate-200/30 dark:border-slate-600/30">
+                <h4 className="text-md font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center">
+                  <i className="fas fa-user-circle mr-2 text-green-500"></i>
+                  Parent/Guardian 2 <span className="text-sm font-normal text-slate-500 ml-2">(Optional)</span>
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="parent2_name"
+                      value={formData.parent2_name}
+                      onChange={handleInputChange}
+                      placeholder="Enter parent name"
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="parent2_phone"
+                      value={formData.parent2_phone}
+                      onChange={handleInputChange}
+                      placeholder="9876543210"
+                      pattern="\d{10}"
+                      maxLength="10"
+                      minLength="10"
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                      Relationship
+                    </label>
+                    <CustomSelect
+                      name="parent2_relationship"
+                      value={formData.parent2_relationship}
+                      onChange={handleInputChange}
+                      options={[
+                        { value: 'Father', label: 'Father' },
+                        { value: 'Mother', label: 'Mother' },
+                        { value: 'Guardian', label: 'Guardian' },
+                        { value: 'Uncle', label: 'Uncle' },
+                        { value: 'Aunt', label: 'Aunt' },
+                        { value: 'Grandfather', label: 'Grandfather' },
+                        { value: 'Grandmother', label: 'Grandmother' },
+                        { value: 'Other', label: 'Other' }
+                      ]}
+                      placeholder="Select relationship"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Submit Button */}
@@ -783,7 +1013,8 @@ export default function AdminStudents() {
         </motion.div>
       )}
 
-      {/* Students List */}
+      {/* Students List - Hidden when form is open */}
+      {!showAddForm && (
       <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
@@ -882,11 +1113,7 @@ export default function AdminStudents() {
           )}
         </div>
         
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="text-2xl text-slate-800 dark:text-white">Loading...</div>
-          </div>
-        ) : filteredStudents.length === 0 ? (
+        {filteredStudents.length === 0 ? (
           <div className="text-center py-12">
             <i className="fas fa-users text-6xl text-slate-400 mb-4"></i>
             <p className="text-slate-600 dark:text-slate-400">
@@ -935,6 +1162,7 @@ export default function AdminStudents() {
           </div>
         )}
       </div>
+      )}
 
       {/* Image Cropper Modal */}
       {showCropper && (
@@ -1014,3 +1242,4 @@ export default function AdminStudents() {
     </motion.div>
   )
 }
+
