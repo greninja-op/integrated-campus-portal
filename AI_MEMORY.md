@@ -1428,3 +1428,279 @@ transition={{ repeat: Infinity, duration: 2 }}
 - Gets straight to the point
 - Expects AI to understand intent
 - Prefers action over discussion
+
+
+### November 25, 2025 - Marks Management System Implementation
+
+#### Teacher Marks Permission Fix
+**Problem**: Teachers getting "You do not have permission to access this resource" error on marks page
+**Root Cause**: `checkRole()` function in `auth.php` only accepted single role string, but was being called with array
+**Solution**:
+- Updated `checkRole()` function to accept both string and array of roles
+- Modified to use `in_array()` for role checking
+- Fixed `enter_semester_marks.php` to use proper authentication pattern
+- File: `backend/includes/auth.php`
+
+#### Marks Entry UI Redesign
+**Request**: "can change the design a bit i dont like the way it look long text box just fill small text"
+**Solution**:
+- Replaced list layout with professional table design
+- Compact 80px width input boxes for marks (instead of full-width)
+- Added visual status indicators (pass/fail badges with percentage)
+- Better focus states with green border and ring
+- Summary statistics at bottom (total students, marks entered, pending)
+- Cleaner header with subject name and exam type badge
+- Files: `frontend/src/pages/TeacherMarks.jsx`
+
+#### Selection Screen Layout Improvement
+**Request**: "lets do one thing dont wait for the teacher to select the type of exam and sem in order for the subject and mark to appear make stay like this all the time"
+**Solution**:
+- Changed from conditional rendering to 2-column grid layout
+- All fields (Exam Type, Semester, Subject, Max Marks) visible at once
+- Subject field disabled until semester selected (to fetch correct subjects)
+- Saves vertical space while maintaining usability
+- File: `frontend/src/pages/TeacherMarks.jsx`
+
+#### View Marks Feature with Batch Filtering
+**Problem**: Teachers needed to view historical marks they've entered, but semester-based filtering wasn't enough to separate different year students
+**Solution**:
+
+**Backend APIs**:
+- Created `get_marks_history.php` - Fetches marks by batch_year, semester, subject, exam_type
+- Created `get_batch_years.php` - Returns available batch years for teacher's department
+- Filters by teacher's entered marks only (entered_by field)
+- Shows student's current semester alongside historical marks
+- Files: `backend/api/marks/get_marks_history.php`, `backend/api/marks/get_batch_years.php`
+
+**Frontend Features**:
+- Filter flow: Batch Year → Semester → Subject → Exam Type
+- Displays marks in table format with roll number, name, marks, percentage
+- Shows current semester indicator for each student
+- Statistics: total students, average percentage, pass rate
+- "Change Filter" button to modify selection
+- Files: `frontend/src/pages/TeacherMarks.jsx`
+
+**Business Logic**:
+- Batch-based filtering prevents confusion between different year students
+- Example: 2024 batch Sem 1 marks separate from 2025 batch Sem 1 marks
+- Teachers can view historical data for reference and record-keeping
+- Students' current semester shown to track their progression
+
+#### Student Results Page - Comprehensive View
+**Request**: "in the students result page that should be the place to view those results that every teacher marks and show it as a single mark sheet containing all subject"
+**Solution**:
+
+**Backend APIs**:
+- Created `get_current_results.php` - Fetches all marks for student's current semester
+- Groups marks by exam type (class_test, internal_1, internal_2)
+- Consolidates marks from all teachers into single view
+- Created `get_historical_results.php` - Fetches marks from previous semesters
+- Filter by semester and exam type
+- Files: `backend/api/student/get_current_results.php`, `backend/api/student/get_historical_results.php`
+
+**Frontend Features**:
+- **Current Semester View**:
+  - Separate expandable cards for Internal 1, Internal 2, Class Tests
+  - Shows overall percentage and progress bar for each exam type
+  - Click to expand and see all subjects with individual marks
+  - Color-coded percentages (green >75%, yellow 50-75%, red <50%)
+  - Download button for each result (placeholder for PDF generation)
+- **Historical View** (planned but simplified):
+  - Filter by semester and exam type
+  - View all previous semester marks
+  - Shows semester and exam type for each entry
+- Modern card-based UI with animations
+- Dark mode support
+- File: `frontend/src/pages/Results.jsx`
+
+**Key Features**:
+- Consolidates marks from multiple teachers into single view
+- Students see complete picture of their performance
+- Exam-wise breakdown helps identify weak areas
+- Historical access for revision and reference
+- Download capability for offline records
+
+#### Marks System Architecture
+**Database Design**:
+- `exam_marks` table stores: student_id, subject_id, semester, exam_type, marks_obtained, max_marks, exam_date, entered_by
+- Unique constraint on (student_id, subject_id, semester, exam_type) prevents duplicates
+- `semester` column in marks table is "semester when marks were given" (never changes)
+- `semester` column in students table is "current semester" (updates on promotion)
+- This separation allows historical marks to persist while students progress
+
+**Batch Year System**:
+- `batch_year` field in students table stores admission year
+- Used to separate different year students in same semester
+- Example: 2024 batch in Sem 1 vs 2025 batch in Sem 1
+- Prevents confusion in teacher's view marks feature
+- Essential for multi-year data management
+
+**Marks Entry Flow**:
+1. Teacher selects exam type, semester, subject, max marks
+2. System fetches students currently in that semester
+3. Teacher enters marks for each student
+4. Marks saved with semester number and entered_by teacher ID
+5. Students can view marks immediately in their results page
+
+**Marks Viewing Flow (Teacher)**:
+1. Teacher selects batch year, semester, subject, exam type
+2. System fetches all marks entered by that teacher for those filters
+3. Shows historical data including students now in higher semesters
+4. Displays current semester of each student for reference
+
+**Marks Viewing Flow (Student)**:
+1. Student views current semester results (all exam types)
+2. Marks from all teachers consolidated by exam type
+3. Can expand each exam type to see subject-wise breakdown
+4. Historical results accessible via filter (previous semesters)
+
+#### Technical Challenges Resolved
+**Issue**: Kiro IDE autofix corrupting files during save
+**Impact**: TeacherMarks.jsx file got corrupted with syntax errors, causing frontend crash
+**Solution**: 
+- Restored file from git history using `git checkout HEAD~1`
+- Avoided complex nested JSX that triggers autofix issues
+- Simplified Results.jsx to prevent similar corruption
+- Lesson: Keep components simple when autofix is active
+
+**Issue**: CustomSelect component label prop confusion
+**Impact**: Results.jsx had syntax errors due to incorrect prop usage
+**Solution**:
+- Removed `label` prop from CustomSelect calls
+- Added separate `<label>` HTML elements above selects
+- Maintains consistent styling while avoiding prop conflicts
+
+---
+
+## Updated System State (November 25, 2025)
+
+### New Database Tables
+- `exam_marks` - Stores class test and internal exam marks (separate from semester marks)
+  - Fields: student_id, subject_id, semester, exam_type, marks_obtained, max_marks, exam_date, entered_by
+  - Exam types: 'class_test', 'internal_1', 'internal_2'
+  - Unique constraint on (student_id, subject_id, semester, exam_type)
+
+### New API Endpoints
+```
+backend/api/marks/
+├── get_students_for_marks.php - Get students for marks entry (current semester only)
+├── enter_exam_marks.php - Enter/update exam marks (class test, internals)
+├── get_marks_history.php - Get historical marks by batch/semester/subject/exam
+├── get_batch_years.php - Get available batch years for teacher's department
+└── get_teacher_marks.php - Get marks entered by specific teacher
+
+backend/api/student/
+├── get_current_results.php - Get all current semester marks grouped by exam type
+└── get_historical_results.php - Get previous semester marks with filters
+```
+
+### Updated Pages
+- `TeacherMarks.jsx` - Complete redesign with table layout, view marks feature, batch filtering
+- `Results.jsx` - New comprehensive student results page with expandable cards
+- `App.jsx` - Updated import from Result to Results
+
+### Marks Management Features
+**For Teachers**:
+- ✅ Add marks for Class Test, Internal 1, Internal 2
+- ✅ Select exam type, semester, subject, max marks
+- ✅ Table view with compact input boxes
+- ✅ Visual status indicators (pass/fail with percentage)
+- ✅ Summary statistics (total, entered, pending)
+- ✅ View historical marks by batch year
+- ✅ Filter by batch, semester, subject, exam type
+- ✅ See student's current semester in historical view
+- ✅ Statistics: average percentage, pass rate
+
+**For Students**:
+- ✅ View current semester results by exam type
+- ✅ Expandable cards for Internal 1, Internal 2, Class Tests
+- ✅ Overall percentage and progress bar per exam
+- ✅ Subject-wise breakdown with individual marks
+- ✅ Color-coded performance indicators
+- ✅ Download button (PDF generation pending)
+- ✅ Historical results access (simplified view)
+- ✅ Marks consolidated from all teachers
+
+### Business Rules Enforced
+- Teachers can only enter marks for their assigned subjects
+- Teachers can only view marks they personally entered
+- Students see marks from all teachers consolidated
+- Batch year prevents confusion between different year students
+- Semester field in marks table preserves historical context
+- Current semester in students table tracks progression
+- Marks persist even after student promotion
+
+---
+
+## Development Patterns Established
+
+### Marks System Pattern
+1. **Entry**: Current semester students only, teacher's assigned subjects
+2. **Storage**: Marks table with semester snapshot, never modified after student promotion
+3. **Viewing (Teacher)**: Batch-based filtering for historical access
+4. **Viewing (Student)**: Consolidated view from all teachers, grouped by exam type
+5. **Progression**: Student semester updates, marks remain with original semester number
+
+### UI Design Patterns
+- **Table layouts** for data entry with many rows
+- **Card layouts** for summary views with expandable details
+- **Compact inputs** (80px width) for numeric data
+- **Status badges** with color coding for quick visual feedback
+- **Summary statistics** at bottom of data tables
+- **Filter sections** at top with grid layout for multiple filters
+- **Expandable sections** using AnimatePresence for smooth animations
+
+### Error Handling Pattern
+- Backend returns `{ success: bool, data: {}, message: string }`
+- Frontend shows CustomAlert for errors
+- Loading states with spinner during API calls
+- Disabled buttons during submission
+- Validation before API calls
+
+---
+
+## Known Issues & Workarounds (Updated)
+
+### Issue 9: Kiro IDE Autofix Corruption
+**Problem**: Autofix sometimes corrupts files with complex JSX  
+**Workaround**: Keep components simple, restore from git if corrupted  
+**Files Affected**: TeacherMarks.jsx (restored from git)
+
+### Issue 10: CustomSelect Label Prop
+**Problem**: CustomSelect doesn't properly handle label prop  
+**Solution**: Use separate HTML `<label>` elements above CustomSelect  
+**Files**: Results.jsx, TeacherMarks.jsx
+
+---
+
+## Current Work & Next Steps (Updated)
+
+### Completed Today (November 25, 2025) ✅
+- ✅ Fixed teacher marks permission error
+- ✅ Redesigned marks entry UI with table layout
+- ✅ Added view marks feature with batch filtering
+- ✅ Created comprehensive student results page
+- ✅ Implemented marks consolidation from multiple teachers
+- ✅ Added batch year filtering for historical data
+- ✅ Created backend APIs for marks management
+- ✅ Updated documentation in AI_MEMORY.md
+
+### Pending Features
+- PDF download for student results
+- Edit/update marks functionality for teachers
+- Semester exam marks entry (separate from internals)
+- Final grade calculation (combining all exam types)
+- Marks analytics for teachers (class performance)
+- Marks comparison across batches
+- Export marks to Excel/CSV
+
+### Next Session Priorities
+1. Test marks system with real data
+2. Implement PDF download for results
+3. Add semester exam marks entry
+4. Create final grade calculation logic
+5. Build marks analytics dashboard for teachers
+
+---
+
+*Last Updated: November 25, 2025 - Marks Management System Complete*

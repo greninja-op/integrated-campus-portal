@@ -6,7 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Notice from './pages/Notice'
 import Payments from './pages/Payments'
 import Subjects from './pages/Subjects'
-import Result from './pages/Result'
+import Results from './pages/Results'
 import Analysis from './pages/Analysis'
 import StudentMaterials from './pages/StudentMaterials'
 import AdminDashboard from './pages/AdminDashboard'
@@ -97,7 +97,7 @@ function App() {
           <Route path="/notice" element={<ProtectedRoute allowedRoles={['student']}><Notice /></ProtectedRoute>} />
           <Route path="/payments" element={<ProtectedRoute allowedRoles={['student']}><Payments /></ProtectedRoute>} />
           <Route path="/subjects" element={<ProtectedRoute allowedRoles={['student']}><Subjects /></ProtectedRoute>} />
-          <Route path="/result" element={<ProtectedRoute allowedRoles={['student']}><Result /></ProtectedRoute>} />
+          <Route path="/result" element={<ProtectedRoute allowedRoles={['student']}><Results /></ProtectedRoute>} />
           <Route path="/analysis" element={<ProtectedRoute allowedRoles={['student']}><Analysis /></ProtectedRoute>} />
           <Route path="/materials" element={<ProtectedRoute allowedRoles={['student']}><StudentMaterials /></ProtectedRoute>} />
           <Route path="/attendance" element={<ProtectedRoute allowedRoles={['student']}><StudentAttendance /></ProtectedRoute>} />
