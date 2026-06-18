@@ -1874,3 +1874,24 @@ Key shape rules to remember (frontend reads these unguarded in places):
 
 Still empty (no source data): marks, attendance history, fees, payments, materials,
 assignments. Offer to seed sample data if the user wants populated dashboards.
+
+
+---
+
+## June 18, 2026 (cont.) - P0 security hardening
+
+Hardened `server/index.mjs` (added deps: helmet, express-rate-limit, express-async-errors):
+- `requireRole('admin')` on admin students/teachers/fees routes (subjects/list stays open).
+- JWT `jti` + in-memory blacklist; logout now actually invalidates the token.
+- Login rate limit 10/min/IP (429).
+- CORS locked to `CORS_ORIGIN` env (default http://localhost:5173).
+- helmet security headers (CORP cross-origin for the JSON API).
+- Unknown /api routes -> 404 (removed the blanket-success fallback).
+- express-async-errors + central error middleware (no more hung requests on throw).
+Verified: student→admin 403, admin 200, subjects 200 (student), unknown 404, post-logout 401.
+
+Note for prod: set `trust proxy` for the rate limiter behind a reverse proxy; move the
+token blacklist to a Mongo TTL collection if running multiple instances.
+
+Production-readiness remaining: P1 (persist marks/attendance-view/fees/payments/materials/
+assignments), P2 (frontend VITE_API_URL, logging/monitoring), P3 (tests, CI, deploy).
