@@ -455,8 +455,16 @@ api.get('/student/get_attendance.php', auth, async (req, res) => {
   stats.percentage = stats.total ? Math.round(((stats.present + stats.late) / stats.total) * 100) : 0;
   ok(res, { records, stats, subjects: [], attendance: records, summary: stats, current_semester });
 });
-api.get('/student/get_fees.php', auth, (_req, res) => ok(res, { fees: [], summary: { total_paid: 0, total_pending: 0 } }));
-api.get('/student/get_payments.php', auth, (_req, res) => ok(res, { payments: [], summary: { total_paid: 0, total_pending: 0 } }));
+api.get('/student/get_fees.php', auth, async (req, res) => {
+  const s = await studentForReq(req);
+  const { items, summary } = await studentFeeItems(s);
+  ok(res, { fees: items, summary });
+});
+api.get('/student/get_payments.php', auth, async (req, res) => {
+  const s = await studentForReq(req);
+  const { items, summary } = await studentFeeItems(s);
+  ok(res, { payments: items, summary });
+});
 api.get('/attendance/get_student_history.php', auth, (_req, res) => ok(res, { history: [], records: [] }));
 
 // dashboard attendance summary (for api.getAttendance)
