@@ -192,6 +192,30 @@ app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json({ limit: '15mb' }));
 app.use((req, _res, next) => { console.log(`${req.method} ${req.path}`); next(); });
 
+// File uploads (study materials, assignments) stored on disk under server/uploads
+const UPLOAD_DIR = resolve(__dirname, 'uploads');
+const MATERIALS_DIR = resolve(UPLOAD_DIR, 'materials');
+mkdirSync(MATERIALS_DIR, { recursive: true });
+const uploadStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, MATERIALS_DIR),
+  filename: (_req, file, cb) => cb(null, `${Date.now()}_${(file.originalname || 'file').replace(/[^\w.\-]/g, '_')}`)
+});
+const upload = multer({ storage: uploadStorage, limits: { fileSize: 25 * 1024 * 1024 } });
+app.use('/uploads', express.static(UPLOAD_DIR));
+
+function materialOut(m) {
+  return {
+    id: String(m._id), _id: String(m._id),
+    department: m.department, semester: m.semester, subject: m.subject,
+    material_type: m.material_type, type: m.material_type,
+    unit: m.unit, year: m.year, exam_type: m.exam_type, description: m.description,
+    title: m.description || m.subject,
+    file_name: m.file_name, fileName: m.file_name,
+    file_url: m.file_url, file_path: m.file_path, file_size: m.file_size,
+    uploaded_at: m.uploaded_at, uploadedAt: m.uploaded_at
+  };
+}
+
 // Stricter rate limit on login to slow brute-force attempts.
 const loginLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false,
   handler: (_req, res) => res.status(429).json({ success: false, error: 'rate_limited', message: 'Too many login attempts. Please try again shortly.' }) });
