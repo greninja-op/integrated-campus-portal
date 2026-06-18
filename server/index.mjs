@@ -195,12 +195,15 @@ app.use((req, _res, next) => { console.log(`${req.method} ${req.path}`); next();
 // File uploads (study materials, assignments) stored on disk under server/uploads
 const UPLOAD_DIR = resolve(__dirname, 'uploads');
 const MATERIALS_DIR = resolve(UPLOAD_DIR, 'materials');
+const ASSIGNMENTS_DIR = resolve(UPLOAD_DIR, 'assignments');
 mkdirSync(MATERIALS_DIR, { recursive: true });
-const uploadStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, MATERIALS_DIR),
+mkdirSync(ASSIGNMENTS_DIR, { recursive: true });
+const makeStorage = (dir) => multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, dir),
   filename: (_req, file, cb) => cb(null, `${Date.now()}_${(file.originalname || 'file').replace(/[^\w.\-]/g, '_')}`)
 });
-const upload = multer({ storage: uploadStorage, limits: { fileSize: 25 * 1024 * 1024 } });
+const upload = multer({ storage: makeStorage(MATERIALS_DIR), limits: { fileSize: 25 * 1024 * 1024 } });
+const uploadAssignment = multer({ storage: makeStorage(ASSIGNMENTS_DIR), limits: { fileSize: 25 * 1024 * 1024 } });
 app.use('/uploads', express.static(UPLOAD_DIR));
 
 function materialOut(m) {
