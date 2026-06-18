@@ -360,10 +360,19 @@ api.get('/student/get_profile.php', auth, async (req, res) => {
 });
 api.get('/student/get_marks.php', auth, (_req, res) => ok(res, { marks: [], summary: { gpa: '0.00', cgpa: '0.00' } }));
 api.get('/student/get_current_results.php', auth, async (req, res) => {
-  const u = await db.collection('users').findOne({ _id: oid(req.user.user_id) });
-  const s = (u && await db.collection('students').findOne({ user_id: u._id })) || {};
-  ok(res, { results: { class_test: [], internal_1: [], internal_2: [] },
-            student: { semester: s.semester || null, department: s.department || null, program: s.program || s.department || null } });
+  const s = await studentForReq(req) || {};
+  const out = { class_test: [], internal_1: [], internal_2: [] };
+  if (s._id) {
+    const subjMap = await subjectsById();
+    const marks = await db.collection('exam_marks').find({ student_id: s._id, semester: s.semester }).toArray();
+    for (const m of marks) {
+      const subj = subjMap[String(m.subject_id)];
+      const row = { subject_name: subj?.subject_name || 'Unknown', subject_code: subj?.subject_code || '',
+                    marks_obtained: m.marks_obtained, max_marks: m.max_marks };
+      if (out[m.exam_type]) out[m.exam_type].push(row);
+    }
+  }
+  ok(res, { results: out, student: { semester: s.semester || null, department: s.department || null, program: s.program || s.department || null } });
 });
 api.get('/student/get_historical_results.php', auth, (_req, res) => ok(res, { results: [] }));
 api.get('/student/get_attendance.php', auth, async (req, res) => {
