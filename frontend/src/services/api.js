@@ -152,6 +152,16 @@ class ApiService {
     }
   }
 
+  // Student - Get Attendance summary for dashboard ({ subjects: [{present,total}] })
+  async getAttendance() {
+    try {
+      return await this.authenticatedGet('/student/dashboard_attendance.php');
+    } catch (error) {
+      console.error('Dashboard attendance error:', error);
+      return { success: false, data: { subjects: [] } };
+    }
+  }
+
   // Dashboard Stats (Student)
   async getDashboardStats(studentId) {
     try {

@@ -1845,3 +1845,32 @@ Added 3 test logins (all password `password123`, created via
 Verified all three log in via the Node backend (login by email works since auth
 matches username OR email). Password hashed at runtime with bcryptjs.
 Re-run: `cd server && node create-test-users.mjs`.
+
+
+---
+
+## June 18, 2026 (cont.) - Full API surface + page-loading fixes
+
+Rewrote `server/index.mjs` to implement every endpoint the frontend calls with the
+exact shapes the pages expect (arrays always present), backed by Atlas:
+- Real: auth, admin students/teachers CRUD, subjects/notices, teacher get_students
+  (dept) + get_assigned_subjects (dept subjects), attendance get_students + mark
+  (real upsert), student/teacher profiles.
+- Shaped-empty: marks, current_results (class_test/internal_1/internal_2 arrays),
+  attendance daily/summary, fees, payments, assignments (pending/rejected/submitted/
+  overdue), materials. Writes (upload/submit/create) return success.
+- Fallback returns `{success:true,data:{}}` for anything unmapped.
+
+Frontend crash fixes:
+- api.js: added missing `getAttendance()` (Dashboard crashed without it).
+- AdminAddTeacher.jsx: `showAlert(...)` -> `setAlert({...})`.
+- TeacherViewMaterials.jsx: API base `:8000` -> `:8080`.
+
+Key shape rules to remember (frontend reads these unguarded in places):
+- `/admin/*/list.php` must return `data.total` (dashboard counts) + the array.
+- `/teacher/get_students.php` -> `data.pagination.total` AND `data.students`.
+- `/student/get_current_results.php` -> `data.results.{class_test,internal_1,internal_2}` arrays.
+- `/assignments/get_student_assignments.php` -> `data.{pending,rejected,submitted,overdue}` arrays.
+
+Still empty (no source data): marks, attendance history, fees, payments, materials,
+assignments. Offer to seed sample data if the user wants populated dashboards.

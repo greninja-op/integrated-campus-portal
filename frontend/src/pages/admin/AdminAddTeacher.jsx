@@ -124,7 +124,7 @@ export default function AdminAddTeacher() {
     // Upload image if selected
     if (selectedImage) {
       if (!selectedImage || !(selectedImage instanceof Blob)) {
-        showAlert('Invalid image data', 'Invalid image data. Please try uploading again.', 'error')
+        setAlert({ show: true, message: 'Invalid image data. Please try uploading again.', type: 'error' })
         setLoading(false)
         return
       }
@@ -134,7 +134,7 @@ export default function AdminAddTeacher() {
       if (uploadResponse.success) {
         profileImageUrl = uploadResponse.image_url
       } else {
-        showAlert('Upload failed', 'Failed to upload image: ' + (uploadResponse.error || 'Unknown error'), 'error')
+        setAlert({ show: true, message: 'Failed to upload image: ' + (uploadResponse.error || 'Unknown error'), type: 'error' })
         setLoading(false)
         return
       }

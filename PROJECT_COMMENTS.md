@@ -1357,3 +1357,46 @@ Re-run anytime: `cd server && node create-test-users.mjs`.
 ---
 
 *Last Updated: June 18, 2026 - Added student/teacher/admin test accounts*
+
+
+---
+
+## 📅 June 18, 2026 (Part 5)
+
+### 7. Fix "pages not loading / data not loading" across the app
+**Request:** "many problems with each page ... some frontend not loading, some data not loading ... analyse each page and fix"
+
+**Root cause:** the Node backend only implemented a few endpoints (rest hit a
+catch-all returning empty `data:{}`), and a few pages had guaranteed JS crashes.
+
+**Backend (`server/index.mjs`) — rewritten to implement all endpoints the
+frontend calls, with the EXACT response shapes (arrays always present):**
+- Auth (login/verify/logout).
+- Admin students/teachers: list + create + update + delete (real, with bcrypt,
+  user+profile docs, teacher_subjects links). subjects/list with `data.total`.
+- Notices: get_all/create/delete (real; returns both `category/created_at` and
+  `image_url/attachment_url/date` to satisfy all consumers).
+- Student: profile (real), get_marks, get_current_results (returns
+  `results.{class_test,internal_1,internal_2}` always arrays), get_attendance
+  (daily/summary shapes), fees, payments, dashboard_attendance.
+- Teacher: profile, get_students (`data.students` + `data.pagination.total`),
+  get_assigned_subjects (returns department subjects so pages are usable).
+- Attendance: get_students (dept+sem, prefills existing status) + mark.php
+  (real upsert into `attendance`).
+- Assignments + materials: correctly-shaped empty responses + success on writes.
+- Image/material/assignment uploads accepted (placeholder), so no hangs.
+- Safe fallback for any still-unmapped route.
+
+**Frontend bug fixes:**
+- `services/api.js`: added missing `getAttendance()` (Dashboard.jsx called a
+  non-existent method → crashed the student dashboard).
+- `admin/AdminAddTeacher.jsx`: replaced undefined `showAlert(...)` calls with
+  `setAlert({...})` (crashed on image-upload error path).
+- `TeacherViewMaterials.jsx`: fixed stray API base URL `:8000` → `:8080`.
+
+**Verified:** admin (16 students / 16 teachers / 105 subjects), teacher (6 BCA
+students / 36 BCA subjects), student results arrays present — all via Atlas.
+
+---
+
+*Last Updated: June 18, 2026 - Implemented full API surface; fixed page/data loading*
