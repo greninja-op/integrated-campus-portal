@@ -609,11 +609,60 @@ api.post('/teacher/enter_marks.php', auth, requireRole('teacher'), saveExamMarks
 api.post('/teacher/update_marks.php', auth, requireRole('teacher'), saveExamMarks);
 
 // ===== MATERIALS ============================================================
-const emptyMaterials = (_req, res) => res.json({ success: true, materials: [], data: { materials: [] } });
-api.get('/materials/get_all.php', emptyMaterials);
-api.get('/materials/get_by_department.php', emptyMaterials);
-api.post('/materials/upload.php', (_req, res) => res.json({ success: true, message: 'Uploaded', data: {} }));
-api.post('/materials/delete.php', (_req, res) => res.json({ success: true, message: 'Deleted' }));
+function materialsListHandler(field) {
+  return async (req, res) => {
+    const q = {};
+    if (field && req.query[field]) q[field] = req.query[field];
+    const docs = await db.collection('study_materials').find(q).sort({ uploaded_at: -1 }).toArray();
+    const materials = docs.map(materialOut);
+    res.json({ success: true, materials, data: { materials } });
+  };
+}
+api.get('/materials/get_all.php', materialsListHandler(null));
+api.get('/materials/get_by_department.php', materialsListHandler('department'));
+
+api.post('/materials/upload.php', auth, requireRole('teacher'), upload.single('file'), async (req, res) => {
+  const b = req.body || {};
+  if (!req.file) return fail(res, 400, 'A file is required');
+  const u = await db.collection('users').findOne({ _id: oid(req.user.user_id) });
+  const now = new Date();
+  const doc = {
+    department: b.department || null, semester: toInt(b.semester, 0), subject: b.subject || '',
+    material_type: b.materialType || b.material_type || 'notes',
+    unit: b.unit || null, year: b.year || null, exam_type: b.examType || b.exam_type || null,
+    description: b.description || null,
+    file_name: req.file.originalname, stored_name: req.file.filename,
+    file_path: `uploads/materials/${req.file.filename}`,
+    file_url: `/uploads/materials/${req.file.filename}`,
+    file_size: req.file.size, uploaded_by: u?._id || null, uploaded_at: now
+  };
+  const r = await db.collection('study_materials').insertOne(doc);
+  res.json({ success: true, message: 'Material uploaded', data: { id: String(r.insertedId), ...materialOut({ ...doc, _id: r.insertedId }) } });
+});
+
+async function serveMaterial(req, res, disposition) {
+  const id = oid(req.query.id);
+  if (!id) return fail(res, 400, 'id is required');
+  const m = await db.collection('study_materials').findOne({ _id: id });
+  if (!m) return fail(res, 404, 'Material not found');
+  const fp = resolve(__dirname, m.file_path || `uploads/materials/${m.stored_name || ''}`);
+  if (!existsSync(fp)) return fail(res, 404, 'File no longer exists on server');
+  res.setHeader('Content-Disposition', `${disposition}; filename="${(m.file_name || 'file').replace(/"/g, '')}"`);
+  res.sendFile(fp);
+}
+api.get('/materials/view.php', auth, (req, res) => serveMaterial(req, res, 'inline'));
+api.get('/materials/download.php', auth, (req, res) => serveMaterial(req, res, 'attachment'));
+
+api.post('/materials/delete.php', auth, requireRole('teacher'), async (req, res) => {
+  const id = oid(req.body.id || req.body.material_id);
+  if (!id) return fail(res, 400, 'id is required');
+  const m = await db.collection('study_materials').findOne({ _id: id });
+  if (m) {
+    await db.collection('study_materials').deleteOne({ _id: id });
+    try { const fp = resolve(__dirname, m.file_path || ''); if (m.file_path && existsSync(fp)) unlinkSync(fp); } catch { /* ignore */ }
+  }
+  res.json({ success: true, message: 'Material deleted' });
+});
 
 // ===== ASSIGNMENTS ==========================================================
 api.get('/assignments/get_student_subjects.php', auth, async (req, res) => {
