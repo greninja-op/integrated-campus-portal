@@ -295,7 +295,7 @@ api.post('/admin/teachers/update.php', auth, requireRole('admin'), async (req, r
   }
   ok(res, {}, 'Teacher updated');
 });
-api.post('/admin/teachers/delete.php', auth, async (req, res) => {
+api.post('/admin/teachers/delete.php', auth, requireRole('admin'), async (req, res) => {
   const t = await db.collection('teachers').findOne({ teacher_id: req.body.teacher_id });
   if (!t) return fail(res, 404, 'Teacher not found');
   await db.collection('teachers').deleteOne({ _id: t._id });
@@ -477,19 +477,25 @@ api.post('/assignments/review_submission.php', (_req, res) => res.json({ success
 api.get('/assignments/get_dashboard_notifications.php', auth, (_req, res) => ok(res, { notifications: [] }));
 
 // ===== FEES (admin) ========================================================
-api.get('/admin/fees/pending_students.php', auth, (_req, res) => ok(res, { students: [] }));
-api.post('/admin/fees/send_reminder.php', auth, (_req, res) => ok(res, {}, 'Reminder sent'));
+api.get('/admin/fees/pending_students.php', auth, requireRole('admin'), (_req, res) => ok(res, { students: [] }));
+api.post('/admin/fees/send_reminder.php', auth, requireRole('admin'), (_req, res) => ok(res, {}, 'Reminder sent'));
 api.post('/payments/process.php', auth, (_req, res) => ok(res, {}, 'Payment processed'));
 
 // ===== UPLOAD ==============================================================
 api.post('/upload/upload_image.php', (_req, res) => res.json({ success: true, data: { file_path: '/uploads/placeholder.png' }, message: 'Uploaded (placeholder)' }));
 
-// ===== fallback so the UI never hard-crashes ===============================
-api.get(/.*/, (req, res) => { console.log('  [unhandled GET]', req.path); res.json({ success: true, data: {} }); });
-api.post(/.*/, (req, res) => { console.log('  [unhandled POST]', req.path); res.json({ success: true, data: {}, message: 'Not implemented' }); });
+// ===== unknown API routes -> 404 (no more blanket success) =================
+api.all(/.*/, (req, res) => fail(res, 404, `Unknown endpoint: ${req.method} ${req.originalUrl}`, 'not_found'));
 
 app.use('/api', api);
 app.get('/', (_req, res) => res.json({ status: 'ICP Node backend running', db: DB_NAME }));
+
+// Central error handler (catches sync + async route errors via express-async-errors)
+app.use((err, _req, res, _next) => {
+  console.error('Unhandled error:', err);
+  if (res.headersSent) return;
+  res.status(500).json({ success: false, error: 'server_error', message: 'Something went wrong' });
+});
 
 async function start() {
   await client.connect();
