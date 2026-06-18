@@ -151,6 +151,40 @@ async function subjectsById() {
   return map;
 }
 
+// Fees that apply to a student (matching dept+semester, or fee with null dept/sem = all)
+async function feesForStudent(s) {
+  if (!s) return [];
+  return await db.collection('fees').find({
+    is_active: { $ne: false },
+    $and: [
+      { $or: [{ department: s.department }, { department: null }, { department: { $exists: false } }] },
+      { $or: [{ semester: s.semester }, { semester: null }, { semester: { $exists: false } }] }
+    ]
+  }).toArray();
+}
+async function studentFeeItems(s) {
+  if (!s) return { items: [], summary: { total_paid: 0, total_pending: 0 } };
+  const fees = await feesForStudent(s);
+  const payments = await db.collection('payments').find({ student_id: s._id }).toArray();
+  const paidMap = {};
+  for (const p of payments) if (p.status === 'completed') paidMap[String(p.fee_id)] = p;
+  let total_paid = 0; let total_pending = 0;
+  const items = fees.map((f) => {
+    const isPaid = !!paidMap[String(f._id)];
+    if (isPaid) total_paid += f.amount; else total_pending += f.amount;
+    const fd = f.fee_details || null;
+    return {
+      id: String(f._id),
+      description: f.fee_name || f.fee_type,
+      amount: f.amount,
+      due_date: (fd && fd.lastDateNormal) || (f.due_date ? new Date(f.due_date).toISOString().slice(0, 10) : null),
+      status: isPaid ? 'paid' : 'pending',
+      feeDetails: fd
+    };
+  });
+  return { items, summary: { total_paid, total_pending } };
+}
+
 const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
