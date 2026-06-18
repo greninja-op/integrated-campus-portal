@@ -141,9 +141,15 @@ function noticeOut(n) {
 }
 
 const app = express();
-app.use(cors());
+app.use(helmet());
+app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json({ limit: '15mb' }));
 app.use((req, _res, next) => { console.log(`${req.method} ${req.path}`); next(); });
+
+// Stricter rate limit on login to slow brute-force attempts.
+const loginLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, standardHeaders: true, legacyHeaders: false,
+  handler: (_req, res) => res.status(429).json({ success: false, error: 'rate_limited', message: 'Too many login attempts. Please try again shortly.' }) });
+
 const api = express.Router();
 
 // ===== AUTH =================================================================
