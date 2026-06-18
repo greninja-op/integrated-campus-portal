@@ -61,7 +61,7 @@ If you don't have `mongosh` (or you're targeting Atlas), use the Node.js loader
 `atlas-setup.mjs`. It uses the official `mongodb` driver and does the same thing
 as `schema.js` + all seeds in one run.
 
-1. Put your Atlas connection string in `backend/.env` (gitignored):
+1. Put your Atlas connection string in `server/.env` (gitignored):
 
    ```
    MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=<app>
@@ -95,20 +95,16 @@ to `"error"` once the application layer is fully migrated.
 - Teachers: `teacher{1-5}.{bca|bba|bcom}@college.com` / `password123`
 - Students: `student{1-5}.{bca|bba|bcom}@college.com` / `password123`
 
-(Password hashes are bcrypt, carried over verbatim from the SQL seeds so PHP
-`password_verify()` continues to work.)
+(Password hashes are bcrypt, carried over verbatim from the original SQL seeds;
+the Node backend verifies them with `bcryptjs`, which supports the `$2y$` prefix.)
 
-## ⚠️ Important: application layer still targets MySQL
+## Application backend
 
-This conversion covers the **database definition and seed data only**. The PHP
-backend (`backend/config/database.php` and every `*.php` API endpoint) still uses
-PDO + MySQL prepared statements. To actually run the app on MongoDB you also need to:
+The app now runs on a **Node/Express + MongoDB backend** in `server/` (the old
+PHP/MySQL backend was removed). The Node backend reads the same `MONGODB_URI`
+from `server/.env`. Collection and field names here mirror the original MySQL
+tables/columns, which is what made that backend migration straightforward.
 
-1. Replace `backend/config/database.php` with a MongoDB connection (e.g. the
-   `mongodb/mongodb` PHP library via Composer).
-2. Rewrite each API endpoint's SQL queries as MongoDB queries/aggregations.
-3. Reimplement the `progress_students_semester` stored procedure as a scheduled
-   job or application-level routine.
-
-The schema here is designed to make that backend migration straightforward
-(collection + field names mirror the original tables/columns).
+Note: the `progress_students_semester` stored procedure / event from MySQL is not
+portable to MongoDB and would need to be reimplemented as a scheduled job or
+application-level routine if/when semester auto-progression is required.

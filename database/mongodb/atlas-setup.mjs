@@ -30,9 +30,18 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // --- Minimal .env parser (reads backend/.env, falls back to process.env) ----
 function loadEnv() {
   const env = { ...process.env };
-  try {
-    const envPath = resolve(__dirname, '../../backend/.env');
-    const raw = readFileSync(envPath, 'utf8');
+  const candidates = [
+    resolve(__dirname, '.env'),
+    resolve(__dirname, '../../server/.env'),
+    resolve(__dirname, '../../backend/.env')
+  ];
+  for (const envPath of candidates) {
+    let raw;
+    try {
+      raw = readFileSync(envPath, 'utf8');
+    } catch {
+      continue;
+    }
     for (const line of raw.split(/\r?\n/)) {
       const trimmed = line.trim();
       if (!trimmed || trimmed.startsWith('#')) continue;
@@ -45,8 +54,7 @@ function loadEnv() {
       }
       if (!(key in env)) env[key] = val;
     }
-  } catch {
-    // no .env file - rely on process.env
+    break;
   }
   return env;
 }

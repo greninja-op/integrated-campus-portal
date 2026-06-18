@@ -1289,3 +1289,48 @@ rotate it in Atlas (Database Access).
 ---
 
 *Last Updated: June 18, 2026 - MongoDB Atlas connected and seeded*
+
+
+---
+
+## 📅 June 18, 2026 (Part 3)
+
+### 5. Node/Express + MongoDB Backend, Running the App, and Cleanup
+**Request:** "now run the project ... use a port not in use ... delete unnecessary files (keep AI_MEMORY and PROJECT_COMMENTS)"
+
+**Changes Made:**
+- **Backend (new)**: Built a Node/Express + MongoDB backend in `server/` because PHP
+  isn't installed and the old backend was MySQL-based. It serves the same
+  `/api/*.php` routes the frontend calls, backed by Atlas.
+  - Files: `server/index.mjs`, `server/package.json`, `server/.env` (gitignored),
+    `server/.env.example`.
+  - Auth (JWT + bcryptjs for `$2y$` hashes), admin lists/deletes, notices, student
+    & teacher reads, materials, plus a safe fallback for unported endpoints.
+- **Run**: backend on **http://localhost:8080**, frontend on **http://localhost:5173**
+  (both confirmed free). Verified admin/admin123 login end-to-end.
+- **Env**: moved Mongo/JWT config from `backend/.env` to `server/.env`;
+  `database/mongodb/atlas-setup.mjs` updated to read it.
+
+**Files/Dirs Deleted (recoverable via git):**
+- `backend/` (old PHP/MySQL backend, replaced by `server/`)
+- `production/` (old Docker/CI/deploy docs) — `LICENSE` moved to repo root first
+- `scripts/` (MySQL/XAMPP helper scripts)
+- old MySQL DB files: `database/schema.sql`, `database/migrations/`,
+  `database/seeds/`, `database/backup/`, `database/*.py`,
+  `database/insert_subjects.sql`, `database/assign_subjects_to_teachers.sql`,
+  `database/requirements.txt`
+- `.env.dev`, root `create_notices_table.sql`
+
+**Kept:** `frontend/`, `server/`, `database/mongodb/`, `README.md`, `LICENSE`,
+`AI_MEMORY.md`, `PROJECT_COMMENTS.md`, `.gitignore`, `.editorconfig`, `.vscode/`.
+
+**How to run now:**
+```bash
+# 1. DB (once): cd database/mongodb && npm install && npm run setup
+# 2. API:       cd server && npm install && npm start      (http://localhost:8080)
+# 3. UI:        cd frontend && npm install && npm run dev   (http://localhost:5173)
+```
+
+---
+
+*Last Updated: June 18, 2026 - App running on Node/Express + MongoDB; project cleaned up*

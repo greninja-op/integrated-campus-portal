@@ -1,72 +1,74 @@
 # ICP - Integrated Campus Portal (Development)
 
-> 🚧 **Active Development** - This project is currently under development (60% complete)
+> 🚧 **Active Development**
 
-## Quick Start
-
-```bash
-# 1. Start MongoDB (local install or a managed instance), then load the schema + seeds:
-cd database/mongodb
-mongosh "mongodb://localhost:27017/studentportal" --file setup.js
-
-# 2. Start the PHP backend (XAMPP PHP shown; adjust path as needed):
-cd backend
-php -S localhost:8000
-
-# 3. Start the frontend dev server:
-cd frontend
-npm install
-npm run dev
-```
-
-## Access
-
-- **Frontend**: http://localhost:5173 (Hot Reload)
-- **Backend**: http://localhost:8000
-- **Database**: MongoDB at mongodb://localhost:27017 (database `studentportal`)
+A university management system: students, teachers, and admins manage attendance,
+marks, fees, study materials, notices, and assignments across BCA / BBA / B.Com.
 
 ## Tech Stack
 
-- **Frontend**: React 19 + Vite + Tailwind CSS
-- **Backend**: PHP 8.2
-- **Database**: MongoDB
+- **Frontend**: React 19 + Vite + Tailwind CSS (`frontend/`)
+- **Backend**: Node.js + Express (`server/`)
+- **Database**: MongoDB (Atlas)
 
-## Database
+> The project was migrated from PHP + MySQL to a Node/Express + MongoDB stack.
+> The old PHP backend and MySQL files have been removed.
 
-The database now targets **MongoDB**. The schema, validators, indexes, and seed
-data live in `database/mongodb/` (converted from the original MySQL SQL files).
-See `database/mongodb/README.md` for details and the conversion mapping.
+## Project layout
 
-> Note: the original MySQL `.sql` files are still present under `database/` for
-> reference. The PHP backend's data layer (`backend/config/database.php` and the
-> API endpoints) still uses PDO/MySQL and needs to be migrated to MongoDB
-> separately — see the note at the bottom of `database/mongodb/README.md`.
+```
+frontend/          React + Vite app (UI)
+server/            Node/Express API backed by MongoDB
+database/mongodb/  MongoDB schema + seed scripts (and Atlas loader)
+```
 
-## Project Status
+## Prerequisites
 
-- [x] Database schema
-- [x] Authentication system
-- [x] Student portal (partial)
-- [x] Teacher portal (partial)
-- [x] Admin portal (partial)
-- [ ] Complete feature implementation
-- [ ] Backend migration to MongoDB
-- [ ] Testing
-- [ ] Production deployment
+- Node.js (v18+)
+- A MongoDB connection string (Atlas or local). Put it in `server/.env`
+  (see `server/.env.example`).
 
-## Development Workflow
+## 1. Set up the database (one time)
 
-1. Edit files in `frontend/src/` or `backend/`
-2. The frontend hot-reloads automatically; restart the PHP server for backend changes
+```bash
+cd database/mongodb
+npm install
+npm run setup        # creates collections, indexes, and seed data
+```
 
-## Production Files
+`npm run setup` reads the connection string from `server/.env`.
 
-All production-ready files and documentation are in the `production/` folder.
+## 2. Start the backend (port 8080)
 
-## Contributing
+```bash
+cd server
+npm install
+npm start            # http://localhost:8080
+```
 
-This project is not accepting contributions until development is complete.
+## 3. Start the frontend (port 5173)
+
+```bash
+cd frontend
+npm install
+npm run dev          # http://localhost:5173
+```
+
+Open **http://localhost:5173** and log in.
+
+## Default credentials
+
+- **Admin**: `admin` / `admin123`
+- **Teachers**: `teacher{1-5}.{bca|bba|bcom}@college.com` / `password123`
+- **Students**: `student{1-5}.{bca|bba|bcom}@college.com` / `password123`
+
+## Notes
+
+- `server/.env` and `*/node_modules` are gitignored.
+- The backend currently implements auth + the core read/admin endpoints needed to
+  run the app. Endpoints not yet ported return an empty success response so the
+  UI stays functional. See `server/index.mjs`.
 
 ## License
 
-See `production/LICENSE` for details.
+See `LICENSE`.

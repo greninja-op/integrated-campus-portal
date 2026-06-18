@@ -1783,3 +1783,50 @@ backend/api/student/
 ### Still TODO
 - Backend PHP still uses MySQL/PDO. Next step is wiring `backend/config/database.php`
   (and endpoints) to the MongoDB driver using `MONGODB_URI`.
+
+
+---
+
+## June 18, 2026 (cont.) - Node/Express Backend + Run + Cleanup
+
+**Request**: "run the project ... use a port not in use ... delete unnecessary files (keep AI_MEMORY and PROJECT_COMMENTS)"
+
+### New backend (server/)
+- PHP is NOT installed locally and the old PHP backend was MySQL-based, so built a
+  **Node/Express + MongoDB backend** in `server/` that serves the same `/api/*.php`
+  routes the React frontend calls. Connects to Atlas via `server/.env`.
+- Stack: express, cors, jsonwebtoken (HS256), bcryptjs (verifies the `$2y$` bcrypt
+  hashes), mongodb driver. DNS set to 8.8.8.8/1.1.1.1 for SRV.
+- Implemented: auth (login/verify/logout), admin students/teachers/subjects list +
+  deletes, notices get/create/delete, student profile/marks/attendance/fees/payments,
+  teacher profile/assigned_subjects, materials. A catch-all returns empty success
+  for any not-yet-ported endpoint so the UI never hard-crashes.
+- Login matches by username OR email; role check (staff==teacher); returns
+  `{ success, data:{ user, token } }` with profile merged in (matches old PHP shape).
+
+### Running locally
+- Backend: `cd server && npm install && npm start` -> http://localhost:8080
+- Frontend: `cd frontend && npm install && npm run dev` -> http://localhost:5173
+- Both ports were confirmed free. Frontend api.js base URL is http://localhost:8080/api.
+- Verified end-to-end: admin/admin123 login -> token -> authenticated admin calls -> verify.
+
+### Env relocation
+- Moved Mongo/JWT config from `backend/.env` to `server/.env` (gitignored).
+  `database/mongodb/atlas-setup.mjs` now reads `server/.env` (fallback list).
+
+### Cleanup (deleted - recoverable via git history)
+- `backend/` (entire old PHP backend - replaced by server/)
+- `production/` (Docker/CI/deploy docs for old stack) - moved `LICENSE` to root first
+- `scripts/` (MySQL/XAMPP .bat + .sh helpers)
+- old MySQL files: `database/schema.sql`, `database/migrations/`, `database/seeds/`,
+  `database/backup/`, `database/*.py`, `insert_subjects.sql`,
+  `assign_subjects_to_teachers.sql`, `requirements.txt`
+- `.env.dev`, root `create_notices_table.sql`
+- KEPT: `frontend/`, `server/`, `database/mongodb/`, `README.md`, `LICENSE`,
+  `AI_MEMORY.md`, `PROJECT_COMMENTS.md`, `.gitignore`, `.editorconfig`, `.vscode/`.
+
+### TODO / notes
+- Many endpoints return empty data (marks/attendance/fees not seeded) - pages render
+  but show empty. Port remaining write endpoints (create/update students, marks,
+  attendance, materials upload) to the Node backend as needed.
+- Rotate the Atlas DB password (was shared in chat). Update `server/.env` after.
