@@ -19,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import dns from 'node:dns';
+import { toInt, normalizeRole, generateReceipt, attendancePercentage } from './lib/util.mjs';
 
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 const __dirname = dirname(fileURLToPath(import.meta.url));
