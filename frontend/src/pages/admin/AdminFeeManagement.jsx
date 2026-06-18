@@ -285,6 +285,26 @@ Date: ${new Date().toLocaleDateString('en-IN')}`,
     }
     localStorage.setItem('feePayments', JSON.stringify([paymentNotice, ...existingPayments]))
 
+    // Persist the fee structure to the backend so students see it and it survives refresh
+    try {
+      await api.createFee({
+        fee_type: feeNotice.feeType,
+        fee_name: feeTypeName,
+        feeTypeName,
+        amount: feeNotice.amount,
+        department: feeNotice.department,
+        semester: feeNotice.semester,
+        lastDateNormal: feeNotice.lastDateNormal,
+        lastDateFine: feeNotice.lastDateFine,
+        lastDateSuperFine: feeNotice.lastDateSuperFine,
+        fineAmount: feeNotice.fineAmount,
+        superFineAmount: feeNotice.superFineAmount,
+        description: feeNotice.description
+      })
+    } catch (e) {
+      console.error('Failed to persist fee to backend:', e)
+    }
+
     setLoading(false)
     
     alert(

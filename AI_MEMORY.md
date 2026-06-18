@@ -1911,3 +1911,19 @@ assignments), P2 (frontend VITE_API_URL, logging/monitoring), P3 (tests, CI, dep
 P1 remaining: fees & payments (fee structures + record payment), study-materials file
 upload (real storage), assignments. Then P2 (frontend VITE_API_URL, logging) and P3
 (tests, CI, deploy).
+
+
+---
+
+## June 18, 2026 (cont.) - P1 fees & payments end-to-end
+
+- Backend: admin fees create/list/delete + pending_students (computed from fees vs
+  payments); student get_fees/get_payments return real applicable fees w/ paid status
+  + summary; payments/process records a completed payment with generated receipt
+  (idempotent). Fee docs carry a `fee_details` sub-doc (fine dates/amounts, feeTypeName).
+- Frontend: api.createFee added; AdminFeeManagement "Send Fee Notice" also persists fee
+  to DB; Payments.jsx Pay Now confirms+processPayment+reload (fixed wrong-shape bug).
+- Verified: admin creates BCA sem1 fee 15000 -> student sees pending -> pays -> paid 15000/pending 0.
+
+P1 remaining: study materials real file upload/storage, assignments. Then P2 (frontend
+VITE_API_URL env, logging/monitoring, trust proxy) and P3 (tests, CI, deploy).

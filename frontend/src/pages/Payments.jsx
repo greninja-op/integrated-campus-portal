@@ -143,15 +143,17 @@ export default function Payments() {
         alert('? Payment Failed\n\nPlease try again or contact support.')
       }
     } else {
-      // Handle API-based payments
+      // Handle API-based payments (DB-backed fees)
+      const confirmed = window.confirm(
+        `Proceed to pay ${payment.description}?\n\nAmount: ₹${payment.amount.toLocaleString()}`
+      )
+      if (!confirmed) return
       const result = await api.processPayment(payment.id, 'Online')
       if (result.success) {
-        // Refresh payments
-        const updatedResult = await api.getPayments(user.student_id)
-        if (updatedResult.success) {
-          setPayments(updatedResult.data || [])
-          setSummary(updatedResult.summary || { total_paid: 0, total_pending: 0 })
-        }
+        alert('✅ Payment Successful!\n\nYour fee payment has been recorded.')
+        window.location.reload()
+      } else {
+        alert('❌ Payment failed: ' + (result.message || 'Please try again.'))
       }
     }
   }

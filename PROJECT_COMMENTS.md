@@ -1465,3 +1465,39 @@ marked by a teacher now also surfaces in the student daily/summary views.
 ---
 
 *Last Updated: June 18, 2026 - Marks & attendance now persist and display end-to-end*
+
+
+---
+
+## 📅 June 18, 2026 (Part 8)
+
+### 10. P1 — Fees & Payments persistence (end-to-end)
+**Request:** "yes then commit" (continue P1 with fees & payments)
+
+**Backend (`server/index.mjs`):**
+- `/admin/fees/create.php` (admin) — persists a fee structure to `fees` (stores a
+  `fee_details` sub-doc with fine dates/amounts + feeTypeName).
+- `/admin/fees/list.php`, `/admin/fees/delete.php` (admin).
+- `/admin/fees/pending_students.php` (admin) — computes pending list from fees vs
+  completed payments, shaped for AdminFeeManagement (rollNo, name, dept, year/sem,
+  feeType, amount, dueDate, fine/superFine).
+- `/student/get_fees.php` & `/student/get_payments.php` — real: applicable fees for
+  the student's dept+sem with paid/pending status + summary {total_paid,total_pending}.
+- `/payments/process.php` — records a completed payment to `payments` (amount, method,
+  generated receipt_number, transaction_id); idempotent if already paid.
+
+**Frontend:**
+- `services/api.js`: added `createFee()`.
+- `AdminFeeManagement.jsx`: "Send Fee Notice" now also persists the fee via
+  `api.createFee` (kept existing localStorage notice for the notice board text).
+- `Payments.jsx`: DB-backed "Pay Now" now confirms, calls `processPayment`, and
+  reloads on success (fixed a prior wrong-shape state bug).
+
+**Verified end-to-end:** admin created BCA Sem-1 fee ₹15,000 → student saw it pending
+→ paid (receipt generated) → student summary then paid ₹15,000 / pending ₹0.
+
+**P1 remaining:** study-materials real file upload/storage, assignments.
+
+---
+
+*Last Updated: June 18, 2026 - Fees & payments persist end-to-end*
