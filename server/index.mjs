@@ -187,7 +187,7 @@ api.get('/admin/students/list.php', auth, requireRole('admin'), async (req, res)
   const students = await Promise.all((await cur.toArray()).map(studentWithUser));
   ok(res, { students, total });
 });
-api.post('/admin/students/create.php', auth, async (req, res) => {
+api.post('/admin/students/create.php', auth, requireRole('admin'), async (req, res) => {
   const b = req.body || {};
   if (!b.student_id || !b.username) return fail(res, 400, 'student_id and username are required');
   if (await db.collection('students').findOne({ student_id: b.student_id })) return fail(res, 409, 'Student ID already exists');
@@ -205,7 +205,7 @@ api.post('/admin/students/create.php', auth, async (req, res) => {
   });
   ok(res, {}, 'Student created');
 });
-api.post('/admin/students/update.php', auth, async (req, res) => {
+api.post('/admin/students/update.php', auth, requireRole('admin'), async (req, res) => {
   const b = req.body || {};
   const s = await db.collection('students').findOne({ student_id: b.student_id });
   if (!s) return fail(res, 404, 'Student not found');
