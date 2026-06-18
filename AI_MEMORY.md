@@ -1927,3 +1927,21 @@ upload (real storage), assignments. Then P2 (frontend VITE_API_URL, logging) and
 
 P1 remaining: study materials real file upload/storage, assignments. Then P2 (frontend
 VITE_API_URL env, logging/monitoring, trust proxy) and P3 (tests, CI, deploy).
+
+
+---
+
+## June 18, 2026 (cont.) - P1 study materials file upload
+
+- Added multer; files stored on disk at server/uploads/materials/ (gitignored),
+  static-served at /uploads.
+- materials upload (teacher/admin, multipart 'file'), get_all/get_by_department
+  (returns both top-level `materials` and `data.materials` + field aliases
+  material_type/type, file_name/fileName, uploaded_at/uploadedAt), view/download
+  (auth, stream by ?id=), delete (removes doc + unlinks file).
+- Verified: teacher upload -> list -> download (200, exact bytes).
+- material_type sent by TeacherUploadMaterials is 'notes'/'question_paper' (singular) -
+  stored as-is; validator is warn-level so no rejection.
+
+P1 remaining: assignments (create/submit/review with files). Then P2 (frontend
+VITE_API_URL, logging, trust proxy) and P3 (tests, CI, deploy).
