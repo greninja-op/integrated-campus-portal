@@ -1501,3 +1501,36 @@ marked by a teacher now also surfaces in the student daily/summary views.
 ---
 
 *Last Updated: June 18, 2026 - Fees & payments persist end-to-end*
+
+
+---
+
+## 📅 June 18, 2026 (Part 9)
+
+### 11. P1 — Study Materials real file upload/storage
+**Request:** "yes and commit" (continue P1 with study materials upload)
+
+**Backend (`server/index.mjs`, added dep: multer):**
+- Files now stored on disk under `server/uploads/materials/` (gitignored) via multer
+  (25 MB limit, sanitized unique filenames). Static served at `/uploads`.
+- `/materials/upload.php` (teacher/admin) — multipart `file` + metadata (department,
+  semester, subject, materialType, unit, year, examType, description) → inserts into
+  `study_materials`.
+- `/materials/get_all.php` & `/materials/get_by_department.php` — real listing,
+  returning both top-level `materials` and `data.materials` (consumers differ), with a
+  superset of field aliases (material_type/type, file_name/fileName, uploaded_at/uploadedAt).
+- `/materials/view.php` & `/materials/download.php` (auth) — stream the stored file
+  (inline / attachment) by `?id=`.
+- `/materials/delete.php` (teacher/admin) — removes the doc and unlinks the file.
+
+**Other:** added `server/uploads/` to `.gitignore`.
+
+**Verified:** teacher uploaded a file → listed via get_by_department → downloaded back
+(HTTP 200, exact content). The existing Teacher/Admin/Student materials pages already
+call these endpoints (field name `file`, `materialType`).
+
+**P1 remaining:** assignments (create/submit/review with files).
+
+---
+
+*Last Updated: June 18, 2026 - Study materials upload/storage/serving works*

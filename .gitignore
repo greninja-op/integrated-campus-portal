@@ -103,3 +103,6 @@ ssl/
 # Docker volumes (if mounted locally)
 data/
 volumes/
+
+# Server uploaded files (binaries should not be committed)
+server/uploads/
