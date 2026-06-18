@@ -140,6 +140,17 @@ function noticeOut(n) {
   };
 }
 
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+async function studentForReq(req) {
+  const u = await db.collection('users').findOne({ _id: oid(req.user.user_id) });
+  return u ? await db.collection('students').findOne({ user_id: u._id }) : null;
+}
+async function subjectsById() {
+  const map = {};
+  (await db.collection('subjects').find({}).toArray()).forEach((x) => { map[String(x._id)] = x; });
+  return map;
+}
+
 const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
