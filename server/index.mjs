@@ -376,12 +376,50 @@ api.get('/student/get_current_results.php', auth, async (req, res) => {
 });
 api.get('/student/get_historical_results.php', auth, (_req, res) => ok(res, { results: [] }));
 api.get('/student/get_attendance.php', auth, async (req, res) => {
-  const u = await db.collection('users').findOne({ _id: oid(req.user.user_id) });
-  const s = (u && await db.collection('students').findOne({ user_id: u._id })) || {};
-  const current_semester = s.semester || 1;
-  if (req.query.view_type === 'summary') return ok(res, { subjects: [], current_semester });
-  ok(res, { records: [], stats: { total: 0, present: 0, absent: 0, late: 0, excused: 0, percentage: 0 },
-            subjects: [], attendance: [], summary: {}, current_semester });
+  const s = await studentForReq(req);
+  const current_semester = s?.semester || 1;
+  const emptyDaily = { records: [], stats: { total: 0, present: 0, absent: 0, late: 0, excused: 0, percentage: 0 }, subjects: [], attendance: [], summary: {}, current_semester };
+  if (!s) return ok(res, emptyDaily);
+  const subjMap = await subjectsById();
+  const semFilter = req.query.semester ? String(req.query.semester) : null;
+  const matchSem = (r) => { const subj = subjMap[String(r.subject_id)]; return !semFilter || (subj && String(subj.semester) === semFilter); };
+
+  if (req.query.view_type === 'summary') {
+    const recs = (await db.collection('attendance').find({ student_id: s._id }).toArray()).filter(matchSem);
+    const bySubject = {};
+    for (const r of recs) {
+      const subj = subjMap[String(r.subject_id)];
+      const key = String(r.subject_id);
+      bySubject[key] = bySubject[key] || { subject: subj, total: 0, present: 0, months: {} };
+      const g = bySubject[key]; g.total++;
+      if (r.status === 'present' || r.status === 'late') g.present++;
+      const d = new Date(r.attendance_date); const mk = `${d.getUTCFullYear()}-${d.getUTCMonth()}`;
+      g.months[mk] = g.months[mk] || { month: d.getUTCMonth(), year: d.getUTCFullYear(), total_classes: 0, present_count: 0, absent_count: 0 };
+      const mm = g.months[mk]; mm.total_classes++;
+      if (r.status === 'present' || r.status === 'late') mm.present_count++; else mm.absent_count++;
+    }
+    const subjects = Object.values(bySubject).map((g) => ({
+      subject_name: g.subject?.subject_name || 'Unknown', subject_code: g.subject?.subject_code || '',
+      overall_percentage: g.total ? Math.round((g.present / g.total) * 100) : 0,
+      months: Object.values(g.months).map((m) => ({ month_name: MONTHS[m.month], year: m.year, total_classes: m.total_classes, present_count: m.present_count, absent_count: m.absent_count, percentage: m.total_classes ? Math.round((m.present_count / m.total_classes) * 100) : 0 }))
+    }));
+    return ok(res, { subjects, current_semester });
+  }
+
+  const now = new Date();
+  const month = toInt(req.query.month, now.getUTCMonth() + 1);
+  const year = toInt(req.query.year, now.getUTCFullYear());
+  const start = new Date(Date.UTC(year, month - 1, 1));
+  const end = new Date(Date.UTC(year, month, 1));
+  const recs = (await db.collection('attendance').find({ student_id: s._id, attendance_date: { $gte: start, $lt: end } }).sort({ attendance_date: 1 }).toArray()).filter(matchSem);
+  const records = []; const stats = { total: 0, present: 0, absent: 0, late: 0, excused: 0, percentage: 0 };
+  for (const r of recs) {
+    const subj = subjMap[String(r.subject_id)];
+    records.push({ status: r.status, subject_name: subj?.subject_name || 'Unknown', subject_code: subj?.subject_code || '', remarks: r.remarks || '', attendance_date: new Date(r.attendance_date).toISOString().slice(0, 10) });
+    stats.total++; if (stats[r.status] !== undefined) stats[r.status]++;
+  }
+  stats.percentage = stats.total ? Math.round(((stats.present + stats.late) / stats.total) * 100) : 0;
+  ok(res, { records, stats, subjects: [], attendance: records, summary: stats, current_semester });
 });
 api.get('/student/get_fees.php', auth, (_req, res) => ok(res, { fees: [], summary: { total_paid: 0, total_pending: 0 } }));
 api.get('/student/get_payments.php', auth, (_req, res) => ok(res, { payments: [], summary: { total_paid: 0, total_pending: 0 } }));
