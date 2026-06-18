@@ -1161,3 +1161,89 @@ function checkRole($required_role) {
 ---
 
 *Last Updated: November 25, 2025 - Marks Management System Complete*
+
+
+---
+
+## 📅 June 18, 2026
+
+### 1. Database Migration from MySQL to MongoDB
+**Request:** "convert the SQL files to be used for the mongo db and remove the docker containers"
+
+**Changes Made:**
+- **Database**: Converted the MySQL SQL files into MongoDB initialization scripts
+- **Files Created:**
+  - `database/mongodb/schema.js` (Created)
+  - `database/mongodb/setup.js` (Created)
+  - `database/mongodb/seeds/01_sessions.js` (Created)
+  - `database/mongodb/seeds/02_admin.js` (Created)
+  - `database/mongodb/seeds/03_populate_users.js` (Created)
+  - `database/mongodb/seeds/04_subjects.js` (Created)
+  - `database/mongodb/README.md` (Created)
+
+**What Changed:**
+- `schema.js` creates all 18 collections with `$jsonSchema` validators
+  (validationAction: warn) and indexes. It represents the **final-state** schema —
+  the base `schema.sql` plus every `migrations/*.sql` already applied
+  (parent/guardian fields, blood_group, exam_type, assignments,
+  assignment_submissions, exam_marks, enhanced marks ESA/ISA/credit_points,
+  notices category/priority, fee_notifications).
+- Seed scripts converted from the SQL seeds, idempotent via `upsert` on natural
+  keys (username, email, subject_code). bcrypt password hashes carried over
+  verbatim so PHP `password_verify()` keeps working.
+- Conversion rules: tables → collections, `id INT AUTO_INCREMENT` → `_id ObjectId`,
+  foreign keys → ObjectId references, `ENUM` → jsonSchema `enum`,
+  `CHECK BETWEEN` → `minimum`/`maximum`.
+- Stored procedure/event `progress_students_semester` is NOT portable to MongoDB —
+  noted in README that it must be reimplemented as an app/cron job.
+- Original MySQL `.sql` files left in place under `database/` for reference.
+
+**Run command:**
+```bash
+cd database/mongodb
+mongosh "mongodb://localhost:27017/studentportal" --file setup.js
+```
+
+### 2. Docker Removal
+**Request:** (same request) "remove the docker containers"
+
+**Changes Made:**
+- **DevOps**: Removed all Docker configuration and Docker-dependent scripts
+- **Files/Dirs Deleted:**
+  - `docker/` (whole directory)
+  - `production/docker/` (whole directory)
+  - `docker-compose.yml`, `docker-compose.dev.yml`
+  - `Dockerfile.backend.dev`, `Dockerfile.frontend.dev`
+  - `.dockerignore`, `DOCKERHUB_SETUP.txt`, `Makefile` (docker-only)
+  - `dev-start.bat`, `dev-start.sh`
+  - `scripts/quick-start.*`, `scripts/health-check.sh`, `scripts/backup.sh`,
+    `scripts/restore.sh`, `scripts/init-ssl.sh`, `scripts/backup-database.bat`,
+    `scripts/restore-database.bat`, `scripts/push-to-dockerhub.*`,
+    `scripts/docker-deploy.*`
+  - `production/.github/workflows/docker-build.yml` (built the deleted Dockerfiles)
+- **Files Modified:**
+  - `README.md` (rewritten for MongoDB + local-PHP workflow, Docker references removed)
+
+**What Changed:**
+- Kept local, non-Docker scripts (`SETUP_DATABASE.bat`, `START_BACKEND.bat`,
+  `EXPORT_CURRENT_DB.bat`, `IMPORT_BACKUP_DB.bat`) since they are MySQL/XAMPP based.
+- README now documents starting MongoDB + PHP built-in server + Vite dev server.
+
+### 3. Documentation & Git Workflow
+**Request:** "update these files as we go forwards and also should push to github everytime an actual change is done to the project files"
+
+**Changes Made:**
+- **Documentation**: Updated `AI_MEMORY.md` and `PROJECT_COMMENTS.md` with the
+  MongoDB conversion and Docker removal.
+- **Workflow**: Going forward, AI_MEMORY.md and PROJECT_COMMENTS.md are updated
+  after each real change, and changes are committed and pushed to GitHub.
+
+**⚠️ Still TODO (not part of this request):**
+- The PHP backend still uses PDO/MySQL (`backend/config/database.php` + all API
+  endpoints). Running on MongoDB requires rewriting the data layer with the
+  MongoDB PHP driver. Mongo collection/field names mirror the old tables/columns
+  to make that migration straightforward.
+
+---
+
+*Last Updated: June 18, 2026 - MongoDB Conversion & Docker Removal*

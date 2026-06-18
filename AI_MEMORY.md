@@ -1704,3 +1704,50 @@ backend/api/student/
 ---
 
 *Last Updated: November 25, 2025 - Marks Management System Complete*
+
+
+---
+
+## June 18, 2026 - MongoDB Conversion & Docker Removal
+
+**Request**: "convert the SQL files to be used for the mongo db and remove the docker containers"
+
+### MongoDB Conversion
+- Created `database/mongodb/` with the MongoDB version of the database, converted
+  from the MySQL SQL files (`schema.sql`, all `migrations/*.sql`, and seed files).
+- Files:
+  - `database/mongodb/schema.js` - 18 collections with `$jsonSchema` validators
+    (validationAction: warn) + all indexes. Final-state schema = base schema with
+    every migration already applied (parent/guardian fields, blood_group, exam_type,
+    assignments, exam_marks, enhanced marks ESA/ISA/credit_points, notices
+    category/priority, fee_notifications).
+  - `database/mongodb/seeds/01_sessions.js` (from 01_sessions.sql)
+  - `database/mongodb/seeds/02_admin.js` (from 02_admin.sql) - admin/admin123
+  - `database/mongodb/seeds/03_populate_users.js` (from populate_users.sql) -
+    15 teachers + 15 students + admin, all password123
+  - `database/mongodb/seeds/04_subjects.js` (from 11_all_subjects.sql) - full
+    BCA/BBA/B.Com curriculum
+  - `database/mongodb/setup.js` - loads schema + all seeds in order
+  - `database/mongodb/README.md` - usage + MySQL→Mongo mapping
+- Conversion rules: tables→collections, `id INT AUTO_INCREMENT`→`_id ObjectId`,
+  FK `xxx_id`→ObjectId reference, ENUM→jsonSchema enum, stored procedure/event
+  (progress_students_semester) NOT portable - must become an app/cron job.
+- Seeds are idempotent (upsert on natural keys). bcrypt hashes carried over verbatim.
+- Original MySQL `.sql` files left in place under `database/` for reference.
+
+### Docker Removal
+- Deleted: `docker/` dir, `production/docker/` dir, `docker-compose.yml`,
+  `docker-compose.dev.yml`, `Dockerfile.backend.dev`, `Dockerfile.frontend.dev`,
+  `.dockerignore`, `DOCKERHUB_SETUP.txt`, `Makefile` (docker-only), `dev-start.bat`,
+  `dev-start.sh`, and Docker-dependent scripts (quick-start, health-check, backup,
+  restore, init-ssl, backup-database.bat, restore-database.bat, push-to-dockerhub,
+  docker-deploy). Also removed `production/.github/workflows/docker-build.yml`.
+- Kept local non-Docker scripts (SETUP_DATABASE.bat, START_BACKEND.bat,
+  EXPORT/IMPORT_*_DB.bat) - these are MySQL/XAMPP based.
+- Updated `README.md` for the new MongoDB + local-PHP workflow (no Docker).
+
+### ⚠️ Still TODO (not part of this request)
+- The PHP backend still uses PDO/MySQL (`backend/config/database.php` + all API
+  endpoints). To run on MongoDB it needs the data layer rewritten with the
+  MongoDB PHP driver/library. The Mongo collection/field names intentionally
+  mirror the old tables/columns to make that migration straightforward.
