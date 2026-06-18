@@ -5,14 +5,18 @@
  * Reads MONGODB_URI / MONGODB_DB / JWT_SECRET / PORT from server/.env.
  */
 
+import 'express-async-errors';
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { MongoClient, ObjectId } from 'mongodb';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import dns from 'node:dns';
 
 dns.setServers(['8.8.8.8', '1.1.1.1']);
