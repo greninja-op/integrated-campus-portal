@@ -141,7 +141,7 @@ function noticeOut(n) {
 }
 
 const app = express();
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json({ limit: '15mb' }));
 app.use((req, _res, next) => { console.log(`${req.method} ${req.path}`); next(); });
