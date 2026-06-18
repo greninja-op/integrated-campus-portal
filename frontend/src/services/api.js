@@ -821,6 +821,16 @@ class ApiService {
       return { success: false, message: 'Failed to send reminder' };
     }
   }
+
+  // Admin - Create Fee structure (persists to DB)
+  async createFee(feeData) {
+    try {
+      return await this.authenticatedPost('/admin/fees/create.php', feeData);
+    } catch (error) {
+      console.error('Create fee error:', error);
+      return { success: false, message: 'Failed to create fee' };
+    }
+  }
 }
 
 export default new ApiService();
