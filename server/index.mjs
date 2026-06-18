@@ -56,18 +56,37 @@ const toInt = (v, d = undefined) => { const n = parseInt(v, 10); return Number.i
 const oid = (v) => { try { return new ObjectId(v); } catch { return null; } };
 
 function signToken(user) {
-  return jwt.sign({ user_id: String(user._id), username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+  return jwt.sign({ user_id: String(user._id), username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '24h', jwtid: randomUUID() });
 }
 function getToken(req) {
   const h = req.headers.authorization || '';
   const m = h.match(/Bearer\s+(.+)/i);
   return m ? m[1] : (req.query.token || null);
 }
+
+// In-memory token blacklist (jti -> expiry epoch). Cleared on restart; fine for
+// a single-instance deployment. For multi-instance, back this with a Mongo TTL collection.
+const tokenBlacklist = new Map();
+setInterval(() => { const now = Date.now() / 1000; for (const [jti, exp] of tokenBlacklist) if (exp < now) tokenBlacklist.delete(jti); }, 60000).unref?.();
+
 function auth(req, res, next) {
   const token = getToken(req);
   if (!token) return fail(res, 401, 'Please login to continue', 'unauthorized');
-  try { req.user = jwt.verify(token, JWT_SECRET); next(); }
-  catch { return fail(res, 401, 'Invalid or expired token', 'unauthorized'); }
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (decoded.jti && tokenBlacklist.has(decoded.jti)) return fail(res, 401, 'Session ended. Please login again.', 'unauthorized');
+    req.user = decoded;
+    next();
+  } catch { return fail(res, 401, 'Invalid or expired token', 'unauthorized'); }
+}
+
+// Authorization: allow if the user's role is in `roles` (admin always allowed).
+function requireRole(...roles) {
+  return (req, res, next) => {
+    if (!req.user) return fail(res, 401, 'Please login to continue', 'unauthorized');
+    if (req.user.role === 'admin' || roles.includes(req.user.role)) return next();
+    return fail(res, 403, 'You do not have permission to access this resource', 'forbidden');
+  };
 }
 
 async function activeSessionId() {
