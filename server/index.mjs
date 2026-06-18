@@ -494,7 +494,7 @@ api.get('/student/get_attendance.php', auth, async (req, res) => {
     records.push({ status: r.status, subject_name: subj?.subject_name || 'Unknown', subject_code: subj?.subject_code || '', remarks: r.remarks || '', attendance_date: new Date(r.attendance_date).toISOString().slice(0, 10) });
     stats.total++; if (stats[r.status] !== undefined) stats[r.status]++;
   }
-  stats.percentage = stats.total ? Math.round(((stats.present + stats.late) / stats.total) * 100) : 0;
+  stats.percentage = attendancePercentage(stats.present + stats.late, stats.total);
   ok(res, { records, stats, subjects: [], attendance: records, summary: stats, current_semester });
 });
 api.get('/student/get_fees.php', auth, async (req, res) => {
@@ -911,7 +911,7 @@ api.post('/payments/process.php', auth, async (req, res) => {
   const existing = await db.collection('payments').findOne({ student_id: s._id, fee_id: fid, status: 'completed' });
   if (existing) return ok(res, { receipt_number: existing.receipt_number }, 'Already paid');
   const now = new Date();
-  const receipt = 'RCP' + Date.now() + Math.floor(Math.random() * 1000);
+  const receipt = generateReceipt();
   await db.collection('payments').insertOne({
     student_id: s._id, fee_id: fid, amount_paid: fee.amount, late_fine: 0, total_amount: fee.amount,
     payment_date: now, payment_method: String(req.body.payment_method || 'online').toLowerCase(),
