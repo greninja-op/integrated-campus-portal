@@ -54,7 +54,6 @@ let db;
 // --- helpers ---------------------------------------------------------------
 const ok = (res, data = {}, message = 'OK') => res.json({ success: true, message, data });
 const fail = (res, code, message, error = 'error') => res.status(code).json({ success: false, error, message });
-const toInt = (v, d = undefined) => { const n = parseInt(v, 10); return Number.isNaN(n) ? d : n; };
 const oid = (v) => { try { return new ObjectId(v); } catch { return null; } };
 
 function signToken(user) {
@@ -248,7 +247,7 @@ api.post('/auth/login.php', loginLimiter, async (req, res) => {
   if (!user) return fail(res, 401, 'Invalid username or password', 'invalid_credentials');
   const match = await bcrypt.compare(password, user.password);
   if (!match) return fail(res, 401, 'Invalid username or password', 'invalid_credentials');
-  const norm = (r) => (r === 'staff' ? 'teacher' : r);
+  const norm = (r) => normalizeRole(r);
   if (role && norm(role) !== norm(user.role)) return fail(res, 403, `You are registered as ${user.role}, not ${role}.`, 'role_mismatch');
   if (user.status && user.status !== 'active') return fail(res, 403, 'Your account is inactive.', 'account_inactive');
   await db.collection('users').updateOne({ _id: user._id }, { $set: { last_login: new Date() } });
