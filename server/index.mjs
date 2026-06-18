@@ -187,10 +187,18 @@ async function studentFeeItems(s) {
 }
 
 const app = express();
+if (env.TRUST_PROXY) app.set('trust proxy', Number(env.TRUST_PROXY) || env.TRUST_PROXY);
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json({ limit: '15mb' }));
-app.use((req, _res, next) => { console.log(`${req.method} ${req.path}`); next(); });
+// Structured request logging (method, path, status, duration)
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    console.log(JSON.stringify({ t: new Date().toISOString(), method: req.method, path: req.path, status: res.statusCode, ms: Date.now() - start }));
+  });
+  next();
+});
 
 // File uploads (study materials, assignments) stored on disk under server/uploads
 const UPLOAD_DIR = resolve(__dirname, 'uploads');
@@ -224,6 +232,12 @@ const loginLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, standardHeaders: 
   handler: (_req, res) => res.status(429).json({ success: false, error: 'rate_limited', message: 'Too many login attempts. Please try again shortly.' }) });
 
 const api = express.Router();
+
+// Health check (no auth) - useful for uptime monitors / load balancers
+api.get('/health', async (_req, res) => {
+  try { await db.command({ ping: 1 }); res.json({ success: true, status: 'ok', db: 'connected' }); }
+  catch { res.status(503).json({ success: false, status: 'degraded', db: 'disconnected' }); }
+});
 
 // ===== AUTH =================================================================
 api.post('/auth/login.php', loginLimiter, async (req, res) => {
@@ -928,6 +942,19 @@ async function start() {
   db = client.db(DB_NAME);
   await db.command({ ping: 1 });
   console.log(`Connected to MongoDB Atlas (db: ${DB_NAME})`);
-  app.listen(PORT, () => console.log(`ICP backend listening at http://localhost:${PORT}`));
+  const server = app.listen(PORT, () => console.log(`ICP backend listening at http://localhost:${PORT}`));
+
+  async function shutdown(signal) {
+    console.log(`\n${signal} received, shutting down gracefully...`);
+    server.close(async () => {
+      try { await client.close(); } catch { /* ignore */ }
+      console.log('Closed server and MongoDB connection.');
+      process.exit(0);
+    });
+    // Force-exit if cleanup hangs
+    setTimeout(() => process.exit(1), 10000).unref();
+  }
+  process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
 }
 start().catch((err) => { console.error('Backend failed to start:', err.message); process.exit(1); });

@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../components/ThemeToggle'
 import api from '../services/api'
+import { API_ORIGIN } from '../config'
 
 export default function TeacherDashboard() {
   const navigate = useNavigate()
@@ -67,7 +68,7 @@ export default function TeacherDashboard() {
           <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
           {profile?.profile_image ? (
             <img 
-              src={`http://localhost:8080${profile.profile_image}`}
+              src={`${API_ORIGIN}${profile.profile_image}`}
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover border-2 border-green-500"
             />
@@ -90,7 +91,7 @@ export default function TeacherDashboard() {
         <div className="flex items-center gap-4">
           {profile?.profile_image ? (
             <img 
-              src={`http://localhost:8080${profile.profile_image}`}
+              src={`${API_ORIGIN}${profile.profile_image}`}
               alt="Profile"
               className="w-16 h-16 rounded-full object-cover border-4 border-white/30"
             />

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../components/ThemeToggle'
 import api from '../services/api'
+import { API_ORIGIN } from '../config'
 
 export default function AdminDashboard() {
   const navigate = useNavigate()
@@ -190,7 +191,7 @@ export default function AdminDashboard() {
                       {recentNotices[currentNoticeIndex].attachment_url && (
                         <div className="md:w-64 flex-shrink-0">
                           <img 
-                            src={`http://localhost:8080${recentNotices[currentNoticeIndex].attachment_url}`}
+                            src={`${API_ORIGIN}${recentNotices[currentNoticeIndex].attachment_url}`}
                             alt={recentNotices[currentNoticeIndex].title}
                             className="w-full h-48 object-cover rounded-lg"
                           />

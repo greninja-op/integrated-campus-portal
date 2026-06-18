@@ -6,6 +6,7 @@ import CustomAlert from '../components/CustomAlert'
 import CustomSelect from '../components/CustomSelect'
 import AssignmentDatePicker from '../components/AssignmentDatePicker'
 import api from '../services/api'
+import { API_ORIGIN, API_BASE_URL } from '../config'
 
 export default function TeacherAssignments() {
   const navigate = useNavigate()
@@ -103,7 +104,7 @@ export default function TeacherAssignments() {
       formData.append('due_date', uploadForm.due_date)
       if (uploadForm.file) formData.append('file', uploadForm.file)
 
-      const res = await fetch('http://localhost:8080/api/assignments/create.php', {
+      const res = await fetch(`${API_BASE_URL}/assignments/create.php`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
         body: formData
@@ -366,7 +367,7 @@ export default function TeacherAssignments() {
                         student.status === 'rejected' ? 'bg-red-500 text-white' : 
                         student.status === 'accepted' ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'
                       }`}>{student.status}</span>
-                      <a href={`http://localhost:8080${student.file_path}`} target="_blank" rel="noopener noreferrer"
+                      <a href={`${API_ORIGIN}${student.file_path}`} target="_blank" rel="noopener noreferrer"
                         className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-sm font-semibold">
                         <i className="fas fa-eye mr-1"></i> View
                       </a>

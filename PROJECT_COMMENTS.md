@@ -1571,3 +1571,38 @@ logging/monitoring, trust-proxy for rate limiter) and P3 (tests, CI, deployment)
 ---
 
 *Last Updated: June 18, 2026 - P1 feature persistence complete (assignments done)*
+
+
+---
+
+## 📅 June 18, 2026 (Part 11)
+
+### 13. P2 — Robustness & configuration
+**Request:** "continue"
+
+**Frontend (env-driven config):**
+- Added `frontend/src/config.js` exporting `API_ORIGIN` / `API_BASE_URL` from
+  `import.meta.env.VITE_API_ORIGIN` / `VITE_API_URL` (default localhost:8080).
+- Added `frontend/.env.example`.
+- Replaced ALL hardcoded `http://localhost:8080` references (~12 files: api.js, image
+  src URLs in dashboards/notices/attendance, file links + multipart fetches in
+  assignments/materials) with the centralized config. Production `npm run build` passes.
+
+**Backend (`server/index.mjs`):**
+- `app.set('trust proxy', ...)` when `TRUST_PROXY` env is set (so rate limiting sees
+  real client IPs behind a proxy; avoids the local spoofing warning otherwise).
+- Structured JSON request logging (method, path, status, duration ms).
+- `GET /api/health` — pings Mongo, returns ok/degraded (for uptime monitors).
+- Graceful shutdown on SIGINT/SIGTERM (close server + Mongo, 10s force-exit fallback).
+- Added `TRUST_PROXY` to `server/.env.example`.
+
+**Verified:** /api/health returns `{success:true,status:'ok',db:'connected'}`; Vite HMR
+clean; production build succeeds.
+
+**P2 remaining (noted, non-blocking for single instance):** move token blacklist to a
+Mongo TTL collection for multi-instance; optional external error monitoring (Sentry);
+frontend bundle code-splitting (build warns >500 kB).
+
+---
+
+*Last Updated: June 18, 2026 - P2 robustness (env config, trust proxy, logging, health, graceful shutdown)*

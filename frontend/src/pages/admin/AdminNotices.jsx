@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../../components/ThemeToggle'
 import CustomSelect from '../../components/CustomSelect'
 import api from '../../services/api'
+import { API_ORIGIN } from '../../config'
 
 export default function AdminNotices() {
   const navigate = useNavigate()
@@ -308,7 +309,7 @@ export default function AdminNotices() {
               {notice.image_url && (
                 <div className="md:w-80 md:flex-shrink-0">
                   <img
-                    src={`http://localhost:8080${notice.image_url}`}
+                    src={`${API_ORIGIN}${notice.image_url}`}
                     alt={notice.title}
                     className="w-full h-full object-cover"
                   />

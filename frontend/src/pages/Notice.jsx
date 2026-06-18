@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Navigation from '../components/Navigation'
 import ThemeToggle from '../components/ThemeToggle'
 import api from '../services/api'
+import { API_ORIGIN } from '../config'
 
 export default function Notice() {
   const navigate = useNavigate()
@@ -170,7 +171,7 @@ export default function Notice() {
                 {notice.image_url && (
                   <div className="w-64 flex-shrink-0 bg-slate-100 dark:bg-slate-700 flex items-center justify-center p-4">
                     <img 
-                      src={`http://localhost:8080${notice.image_url}`}
+                      src={`${API_ORIGIN}${notice.image_url}`}
                       alt={notice.title}
                       className="w-full h-auto rounded-lg object-contain"
                       onError={(e) => {

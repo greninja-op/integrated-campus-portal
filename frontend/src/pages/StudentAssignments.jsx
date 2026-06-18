@@ -5,6 +5,7 @@ import Navigation from '../components/Navigation'
 import ThemeToggle from '../components/ThemeToggle'
 import CustomAlert from '../components/CustomAlert'
 import api from '../services/api'
+import { API_ORIGIN, API_BASE_URL } from '../config'
 
 export default function StudentAssignments() {
   const navigate = useNavigate()
@@ -68,7 +69,7 @@ export default function StudentAssignments() {
       formData.append('assignment_id', assignmentId)
       formData.append('file', file)
 
-      const res = await fetch('http://localhost:8080/api/assignments/submit.php', {
+      const res = await fetch(`${API_BASE_URL}/assignments/submit.php`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
         body: formData
@@ -157,7 +158,7 @@ export default function StudentAssignments() {
         {/* Actions */}
         <div className="flex items-center gap-3">
           {assignment.file_path && (
-            <a href={`http://localhost:8080${assignment.file_path}`} target="_blank" rel="noopener noreferrer"
+            <a href={`${API_ORIGIN}${assignment.file_path}`} target="_blank" rel="noopener noreferrer"
               className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-sm font-semibold">
               <i className="fas fa-file-pdf mr-1"></i> View Question
             </a>
@@ -176,7 +177,7 @@ export default function StudentAssignments() {
           )}
 
           {isSubmitted && assignment.submission_file && (
-            <a href={`http://localhost:8080${assignment.submission_file}`} target="_blank" rel="noopener noreferrer"
+            <a href={`${API_ORIGIN}${assignment.submission_file}`} target="_blank" rel="noopener noreferrer"
               className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-semibold">
               <i className="fas fa-eye mr-1"></i> View Submission
             </a>

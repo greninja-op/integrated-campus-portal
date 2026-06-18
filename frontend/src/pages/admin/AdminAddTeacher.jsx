@@ -6,6 +6,7 @@ import CustomSelect from '../../components/CustomSelect'
 import CustomAlert from '../../components/CustomAlert'
 import ImageCropper from '../../components/ImageCropper'
 import api from '../../services/api'
+import { API_ORIGIN } from '../../config'
 
 export default function AdminAddTeacher() {
   const navigate = useNavigate()
@@ -54,7 +55,7 @@ export default function AdminAddTeacher() {
     
     // Load existing profile image if editing
     if (editTeacher?.profile_image) {
-      setImagePreview(`http://localhost:8080${editTeacher.profile_image}`)
+      setImagePreview(`${API_ORIGIN}${editTeacher.profile_image}`)
     }
   }, [])
 

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../components/ThemeToggle'
 import api from '../services/api'
 
-const API_BASE_URL = 'http://localhost:8080/api';
+import { API_BASE_URL } from '../config';
 
 export default function TeacherViewMaterials() {
   const navigate = useNavigate()

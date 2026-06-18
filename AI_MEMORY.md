@@ -1964,3 +1964,19 @@ end-to-end on Atlas. uploadAssignment multer -> ASSIGNMENTS_DIR.
 Next: P2 (frontend VITE_API_URL env instead of hardcoded localhost:8080; logging/monitoring;
 `app.set('trust proxy', ...)` for rate limiter behind proxy; move token blacklist to Mongo TTL
 for multi-instance). P3: tests, CI, deployment (frontend static host + backend host + Atlas IP allowlist).
+
+
+---
+
+## June 18, 2026 (cont.) - P2 robustness
+
+- Frontend: `frontend/src/config.js` (API_ORIGIN/API_BASE_URL from VITE_API_ORIGIN/
+  VITE_API_URL). Replaced ALL hardcoded http://localhost:8080 across ~12 files. Added
+  frontend/.env.example. `npm run build` passes (chunk >500kB warning only).
+- Backend: trust proxy (when TRUST_PROXY env set), JSON request logging (method/path/
+  status/ms), GET /api/health (mongo ping), graceful shutdown (SIGINT/SIGTERM).
+  Added TRUST_PROXY to server/.env.example.
+- Verified /api/health ok; HMR + prod build clean.
+
+P2 remaining (non-blocking single-instance): token blacklist -> Mongo TTL for multi-instance;
+optional Sentry; bundle code-splitting. Next: P3 (tests, CI, deployment config).

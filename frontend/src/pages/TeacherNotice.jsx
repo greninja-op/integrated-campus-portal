@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
 import ThemeToggle from '../components/ThemeToggle'
 import api from '../services/api'
+import { API_ORIGIN } from '../config'
 
 export default function TeacherNotice() {
   const navigate = useNavigate()
@@ -161,7 +162,7 @@ export default function TeacherNotice() {
               {notice.image_url && (
                 <div className="md:w-80 md:flex-shrink-0">
                   <img
-                    src={`http://localhost:8080${notice.image_url}`}
+                    src={`${API_ORIGIN}${notice.image_url}`}
                     alt={notice.title}
                     className="w-full h-full object-cover"
                     onError={(e) => e.target.style.display = 'none'}

@@ -5,6 +5,7 @@ import ThemeToggle from '../components/ThemeToggle'
 import CustomAlert from '../components/CustomAlert'
 import CustomSelect from '../components/CustomSelect'
 import api from '../services/api'
+import { API_ORIGIN } from '../config'
 
 export default function TeacherAttendance() {
   const navigate = useNavigate()
@@ -352,7 +353,7 @@ export default function TeacherAttendance() {
                         <div className="relative">
                           {student.profile_image ? (
                             <img 
-                              src={`http://localhost:8080${student.profile_image}`}
+                              src={`${API_ORIGIN}${student.profile_image}`}
                               alt={studentName}
                               className="w-12 h-12 rounded-full object-cover border-2 border-white dark:border-gray-800"
                             />

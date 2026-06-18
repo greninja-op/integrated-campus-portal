@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Navigation from '../components/Navigation'
 import ThemeToggle from '../components/ThemeToggle'
 import api from '../services/api'
+import { API_BASE_URL } from '../config'
 
 export default function StudentMaterials() {
   const navigate = useNavigate()
@@ -144,7 +145,7 @@ export default function StudentMaterials() {
   const handleView = async (material) => {
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`http://localhost:8080/api/materials/view.php?id=${material.id}`, {
+      const response = await fetch(`${API_BASE_URL}/materials/view.php?id=${material.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -167,7 +168,7 @@ export default function StudentMaterials() {
   const handleDownload = async (material) => {
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`http://localhost:8080/api/materials/download.php?id=${material.id}`, {
+      const response = await fetch(`${API_BASE_URL}/materials/download.php?id=${material.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
