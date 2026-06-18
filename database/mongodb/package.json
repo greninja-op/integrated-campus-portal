@@ -1,0 +1,13 @@
+{
+  "name": "icp-mongodb-setup",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Schema + seed loader for the ICP MongoDB database (works with Atlas).",
+  "scripts": {
+    "setup": "node atlas-setup.mjs"
+  },
+  "dependencies": {
+    "mongodb": "^6.10.0"
+  }
+}

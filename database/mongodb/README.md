@@ -55,6 +55,34 @@ mongosh studentportal --file seeds/04_subjects.js
 > The seed scripts use `updateOne(..., { upsert: true })` keyed on natural keys
 > (username, email, subject_code, etc.), so they are safe to re-run.
 
+## Running against MongoDB Atlas (no mongosh needed)
+
+If you don't have `mongosh` (or you're targeting Atlas), use the Node.js loader
+`atlas-setup.mjs`. It uses the official `mongodb` driver and does the same thing
+as `schema.js` + all seeds in one run.
+
+1. Put your Atlas connection string in `backend/.env` (gitignored):
+
+   ```
+   MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority&appName=<app>
+   MONGODB_DB=studentportal
+   ```
+
+2. In MongoDB Atlas, allow your IP under **Network Access → IP Access List**
+   (or `0.0.0.0/0` for development).
+
+3. Install and run:
+
+   ```bash
+   cd database/mongodb
+   npm install
+   npm run setup
+   ```
+
+The script auto-points Node's DNS resolver at public DNS (8.8.8.8 / 1.1.1.1) to
+avoid the common `querySrv ECONNREFUSED` error on networks whose DNS refuses SRV
+lookups. Re-running is safe (idempotent upserts).
+
 ## Validators
 
 Validators use `validationAction: "warn"` and `validationLevel: "moderate"` so

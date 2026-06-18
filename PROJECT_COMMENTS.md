@@ -1247,3 +1247,45 @@ mongosh "mongodb://localhost:27017/studentportal" --file setup.js
 ---
 
 *Last Updated: June 18, 2026 - MongoDB Conversion & Docker Removal*
+
+
+---
+
+## 📅 June 18, 2026 (Part 2)
+
+### 4. MongoDB Atlas Connection & Seeding
+**Request:** "okey now connect with the mongo db atlas ... i have the link"
+
+**Changes Made:**
+- **Database/DevOps**: Connected to MongoDB Atlas and loaded schema + seed data
+- **Files Created:**
+  - `database/mongodb/atlas-setup.mjs` (Created) - Node.js loader (mongodb driver)
+  - `database/mongodb/package.json` (Created)
+  - `backend/.env` (Created, gitignored) - holds the real `MONGODB_URI`
+- **Files Modified:**
+  - `backend/.env.example` (added MONGODB_URI/MONGODB_DB placeholders)
+  - `database/mongodb/README.md` (added Atlas/Node instructions)
+
+**What Changed:**
+- Since `mongosh` isn't installed (Node is), created `atlas-setup.mjs` using the
+  official `mongodb` driver to create all 18 collections (validators + indexes)
+  and run all seeds in a single command (`npm run setup`).
+- Worked around a `querySrv ECONNREFUSED` DNS error (local resolver refuses SRV
+  lookups) by setting Node's DNS to public servers (8.8.8.8 / 1.1.1.1).
+- Successfully seeded Atlas DB `studentportal`: 3 sessions, 32 users
+  (2 admins + 15 teachers + 15 students), 105 subjects.
+
+**Run command:**
+```bash
+cd database/mongodb
+npm install
+npm run setup
+```
+
+**Security:** The real connection string is stored only in `backend/.env`
+(gitignored). The DB password was shared in chat in plain text — user advised to
+rotate it in Atlas (Database Access).
+
+---
+
+*Last Updated: June 18, 2026 - MongoDB Atlas connected and seeded*

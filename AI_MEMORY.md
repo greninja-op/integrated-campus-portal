@@ -1751,3 +1751,35 @@ backend/api/student/
   endpoints). To run on MongoDB it needs the data layer rewritten with the
   MongoDB PHP driver/library. The Mongo collection/field names intentionally
   mirror the old tables/columns to make that migration straightforward.
+
+
+---
+
+## June 18, 2026 (cont.) - MongoDB Atlas Connection
+
+**Request**: "connect with the mongo db atlas" (user provided an Atlas SRV URI)
+
+### What was done
+- Added `MONGODB_URI` + `MONGODB_DB` to `backend/.env` (gitignored) and a
+  placeholder to `backend/.env.example`.
+- Created `database/mongodb/atlas-setup.mjs` - a Node.js loader using the official
+  `mongodb` driver that creates all 18 collections (validators + indexes) and runs
+  all seeds in one go. Used because `mongosh` is not installed locally (Node is).
+- Created `database/mongodb/package.json` (dep: `mongodb` ^6). Run with
+  `cd database/mongodb && npm install && npm run setup`.
+- Successfully seeded Atlas DB `studentportal`: 3 sessions, 32 users
+  (2 admins + 15 teachers + 15 students), 105 subjects, 18 collections.
+
+### Gotchas solved
+- Local/ISP DNS refused SRV lookups → `querySrv ECONNREFUSED`. Fixed in the script
+  with `dns.setServers(['8.8.8.8','1.1.1.1'])` so `mongodb+srv://` resolves.
+- Atlas **Network Access** must allowlist the machine IP (it already did).
+
+### Security note
+- The Atlas DB password was shared in plain text in chat. Advised the user to
+  rotate it in Atlas (Database Access). The real URI lives only in `backend/.env`
+  (gitignored) — never committed.
+
+### Still TODO
+- Backend PHP still uses MySQL/PDO. Next step is wiring `backend/config/database.php`
+  (and endpoints) to the MongoDB driver using `MONGODB_URI`.
