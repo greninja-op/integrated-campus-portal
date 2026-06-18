@@ -668,16 +668,149 @@ api.post('/materials/delete.php', auth, requireRole('teacher'), async (req, res)
 });
 
 // ===== ASSIGNMENTS ==========================================================
-api.get('/assignments/get_student_subjects.php', auth, async (req, res) => {
+async function teacherForReq(req) {
   const u = await db.collection('users').findOne({ _id: oid(req.user.user_id) });
-  const s = (u && await db.collection('students').findOne({ user_id: u._id })) || {};
-  const subs = s.department ? await db.collection('subjects').find({ department: s.department }).toArray() : [];
-  const subjects = subs.map((x) => ({ id: String(x._id), subject_name: x.subject_name, subject_code: x.subject_code, pending_count: 0, rejected_count: 0, total_assignments: 0 }));
+  return u ? await db.collection('teachers').findOne({ user_id: u._id }) : null;
+}
+
+api.get('/assignments/get_student_subjects.php', auth, async (req, res) => {
+  const s = await studentForReq(req);
+  if (!s) return ok(res, { subjects: [] });
+  const subs = s.department ? await db.collection('subjects').find({ department: s.department, semester: s.semester }).toArray() : [];
+  const subjects = [];
+  for (const x of subs) {
+    const assigns = await db.collection('assignments').find({ subject_id: x._id, is_active: { $ne: false } }).toArray();
+    let pending = 0; let rejected = 0;
+    for (const a of assigns) {
+      const sub = await db.collection('assignment_submissions').findOne({ assignment_id: a._id, student_id: s._id });
+      if (sub && sub.status === 'rejected') rejected++;
+      else if (!sub && new Date(a.due_date) >= new Date()) pending++;
+    }
+    subjects.push({ id: String(x._id), subject_name: x.subject_name, subject_code: x.subject_code,
+      pending_count: pending, rejected_count: rejected, total_assignments: assigns.length });
+  }
   ok(res, { subjects });
 });
-api.get('/assignments/get_student_assignments.php', auth, (_req, res) => ok(res, { pending: [], rejected: [], submitted: [], overdue: [] }));
-api.post('/assignments/submit.php', (_req, res) => res.json({ success: true, message: 'Submitted' }));
-api.get('/assignments/get_teacher_assignments.php', auth, (_req, res) => ok(res, { assignments: [] }));
+
+api.get('/assignments/get_student_assignments.php', auth, async (req, res) => {
+  const s = await studentForReq(req);
+  const out = { pending: [], rejected: [], submitted: [], overdue: [] };
+  if (!s) return ok(res, out);
+  const sid = oid(req.query.subject_id);
+  const q = { is_active: { $ne: false } };
+  if (sid) q.subject_id = sid;
+  const assigns = await db.collection('assignments').find(q).sort({ due_date: 1 }).toArray();
+  const subjMap = await subjectsById();
+  for (const a of assigns) {
+    const subj = subjMap[String(a.subject_id)];
+    let teacher = null;
+    if (a.teacher_id) teacher = await db.collection('teachers').findOne({ _id: a.teacher_id });
+    const sub = await db.collection('assignment_submissions').findOne({ assignment_id: a._id, student_id: s._id });
+    const card = {
+      id: String(a._id), title: a.title, description: a.description || '',
+      due_date: a.due_date, subject_name: subj?.subject_name || '',
+      teacher_first_name: teacher?.first_name || '', teacher_last_name: teacher?.last_name || '',
+      file_path: a.file_path || null,
+      submission_status: sub ? sub.status : null,
+      submission_file: sub ? sub.file_path : null,
+      rejection_reason: sub ? (sub.rejection_reason || null) : null
+    };
+    const pastDue = new Date(a.due_date) < new Date();
+    if (sub && (sub.status === 'submitted' || sub.status === 'accepted')) out.submitted.push(card);
+    else if (sub && sub.status === 'rejected') out.rejected.push(card);
+    else if (pastDue) out.overdue.push(card);
+    else out.pending.push(card);
+  }
+  ok(res, out);
+});
+
+api.post('/assignments/submit.php', auth, requireRole('student'), uploadAssignment.single('file'), async (req, res) => {
+  const s = await studentForReq(req);
+  if (!s) return fail(res, 404, 'Student not found');
+  const aid = oid(req.body.assignment_id);
+  if (!aid) return fail(res, 400, 'assignment_id is required');
+  if (!req.file) return fail(res, 400, 'A file is required');
+  const now = new Date();
+  await db.collection('assignment_submissions').updateOne(
+    { assignment_id: aid, student_id: s._id },
+    { $set: { assignment_id: aid, student_id: s._id, file_path: `/uploads/assignments/${req.file.filename}`,
+              file_name: req.file.originalname, submitted_at: now, status: 'submitted', rejection_reason: null,
+              reviewed_at: null, reviewed_by: null } },
+    { upsert: true }
+  );
+  res.json({ success: true, message: 'Assignment submitted' });
+});
+
+api.post('/assignments/create.php', auth, requireRole('teacher'), uploadAssignment.single('file'), async (req, res) => {
+  const b = req.body || {};
+  if (!b.title || !b.subject_id || !b.semester || !b.due_date) return fail(res, 400, 'title, subject_id, semester and due_date are required');
+  const teacher = await teacherForReq(req);
+  const subject = await db.collection('subjects').findOne({ _id: oid(b.subject_id) });
+  const now = new Date();
+  const doc = {
+    teacher_id: teacher?._id || null, subject_id: oid(b.subject_id),
+    department: teacher?.department || subject?.department || null, semester: toInt(b.semester),
+    title: b.title, description: b.description || null,
+    file_path: req.file ? `/uploads/assignments/${req.file.filename}` : null,
+    file_name: req.file ? req.file.originalname : null,
+    due_date: new Date(b.due_date), is_active: true, created_at: now, updated_at: now
+  };
+  const r = await db.collection('assignments').insertOne(doc);
+  res.json({ success: true, message: 'Assignment created', data: { id: String(r.insertedId) } });
+});
+
+api.get('/assignments/get_teacher_assignments.php', auth, requireRole('teacher'), async (req, res) => {
+  const teacher = await teacherForReq(req);
+  const q = { is_active: { $ne: false } };
+  if (teacher) q.teacher_id = teacher._id;
+  const sid = oid(req.query.subject_id);
+  if (sid) q.subject_id = sid;
+  const assigns = await db.collection('assignments').find(q).sort({ due_date: -1 }).toArray();
+  const subjMap = await subjectsById();
+  const assignments = [];
+  for (const a of assigns) {
+    const subj = subjMap[String(a.subject_id)];
+    const submission_count = await db.collection('assignment_submissions').countDocuments({ assignment_id: a._id });
+    const total_students = await db.collection('students').countDocuments({ department: a.department, semester: a.semester });
+    assignments.push({ id: String(a._id), title: a.title, due_date: a.due_date,
+      subject_name: subj?.subject_name || '', submission_count, total_students });
+  }
+  ok(res, { assignments });
+});
+
+api.get('/assignments/get_submissions.php', auth, requireRole('teacher'), async (req, res) => {
+  const aid = oid(req.query.assignment_id);
+  if (!aid) return fail(res, 400, 'assignment_id is required');
+  const a = await db.collection('assignments').findOne({ _id: aid });
+  if (!a) return fail(res, 404, 'Assignment not found');
+  const students = await db.collection('students').find({ department: a.department, semester: a.semester }).toArray();
+  const submitted = []; const not_submitted = [];
+  for (const st of students) {
+    const sub = await db.collection('assignment_submissions').findOne({ assignment_id: aid, student_id: st._id });
+    if (sub) {
+      submitted.push({ id: String(st._id), submission_id: String(sub._id), status: sub.status,
+        first_name: st.first_name, last_name: st.last_name, student_id: st.student_id,
+        submitted_at: sub.submitted_at, file_path: sub.file_path });
+    } else {
+      not_submitted.push({ id: String(st._id), first_name: st.first_name, last_name: st.last_name, student_id: st.student_id });
+    }
+  }
+  ok(res, { submitted, not_submitted, assignment: { id: String(a._id), title: a.title } });
+});
+
+api.post('/assignments/review_submission.php', auth, requireRole('teacher'), async (req, res) => {
+  const id = oid(req.body.submission_id);
+  if (!id) return fail(res, 400, 'submission_id is required');
+  const action = req.body.action === 'reject' ? 'rejected' : 'accepted';
+  const teacher = await teacherForReq(req);
+  await db.collection('assignment_submissions').updateOne(
+    { _id: id },
+    { $set: { status: action, rejection_reason: action === 'rejected' ? (req.body.reason || '') : null,
+              reviewed_at: new Date(), reviewed_by: teacher?._id || null } }
+  );
+  res.json({ success: true, message: action === 'rejected' ? 'Submission rejected' : 'Submission accepted' });
+});
+
 api.get('/assignments/get_subjects_by_semester.php', auth, async (req, res) => {
   const dept = await teacherDept(req);
   const q = {}; if (dept) q.department = dept;
@@ -685,9 +818,6 @@ api.get('/assignments/get_subjects_by_semester.php', auth, async (req, res) => {
   const subjects = (await db.collection('subjects').find(q).toArray()).map(subjOut);
   ok(res, { subjects });
 });
-api.get('/assignments/get_submissions.php', auth, (_req, res) => ok(res, { submitted: [], not_submitted: [], assignment: { id: null, title: '' } }));
-api.post('/assignments/create.php', (_req, res) => res.json({ success: true, message: 'Assignment created' }));
-api.post('/assignments/review_submission.php', (_req, res) => res.json({ success: true, message: 'Reviewed' }));
 api.get('/assignments/get_dashboard_notifications.php', auth, (_req, res) => ok(res, { notifications: [] }));
 
 // ===== FEES (admin) ========================================================
