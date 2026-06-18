@@ -153,7 +153,7 @@ const loginLimiter = rateLimit({ windowMs: 60 * 1000, max: 10, standardHeaders: 
 const api = express.Router();
 
 // ===== AUTH =================================================================
-api.post('/auth/login.php', async (req, res) => {
+api.post('/auth/login.php', loginLimiter, async (req, res) => {
   const { username, password, role } = req.body || {};
   if (!username || !password) return fail(res, 400, 'Username and password are required', 'validation_error');
   const user = await db.collection('users').findOne({ $or: [{ username }, { email: username }] });
