@@ -1895,3 +1895,19 @@ token blacklist to a Mongo TTL collection if running multiple instances.
 
 Production-readiness remaining: P1 (persist marks/attendance-view/fees/payments/materials/
 assignments), P2 (frontend VITE_API_URL, logging/monitoring), P3 (tests, CI, deploy).
+
+
+---
+
+## June 18, 2026 (cont.) - P1 marks + attendance end-to-end
+
+- `enter_marks`/`update_marks` persist to `exam_marks` (saveExamMarks helper;
+  resolves subject by subject_code+department; upsert on student+subject+semester+exam_type).
+- TeacherMarks.jsx handleSubmit now calls `api.enterMarks` before local history.
+- get_current_results reads real exam_marks (grouped class_test/internal_1/internal_2).
+- get_attendance (daily/summary) + dashboard_attendance aggregate real `attendance` docs.
+- Verified: teacher enters BCA101 internal_1 35/40 -> student Results shows it.
+
+P1 remaining: fees & payments (fee structures + record payment), study-materials file
+upload (real storage), assignments. Then P2 (frontend VITE_API_URL, logging) and P3
+(tests, CI, deploy).

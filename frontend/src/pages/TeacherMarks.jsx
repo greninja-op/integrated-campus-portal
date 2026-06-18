@@ -142,11 +142,31 @@ export default function TeacherMarks() {
     }))
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Save marks to localStorage or API
     const subjectLabel = availableSubjects.find(s => s.value === selectedSubject)?.label || selectedSubject
     const examLabel = examTypes.find(e => e.value === examType)?.label || examType
-    
+
+    // Persist marks to the backend (exam_marks)
+    try {
+      const res = await api.enterMarks({
+        department: teacherDepartment,
+        semester: selectedSemester,
+        subject_code: selectedSubject,
+        exam_type: examType,
+        max_marks: maxMarks,
+        marks
+      })
+      if (!res.success) {
+        alert('❌ Failed to save marks: ' + (res.message || 'Unknown error'))
+        return
+      }
+    } catch (error) {
+      console.error('Error saving marks:', error)
+      alert('❌ Failed to save marks. Please try again.')
+      return
+    }
+
     const marksData = {
       id: Date.now(),
       examType,
@@ -160,9 +180,7 @@ export default function TeacherMarks() {
       submittedBy: user.full_name,
       submittedAt: new Date().toISOString()
     }
-    
-    console.log('Submitting marks:', marksData)
-    
+
     // Add to submissions history
     setSubmissions(prev => {
       const updated = [marksData, ...prev]
@@ -170,7 +188,7 @@ export default function TeacherMarks() {
       localStorage.setItem('teacherMarksSubmissions', JSON.stringify(updated))
       return updated
     })
-    
+
     alert('✅ Marks submitted successfully!')
     setShowModal(false)
     resetForm()

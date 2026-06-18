@@ -1435,3 +1435,33 @@ logging/monitoring, trust-proxy for rate limiter), P3 tests + CI + deployment.
 ---
 
 *Last Updated: June 18, 2026 - P0 security hardening complete*
+
+
+---
+
+## 📅 June 18, 2026 (Part 7)
+
+### 9. P1 — Marks & Attendance persistence (end-to-end)
+**Request:** "yes" (finish marks flow) + "commit to git after that"
+
+**Backend (`server/index.mjs`):**
+- `/teacher/enter_marks.php` & `/update_marks.php` now **persist to `exam_marks`**
+  (resolve subject by code+department, teacher as `entered_by`, upsert keyed on
+  student+subject+semester+exam_type). Requires teacher/admin role.
+- `/student/get_current_results.php` reads real `exam_marks` for the student's
+  current semester, grouped into class_test / internal_1 / internal_2.
+- `/student/get_attendance.php` real daily + summary aggregation from `attendance`.
+- `/student/dashboard_attendance.php` real per-subject present/total.
+
+**Frontend:**
+- `TeacherMarks.jsx` `handleSubmit` now POSTs to the backend via `api.enterMarks`
+  (payload: department, semester, subject_code, exam_type, max_marks, marks map)
+  before updating the local submissions history.
+
+**Verified end-to-end:** test teacher entered internal_1 marks for BCA101 (35/40)
+→ test student's `get_current_results` returns it under First Internal. Attendance
+marked by a teacher now also surfaces in the student daily/summary views.
+
+---
+
+*Last Updated: June 18, 2026 - Marks & attendance now persist and display end-to-end*

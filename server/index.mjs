@@ -510,9 +510,36 @@ api.post('/attendance/mark.php', auth, async (req, res) => {
   ok(res, { marked: count }, `Attendance saved for ${count} students`);
 });
 
-// ===== MARKS (accept + store) ==============================================
-api.post('/teacher/enter_marks.php', auth, (_req, res) => ok(res, {}, 'Marks saved'));
-api.post('/teacher/update_marks.php', auth, (_req, res) => ok(res, {}, 'Marks updated'));
+// ===== MARKS (persist to exam_marks) =======================================
+async function saveExamMarks(req, res) {
+  const b = req.body || {};
+  const semester = toInt(b.semester);
+  const examType = b.exam_type;
+  const maxMarks = Number(b.max_marks) || 0;
+  const marksMap = b.marks || {};
+  if (!b.subject_code || !semester || !examType) return fail(res, 400, 'subject_code, semester and exam_type are required');
+  const subjQuery = { subject_code: b.subject_code };
+  if (b.department) subjQuery.department = b.department;
+  const subject = await db.collection('subjects').findOne(subjQuery);
+  if (!subject) return fail(res, 404, 'Subject not found');
+  const u = await db.collection('users').findOne({ _id: oid(req.user.user_id) });
+  const teacher = u && await db.collection('teachers').findOne({ user_id: u._id });
+  const now = new Date();
+  let count = 0;
+  for (const [studentId, val] of Object.entries(marksMap)) {
+    if (val === '' || val === null || val === undefined) continue;
+    const stId = oid(studentId); if (!stId) continue;
+    await db.collection('exam_marks').updateOne(
+      { student_id: stId, subject_id: subject._id, semester, exam_type: examType },
+      { $set: { student_id: stId, subject_id: subject._id, semester, exam_type: examType, marks_obtained: Number(val), max_marks: maxMarks, entered_by: teacher?._id || null, updated_at: now }, $setOnInsert: { created_at: now } },
+      { upsert: true }
+    );
+    count++;
+  }
+  ok(res, { saved: count }, `Saved marks for ${count} student(s)`);
+}
+api.post('/teacher/enter_marks.php', auth, requireRole('teacher'), saveExamMarks);
+api.post('/teacher/update_marks.php', auth, requireRole('teacher'), saveExamMarks);
 
 // ===== MATERIALS ============================================================
 const emptyMaterials = (_req, res) => res.json({ success: true, materials: [], data: { materials: [] } });
