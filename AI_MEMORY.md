@@ -1945,3 +1945,22 @@ VITE_API_URL env, logging/monitoring, trust proxy) and P3 (tests, CI, deploy).
 
 P1 remaining: assignments (create/submit/review with files). Then P2 (frontend
 VITE_API_URL, logging, trust proxy) and P3 (tests, CI, deploy).
+
+
+---
+
+## June 18, 2026 (cont.) - P1 assignments done -> P1 COMPLETE
+
+- Assignments fully implemented (files under server/uploads/assignments/, served /uploads):
+  create (teacher, multipart), get_teacher_assignments (submission_count/total_students),
+  get_submissions (submitted/not_submitted + assignment), review_submission (accept/reject
+  + reason), get_student_subjects (real counts), get_student_assignments (pending/rejected/
+  submitted/overdue), submit (student, multipart upsert).
+- Verified: teacher create(+file) -> student pending -> submit(+file) -> teacher 1 submitted/5 not -> student submitted.
+
+**P1 COMPLETE**: marks, attendance, fees/payments, materials, assignments all persist
+end-to-end on Atlas. uploadAssignment multer -> ASSIGNMENTS_DIR.
+
+Next: P2 (frontend VITE_API_URL env instead of hardcoded localhost:8080; logging/monitoring;
+`app.set('trust proxy', ...)` for rate limiter behind proxy; move token blacklist to Mongo TTL
+for multi-instance). P3: tests, CI, deployment (frontend static host + backend host + Atlas IP allowlist).
