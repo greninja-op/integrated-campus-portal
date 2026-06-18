@@ -167,10 +167,16 @@ api.post('/auth/login.php', loginLimiter, async (req, res) => {
   return res.json({ success: true, message: 'Login successful', data: { user: await buildUserPayload(user), token: signToken(user) } });
 });
 api.get('/auth/verify.php', auth, (req, res) => res.json({ success: true, data: { user_id: req.user.user_id, username: req.user.username, role: req.user.role } }));
-api.post('/auth/logout.php', (_req, res) => res.json({ success: true, message: 'Logged out' }));
+api.post('/auth/logout.php', (req, res) => {
+  const token = getToken(req);
+  if (token) {
+    try { const d = jwt.decode(token); if (d?.jti && d?.exp) tokenBlacklist.set(d.jti, d.exp); } catch { /* ignore */ }
+  }
+  res.json({ success: true, message: 'Logged out' });
+});
 
 // ===== ADMIN: students ======================================================
-api.get('/admin/students/list.php', auth, async (req, res) => {
+api.get('/admin/students/list.php', auth, requireRole('admin'), async (req, res) => {
   const q = {};
   if (req.query.department) q.department = req.query.department;
   if (req.query.semester) q.semester = toInt(req.query.semester);
