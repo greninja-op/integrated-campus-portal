@@ -43,6 +43,7 @@ const URI = env.MONGODB_URI;
 const DB_NAME = env.MONGODB_DB || 'studentportal';
 const JWT_SECRET = env.JWT_SECRET || 'dev_jwt_secret_change_me';
 const PORT = Number(env.PORT || 8080);
+const CORS_ORIGIN = (env.CORS_ORIGIN || 'http://localhost:5173').split(',').map((s) => s.trim());
 if (!URI) { console.error('ERROR: MONGODB_URI missing in server/.env'); process.exit(1); }
 
 const client = new MongoClient(URI, { serverSelectionTimeoutMS: 15000 });
