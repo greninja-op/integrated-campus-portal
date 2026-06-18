@@ -1534,3 +1534,40 @@ call these endpoints (field name `file`, `materialType`).
 ---
 
 *Last Updated: June 18, 2026 - Study materials upload/storage/serving works*
+
+
+---
+
+## 📅 June 18, 2026 (Part 10)
+
+### 12. P1 — Assignments (create / submit / review) — P1 COMPLETE
+**Request:** "continue"
+
+**Backend (`server/index.mjs`):** full assignments implementation (files stored under
+`server/uploads/assignments/`, served at `/uploads`):
+- `assignments/create.php` (teacher, multipart) — creates an assignment with optional
+  attachment, tied to teacher + subject + semester.
+- `assignments/get_teacher_assignments.php` — teacher's assignments with
+  submission_count / total_students.
+- `assignments/get_submissions.php` — submitted[] + not_submitted[] (computed against
+  dept+semester students) + assignment{id,title}.
+- `assignments/review_submission.php` — accept/reject with reason.
+- `assignments/get_student_subjects.php` — student's subjects with real pending/rejected/
+  total counts.
+- `assignments/get_student_assignments.php` — categorized pending/rejected/submitted/
+  overdue with submission status, rejection reason, file links.
+- `assignments/submit.php` (student, multipart) — upserts a submission (status submitted,
+  clears prior rejection).
+
+**Verified end-to-end:** teacher created an assignment (with file) → student saw it
+pending → submitted (with file) → teacher saw 1 submitted / 5 not submitted → student
+shows submitted.
+
+### P1 status: COMPLETE ✅
+Marks, attendance, fees & payments, study materials, and assignments all persist and
+display end-to-end against MongoDB Atlas. Next: P2 (env-driven frontend API URL,
+logging/monitoring, trust-proxy for rate limiter) and P3 (tests, CI, deployment).
+
+---
+
+*Last Updated: June 18, 2026 - P1 feature persistence complete (assignments done)*
