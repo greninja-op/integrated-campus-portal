@@ -1980,3 +1980,20 @@ for multi-instance). P3: tests, CI, deployment (frontend static host + backend h
 
 P2 remaining (non-blocking single-instance): token blacklist -> Mongo TTL for multi-instance;
 optional Sentry; bundle code-splitting. Next: P3 (tests, CI, deployment config).
+
+
+---
+
+## June 18, 2026 (cont.) - P3 tests + CI + deployment
+
+- Extracted pure helpers to server/lib/util.mjs (toInt, normalizeRole, generateReceipt,
+  attendancePercentage, feeAppliesToStudent); index.mjs imports them.
+- server/test/util.test.mjs via `node --test`; package.json "test": "node --test". 5 pass.
+- .github/workflows/ci.yml: backend npm test + frontend npm run build on dev/main (npm install
+  since lockfiles gitignored).
+- DEPLOYMENT.md: Atlas IP allowlist, backend env (MONGODB_URI/JWT_SECRET/CORS_ORIGIN/TRUST_PROXY/
+  PORT), frontend VITE_API_ORIGIN at build, /api/health, post-deploy checklist.
+
+Production-readiness: P0/P1/P2/P3 all done. Optional remaining: S3/object storage for uploads
+(server/uploads is ephemeral on some hosts), Mongo-TTL token blacklist for multi-instance,
+Sentry, frontend code-splitting (main chunk >500kB).

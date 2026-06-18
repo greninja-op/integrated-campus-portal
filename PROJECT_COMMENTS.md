@@ -1606,3 +1606,39 @@ frontend bundle code-splitting (build warns >500 kB).
 ---
 
 *Last Updated: June 18, 2026 - P2 robustness (env config, trust proxy, logging, health, graceful shutdown)*
+
+
+---
+
+## 📅 June 18, 2026 (Part 12)
+
+### 14. P3 — Tests, CI, Deployment
+**Request:** "continue"
+
+**Tests (backend):**
+- Extracted pure helpers to `server/lib/util.mjs` (toInt, normalizeRole,
+  generateReceipt, attendancePercentage, feeAppliesToStudent) and wired them into
+  `index.mjs`.
+- Added `server/test/util.test.mjs` using Node's built-in test runner (no deps).
+- `npm test` → 5 tests pass.
+
+**CI:**
+- Added `.github/workflows/ci.yml` — on push/PR to dev/main runs backend `npm test`
+  and frontend `npm run build` (Node 20). Uses `npm install` (lockfiles are gitignored).
+
+**Deployment:**
+- Added `DEPLOYMENT.md` — Atlas IP allowlist, backend env vars (MONGODB_URI, JWT_SECRET,
+  CORS_ORIGIN, TRUST_PROXY, PORT), frontend `VITE_API_ORIGIN` at build time, health
+  check path, and a post-deploy checklist. Notes ephemeral-disk caveat for uploads and
+  the multi-instance token-blacklist note.
+
+**Verified:** util tests pass; backend still boots and connects to Atlas after refactor.
+
+### Production-readiness summary
+- ✅ P0 security, ✅ P1 feature persistence, ✅ P2 robustness, ✅ P3 tests/CI/deploy docs.
+- Optional hardening still open: persistent/object file storage for uploads, Mongo-TTL
+  token blacklist for multi-instance, external error monitoring, bundle code-splitting.
+
+---
+
+*Last Updated: June 18, 2026 - P3 tests + CI + deployment guide added*
