@@ -1400,3 +1400,38 @@ students / 36 BCA subjects), student results arrays present — all via Atlas.
 ---
 
 *Last Updated: June 18, 2026 - Implemented full API surface; fixed page/data loading*
+
+
+---
+
+## 📅 June 18, 2026 (Part 6)
+
+### 8. P0 Security Hardening (production-readiness)
+**Request:** "ok" (proceed with P0 security fixes from the readiness review)
+
+**Changes Made (`server/index.mjs`, deps helmet/express-rate-limit/express-async-errors):**
+- **Role authorization:** added `requireRole('admin')` to all admin student/teacher/fees
+  routes. `admin/subjects/list.php` stays open to any authenticated user (teachers &
+  students use it).
+- **Token invalidation on logout:** JWTs now carry a `jti`; logout adds it to an
+  in-memory blacklist; `auth` rejects blacklisted tokens (401).
+- **Login rate limiting:** 10 requests/min/IP on `/auth/login.php` (429 on exceed).
+- **Locked CORS:** restricted to `CORS_ORIGIN` (default `http://localhost:5173`),
+  configurable via env (comma-separated).
+- **Security headers:** `helmet()` (cross-origin resource policy enabled for the JSON API).
+- **No more blanket success:** unknown `/api` routes now return **404** instead of
+  `{success:true}`.
+- **Async error handling:** `express-async-errors` + central error middleware so a
+  thrown error returns 500 JSON instead of hanging the request.
+- Added `CORS_ORIGIN` to `server/.env` and `server/.env.example`.
+
+**Verified:** student→admin = 403, admin→admin = 200, student→subjects = 200,
+unknown route = 404, token-after-logout = 401.
+
+**Remaining (next rounds):** P1 data persistence (marks/attendance viewing/fees/
+payments/materials/assignments), P2 robustness (env-driven frontend API URL,
+logging/monitoring, trust-proxy for rate limiter), P3 tests + CI + deployment.
+
+---
+
+*Last Updated: June 18, 2026 - P0 security hardening complete*
