@@ -426,7 +426,17 @@ api.get('/student/get_payments.php', auth, (_req, res) => ok(res, { payments: []
 api.get('/attendance/get_student_history.php', auth, (_req, res) => ok(res, { history: [], records: [] }));
 
 // dashboard attendance summary (for api.getAttendance)
-api.get('/student/dashboard_attendance.php', auth, (_req, res) => ok(res, { subjects: [] }));
+api.get('/student/dashboard_attendance.php', auth, async (req, res) => {
+  const s = await studentForReq(req);
+  if (!s) return ok(res, { subjects: [] });
+  const recs = await db.collection('attendance').find({ student_id: s._id }).toArray();
+  const by = {};
+  for (const r of recs) {
+    const k = String(r.subject_id); by[k] = by[k] || { present: 0, total: 0 };
+    by[k].total++; if (r.status === 'present' || r.status === 'late') by[k].present++;
+  }
+  ok(res, { subjects: Object.values(by) });
+});
 
 // ===== TEACHER ==============================================================
 api.get('/teacher/get_profile.php', auth, async (req, res) => {
