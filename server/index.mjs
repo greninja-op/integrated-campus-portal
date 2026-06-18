@@ -614,9 +614,91 @@ api.post('/assignments/review_submission.php', (_req, res) => res.json({ success
 api.get('/assignments/get_dashboard_notifications.php', auth, (_req, res) => ok(res, { notifications: [] }));
 
 // ===== FEES (admin) ========================================================
-api.get('/admin/fees/pending_students.php', auth, requireRole('admin'), (_req, res) => ok(res, { students: [] }));
+api.post('/admin/fees/create.php', auth, requireRole('admin'), async (req, res) => {
+  const b = req.body || {}; const now = new Date();
+  const doc = {
+    fee_type: b.fee_type || b.feeType || 'other',
+    fee_name: b.fee_name || b.feeTypeName || 'Fee',
+    amount: Number(b.amount) || 0,
+    semester: b.semester != null ? toInt(b.semester) : null,
+    department: b.department || null,
+    program: b.program || null,
+    session_id: await activeSessionId(),
+    due_date: b.due_date ? new Date(b.due_date) : (b.lastDateNormal ? new Date(b.lastDateNormal) : now),
+    late_fine_per_day: Number(b.late_fine_per_day || 0),
+    max_late_fine: Number(b.superFineAmount || b.max_late_fine || 0),
+    description: b.description || null,
+    is_active: true,
+    fee_details: {
+      feeTypeName: b.fee_name || b.feeTypeName || null,
+      lastDateNormal: b.lastDateNormal || null,
+      lastDateFine: b.lastDateFine || null,
+      lastDateSuperFine: b.lastDateSuperFine || null,
+      fineAmount: b.fineAmount || null,
+      superFineAmount: b.superFineAmount || null
+    },
+    created_at: now, updated_at: now
+  };
+  const r = await db.collection('fees').insertOne(doc);
+  ok(res, { id: String(r.insertedId) }, 'Fee created');
+});
+api.get('/admin/fees/list.php', auth, requireRole('admin'), async (_req, res) => {
+  const fees = (await db.collection('fees').find({}).sort({ created_at: -1 }).toArray()).map((f) => ({ ...f, id: String(f._id), _id: String(f._id) }));
+  ok(res, { fees });
+});
+api.post('/admin/fees/delete.php', auth, requireRole('admin'), async (req, res) => {
+  const id = oid(req.body.id || req.body.fee_id); if (id) await db.collection('fees').deleteOne({ _id: id });
+  ok(res, {}, 'Fee deleted');
+});
+api.get('/admin/fees/pending_students.php', auth, requireRole('admin'), async (req, res) => {
+  const feeQuery = { is_active: { $ne: false } };
+  if (req.query.fee_type && req.query.fee_type !== 'all') feeQuery.fee_type = req.query.fee_type;
+  const fees = await db.collection('fees').find(feeQuery).toArray();
+  const rows = [];
+  for (const f of fees) {
+    const sQuery = {};
+    if (f.department) sQuery.department = f.department;
+    if (f.semester) sQuery.semester = f.semester;
+    const students = await db.collection('students').find(sQuery).toArray();
+    for (const st of students) {
+      const paid = await db.collection('payments').findOne({ student_id: st._id, fee_id: f._id, status: 'completed' });
+      if (paid) continue;
+      const fd = f.fee_details || {};
+      rows.push({
+        id: `${st._id}_${f._id}`,
+        rollNo: st.student_id, name: `${st.first_name || ''} ${st.last_name || ''}`.trim(),
+        department: st.department, year: Math.ceil((st.semester || 1) / 2), semester: st.semester,
+        feeType: f.fee_name || f.fee_type, amount: f.amount,
+        dueDate: fd.lastDateNormal || (f.due_date ? new Date(f.due_date).toISOString().slice(0, 10) : null),
+        fineAmount: Number(fd.fineAmount || 0), superFineAmount: Number(fd.superFineAmount || 0)
+      });
+    }
+  }
+  const filtered = (req.query.department && req.query.department !== 'all') ? rows.filter((r) => r.department === req.query.department) : rows;
+  ok(res, { students: filtered });
+});
 api.post('/admin/fees/send_reminder.php', auth, requireRole('admin'), (_req, res) => ok(res, {}, 'Reminder sent'));
-api.post('/payments/process.php', auth, (_req, res) => ok(res, {}, 'Payment processed'));
+
+// ===== PAYMENTS (record to DB) =============================================
+api.post('/payments/process.php', auth, async (req, res) => {
+  const s = await studentForReq(req);
+  if (!s) return fail(res, 404, 'Student not found');
+  const fid = oid(req.body.fee_id);
+  if (!fid) return fail(res, 400, 'fee_id is required');
+  const fee = await db.collection('fees').findOne({ _id: fid });
+  if (!fee) return fail(res, 404, 'Fee not found');
+  const existing = await db.collection('payments').findOne({ student_id: s._id, fee_id: fid, status: 'completed' });
+  if (existing) return ok(res, { receipt_number: existing.receipt_number }, 'Already paid');
+  const now = new Date();
+  const receipt = 'RCP' + Date.now() + Math.floor(Math.random() * 1000);
+  await db.collection('payments').insertOne({
+    student_id: s._id, fee_id: fid, amount_paid: fee.amount, late_fine: 0, total_amount: fee.amount,
+    payment_date: now, payment_method: String(req.body.payment_method || 'online').toLowerCase(),
+    transaction_id: 'TXN' + Date.now(), receipt_number: receipt, status: 'completed', processed_by: null,
+    created_at: now, updated_at: now
+  });
+  ok(res, { receipt_number: receipt }, 'Payment successful');
+});
 
 // ===== UPLOAD ==============================================================
 api.post('/upload/upload_image.php', (_req, res) => res.json({ success: true, data: { file_path: '/uploads/placeholder.png' }, message: 'Uploaded (placeholder)' }));
