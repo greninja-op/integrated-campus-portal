@@ -1334,3 +1334,26 @@ rotate it in Atlas (Database Access).
 ---
 
 *Last Updated: June 18, 2026 - App running on Node/Express + MongoDB; project cleaned up*
+
+
+---
+
+## 📅 June 18, 2026 (Part 4)
+
+### 6. Test Accounts (Student / Teacher / Admin)
+**Request:** "create 3 test email and pass for student, teacher, admin"
+
+**Changes Made:**
+- Added `server/create-test-users.mjs` (idempotent) and ran it against Atlas.
+
+**Accounts created (all password `password123`):**
+- Student: `teststudent@gmail.com`
+- Teacher: `testteacher@gmail.com`
+- Admin:   `testadmin@gmail.com`
+
+Verified all three log in through the Node backend (login by email or username).
+Re-run anytime: `cd server && node create-test-users.mjs`.
+
+---
+
+*Last Updated: June 18, 2026 - Added student/teacher/admin test accounts*

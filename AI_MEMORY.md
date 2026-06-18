@@ -1830,3 +1830,18 @@ backend/api/student/
   but show empty. Port remaining write endpoints (create/update students, marks,
   attendance, materials upload) to the Node backend as needed.
 - Rotate the Atlas DB password (was shared in chat). Update `server/.env` after.
+
+
+---
+
+## June 18, 2026 (cont.) - Test accounts created in Atlas
+
+Added 3 test logins (all password `password123`, created via
+`server/create-test-users.mjs`, idempotent upsert into Atlas):
+- student -> `teststudent@gmail.com` (student_id STUTEST001, BCA sem 1)
+- teacher -> `testteacher@gmail.com` (teacher_id EMPTEST001, BCA)
+- admin   -> `testadmin@gmail.com`   (admin_id ADMTEST001)
+
+Verified all three log in via the Node backend (login by email works since auth
+matches username OR email). Password hashed at runtime with bcryptjs.
+Re-run: `cd server && node create-test-users.mjs`.
