@@ -6,7 +6,8 @@
   "description": "Node/Express + MongoDB backend for the Integrated Campus Portal (replaces the PHP/MySQL backend).",
   "scripts": {
     "start": "node index.mjs",
-    "dev": "node index.mjs"
+    "dev": "node index.mjs",
+    "test": "node --test"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
