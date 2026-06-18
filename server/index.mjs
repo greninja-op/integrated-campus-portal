@@ -227,7 +227,7 @@ api.post('/admin/students/update.php', auth, requireRole('admin'), async (req, r
   }
   ok(res, {}, 'Student updated');
 });
-api.post('/admin/students/delete.php', auth, async (req, res) => {
+api.post('/admin/students/delete.php', auth, requireRole('admin'), async (req, res) => {
   const s = await db.collection('students').findOne({ student_id: req.body.student_id });
   if (!s) return fail(res, 404, 'Student not found');
   await db.collection('students').deleteOne({ _id: s._id });
@@ -236,7 +236,7 @@ api.post('/admin/students/delete.php', auth, async (req, res) => {
 });
 
 // ===== ADMIN: teachers ======================================================
-api.get('/admin/teachers/list.php', auth, async (req, res) => {
+api.get('/admin/teachers/list.php', auth, requireRole('admin'), async (req, res) => {
   const q = {};
   if (req.query.department) q.department = req.query.department;
   if (req.query.search) { const rx = new RegExp(String(req.query.search), 'i'); q.$or = [{ first_name: rx }, { last_name: rx }, { teacher_id: rx }]; }
@@ -246,7 +246,7 @@ api.get('/admin/teachers/list.php', auth, async (req, res) => {
   const teachers = await Promise.all((await cur.toArray()).map(teacherWithUser));
   ok(res, { teachers, total });
 });
-api.post('/admin/teachers/create.php', auth, async (req, res) => {
+api.post('/admin/teachers/create.php', auth, requireRole('admin'), async (req, res) => {
   const b = req.body || {};
   if (!b.teacher_id || !b.username) return fail(res, 400, 'teacher_id and username are required');
   if (await db.collection('teachers').findOne({ teacher_id: b.teacher_id })) return fail(res, 409, 'Teacher ID already exists');
@@ -268,7 +268,7 @@ api.post('/admin/teachers/create.php', auth, async (req, res) => {
   }
   ok(res, {}, 'Teacher created');
 });
-api.post('/admin/teachers/update.php', auth, async (req, res) => {
+api.post('/admin/teachers/update.php', auth, requireRole('admin'), async (req, res) => {
   const b = req.body || {};
   const t = await db.collection('teachers').findOne({ teacher_id: b.teacher_id });
   if (!t) return fail(res, 404, 'Teacher not found');
