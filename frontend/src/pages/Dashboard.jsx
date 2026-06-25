@@ -5,12 +5,48 @@ import Navigation from '../components/Navigation'
 import ThemeToggle from '../components/ThemeToggle'
 import api from '../services/api'
 
+// Time-aware greeting — small touch that makes the page feel human, not generated.
+function getGreeting(d = new Date()) {
+  const h = d.getHours()
+  if (h < 12) return 'Good morning'
+  if (h < 17) return 'Good afternoon'
+  return 'Good evening'
+}
+
+// Relative, human date for notices ("Today", "Yesterday", "Mar 3").
+function relativeDate(value) {
+  if (!value) return ''
+  const then = new Date(value)
+  if (isNaN(then)) return ''
+  const today = new Date()
+  const days = Math.floor((today.setHours(0, 0, 0, 0) - new Date(then).setHours(0, 0, 0, 0)) / 86400000)
+  if (days === 0) return 'Today'
+  if (days === 1) return 'Yesterday'
+  if (days > 1 && days < 7) return `${days} days ago`
+  return new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+const NOTICE_ACCENT = {
+  general: { dot: 'bg-primary', icon: 'fa-circle-info' },
+  academic: { dot: 'bg-blue-500', icon: 'fa-graduation-cap' },
+  event: { dot: 'bg-emerald-500', icon: 'fa-calendar-day' },
+  exam: { dot: 'bg-amber-500', icon: 'fa-file-pen' },
+  holiday: { dot: 'bg-teal-500', icon: 'fa-umbrella-beach' },
+  sports: { dot: 'bg-rose-500', icon: 'fa-futbol' },
+}
+
+const QUICK_LINKS = [
+  { to: '/subjects', icon: 'fa-book-open', label: 'My subjects', desc: 'Courses this semester' },
+  { to: '/materials', icon: 'fa-folder-open', label: 'Study materials', desc: 'Notes & question papers' },
+  { to: '/analysis', icon: 'fa-chart-line', label: 'Performance', desc: 'GPA trend & insights' },
+]
+
 export default function Dashboard() {
   const navigate = useNavigate()
   const [stats, setStats] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [notices, setNotices] = useState([])
-  const [attendancePercentage, setAttendancePercentage] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [attendance, setAttendance] = useState({ percentage: 0, present: 0, total: 0, hasData: false })
   const user = api.getCurrentUser()
 
   useEffect(() => {
@@ -22,9 +58,7 @@ export default function Dashboard() {
     const fetchStats = async () => {
       try {
         const result = await api.getDashboardStats(user.student_id)
-        if (result.success) {
-          setStats(result.data)
-        }
+        if (result.success) setStats(result.data)
       } catch (error) {
         console.error('Error fetching stats:', error)
       } finally {
@@ -35,256 +69,230 @@ export default function Dashboard() {
     const fetchAttendance = async () => {
       try {
         const result = await api.getAttendance(user.student_id)
-        if (result.success && result.data) {
-          // Calculate overall attendance percentage
-          const subjects = result.data.subjects || []
-          if (subjects.length > 0) {
-            const totalPresent = subjects.reduce((sum, s) => sum + (s.present || 0), 0)
-            const totalClasses = subjects.reduce((sum, s) => sum + (s.total || 0), 0)
-            const percentage = totalClasses > 0 ? Math.round((totalPresent / totalClasses) * 100) : 0
-            setAttendancePercentage(percentage)
-          }
+        const subjects = result?.data?.subjects || []
+        if (result.success && subjects.length > 0) {
+          const present = subjects.reduce((s, x) => s + (x.present || 0), 0)
+          const total = subjects.reduce((s, x) => s + (x.total || 0), 0)
+          const percentage = total > 0 ? Math.round((present / total) * 100) : 0
+          setAttendance({ percentage, present, total, hasData: total > 0 })
         }
       } catch (error) {
         console.error('Error fetching attendance:', error)
       }
     }
 
-    fetchStats()
-    fetchAttendance()
-    
-    // Load notices from API
     const loadNotices = async () => {
       try {
         const result = await api.getNotices()
-        if (result.success && result.data) {
-          setNotices(result.data.notices?.slice(0, 3) || [])
-        }
+        if (result.success && result.data) setNotices(result.data.notices?.slice(0, 4) || [])
       } catch (error) {
         console.error('Error fetching notices:', error)
       }
     }
-    
+
+    fetchStats()
+    fetchAttendance()
     loadNotices()
   }, [])
 
-  // Removed loading screen - show page immediately
+  // ---- Derive real values (no fabricated data) ----
+  const firstName = user?.full_name?.split(' ')[0] || 'there'
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+
+  const cgpaRaw = stats?.cgpa
+  const cgpa = cgpaRaw && cgpaRaw !== '0.00' ? cgpaRaw : null
+  const gpa = stats?.gpa && stats.gpa !== '0.00' ? stats.gpa : null
+
+  const fees = stats?.fees || []
+  const pendingFees = fees.filter((f) => {
+    const s = (f.status || f.payment_status || '').toLowerCase()
+    if (s) return s !== 'paid' && s !== 'completed'
+    return Number(f.balance ?? f.amount_due ?? f.due ?? 0) > 0
+  }).length
+
+  const att = attendance
+  const attTone = !att.hasData
+    ? 'muted'
+    : att.percentage >= 75 ? 'good' : att.percentage >= 60 ? 'warn' : 'bad'
+  const attBar = { good: 'bg-emerald-500', warn: 'bg-amber-500', bad: 'bg-rose-500', muted: 'bg-white/30' }[attTone]
+  const attMsg = {
+    good: 'On track — keep it up.',
+    warn: 'A little low. Aim for 75%.',
+    bad: 'Below 75%. Time to show up.',
+    muted: 'No attendance recorded yet.',
+  }[attTone]
+
+  const dash = (v) => (loading && v == null ? '—' : v)
 
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.15 }}
-        className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -12 }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className="min-h-screen pb-28 px-4 sm:px-6 py-8 max-w-6xl mx-auto"
       >
-      {/* Top Header */}
-      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
-        <h1 className="text-3xl font-display font-bold glass-text">Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-          <span className="glass-text-muted font-medium">{user?.full_name || 'Student'}</span>
-          {user?.profile_image ? (
-            <img 
-              src={user.profile_image} 
-              alt={user.full_name} 
-              className="w-10 h-10 rounded-full object-cover border-2 border-primary"
-            />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
-              {user?.full_name?.charAt(0) || 'S'}
-            </div>
-          )}
-        </div>
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Welcome Card */}
-          <div className="glass-panel p-6 flex items-center gap-4">
+        {/* Greeting band — the single entry point and identity */}
+        <header className="flex items-start justify-between gap-4 mb-8">
+          <div className="min-w-0">
+            <p className="text-sm glass-text-muted">{today}</p>
+            <h1 className="text-3xl sm:text-4xl font-display font-bold glass-text mt-1 truncate">
+              {getGreeting()}, {firstName}
+            </h1>
+            <p className="glass-text-muted mt-2">
+              {[user?.department, user?.semester && `Semester ${user.semester}`].filter(Boolean).join(' · ') ||
+                'Welcome back to your campus portal.'}
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <ThemeToggle />
             {user?.profile_image ? (
-              <img 
-                src={user.profile_image} 
-                alt={user.full_name} 
-                className="w-16 h-16 rounded-full object-cover border-4 border-primary flex-shrink-0"
+              <img
+                src={user.profile_image}
+                alt=""
+                className="w-11 h-11 rounded-full object-cover border border-white/40 shadow-glass"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0 text-2xl font-bold">
+              <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-white font-semibold shadow-glass">
                 {user?.full_name?.charAt(0) || 'S'}
               </div>
             )}
-            <div>
-              <h2 className="text-2xl font-display font-bold glass-text mb-1">
-                Welcome Back, {user?.full_name?.split(' ')[0] || 'Student'}!
-              </h2>
-              <p className="glass-text-muted">
-                {user?.department && `${user.department} • Semester ${user.semester || 'N/A'}`}
-              </p>
-            </div>
           </div>
+        </header>
 
-          {/* Stats Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Attendance Percentage */}
-            <div className="glass-card p-6 cursor-pointer">
-              <h3 className="text-xl font-display font-bold glass-text mb-4">
-                Attendance Percentage
-              </h3>
-              <div className="flex flex-col items-center">
-                <div className="relative w-36 h-36">
-                  <svg className="transform -rotate-90" width="140" height="140">
-                    <circle
-                      cx="70"
-                      cy="70"
-                      r="60"
-                      fill="none"
-                      stroke="rgba(0,0,0,0.1)"
-                      strokeWidth="12"
-                    />
-                    <circle
-                      cx="70"
-                      cy="70"
-                      r="60"
-                      fill="none"
-                      stroke={attendancePercentage >= 75 ? '#22c55e' : attendancePercentage >= 60 ? '#eab308' : '#ef4444'}
-                      strokeWidth="12"
-                      strokeDasharray="377"
-                      strokeDashoffset={377 - (377 * attendancePercentage / 100)}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-bold glass-text">{attendancePercentage}%</span>
-                    <span className="text-sm glass-text-muted">Overall</span>
-                  </div>
-                </div>
-                <p className="mt-4 text-center glass-text-muted">
-                  {attendancePercentage >= 75 ? 'Great attendance! Keep it up.' : attendancePercentage >= 60 ? 'Good, but try to improve.' : 'Attendance is low. Please attend regularly.'}
-                </p>
+        {/* The three real numbers — each tile is also a doorway to its page */}
+        <section aria-label="Your status at a glance" className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          {/* Attendance */}
+          <button
+            onClick={() => navigate('/attendance')}
+            className="glass-card p-5 text-left flex flex-col gap-3 focus:outline-none"
+            aria-label={`Attendance ${att.hasData ? att.percentage + ' percent' : 'no data'}. Open attendance.`}
+          >
+            <span className="text-xs font-semibold uppercase tracking-wider glass-text-muted">Attendance</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-4xl font-display font-bold tabular-nums glass-text">
+                {att.hasData ? att.percentage : '—'}
+              </span>
+              {att.hasData && <span className="text-xl font-semibold glass-text-muted">%</span>}
+            </div>
+            <div className="h-2 rounded-full bg-white/20 overflow-hidden">
+              <div className={`h-full rounded-full ${attBar} transition-all duration-500`} style={{ width: `${att.hasData ? att.percentage : 0}%` }} />
+            </div>
+            <span className="text-sm glass-text-muted">{att.hasData ? `${att.present} of ${att.total} classes · ${attMsg}` : attMsg}</span>
+          </button>
+
+          {/* CGPA */}
+          <button
+            onClick={() => navigate('/result')}
+            className="glass-card p-5 text-left flex flex-col gap-3 focus:outline-none"
+            aria-label={`CGPA ${cgpa || 'not available'}. Open results.`}
+          >
+            <span className="text-xs font-semibold uppercase tracking-wider glass-text-muted">CGPA</span>
+            <span className="text-4xl font-display font-bold tabular-nums glass-text">{cgpa || dash(null)}</span>
+            <span className="text-sm glass-text-muted mt-auto">
+              {gpa ? `This semester · ${gpa} GPA` : cgpa ? 'Across all semesters' : 'Grades appear once published'}
+            </span>
+          </button>
+
+          {/* Fees — the one tile that earns the accent when action is needed */}
+          <button
+            onClick={() => navigate('/payments')}
+            className={`glass-card p-5 text-left flex flex-col gap-3 focus:outline-none ${
+              pendingFees > 0 ? 'ring-2 ring-primary/60' : ''
+            }`}
+            aria-label={pendingFees > 0 ? `${pendingFees} fees due. Open payments.` : 'Fees all clear. Open payments.'}
+          >
+            <span className="text-xs font-semibold uppercase tracking-wider glass-text-muted">Fees</span>
+            {pendingFees > 0 ? (
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-display font-bold tabular-nums text-primary">{pendingFees}</span>
+                <span className="text-lg font-semibold glass-text-muted">due</span>
               </div>
+            ) : (
+              <span className="text-3xl font-display font-bold glass-text">{loading ? '—' : 'All clear'}</span>
+            )}
+            <span className="text-sm glass-text-muted mt-auto">
+              {pendingFees > 0 ? 'Tap to review and pay' : loading ? 'Checking your account…' : 'No outstanding payments'}
+            </span>
+          </button>
+        </section>
+
+        {/* Notice board (primary) + quick access (secondary) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Notices */}
+          <section className="lg:col-span-2">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-display font-bold glass-text">Notice board</h2>
+              {notices.length > 0 && (
+                <button onClick={() => navigate('/notice')} className="text-sm font-semibold text-primary hover:underline">
+                  View all
+                </button>
+              )}
             </div>
 
-            {/* Upcoming Assignments */}
-            <div className="glass-card p-6 cursor-pointer">
-              <h3 className="text-xl font-display font-bold glass-text mb-4">
-                Upcoming Assignments
-              </h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-semibold glass-text">CS101: Final Project</h4>
-                    <p className="text-sm glass-text-muted">Due: May 15, 2024</p>
-                  </div>
-                  <a href="#" className="text-primary text-sm hover:underline">View</a>
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-semibold glass-text">ENG203: Essay on Modernism</h4>
-                    <p className="text-sm glass-text-muted">Due: May 20, 2024</p>
-                  </div>
-                  <a href="#" className="text-primary text-sm hover:underline">View</a>
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className="font-semibold glass-text">MATH305: Problem Set 5</h4>
-                    <p className="text-sm glass-text-muted">Due: May 22, 2024</p>
-                  </div>
-                  <a href="#" className="text-primary text-sm hover:underline">View</a>
-                </div>
+            {notices.length === 0 ? (
+              <div className="glass-panel p-10 text-center">
+                <i className="fas fa-inbox text-3xl glass-text-muted mb-3" aria-hidden="true"></i>
+                <p className="glass-text font-medium">You're all caught up</p>
+                <p className="glass-text-muted text-sm mt-1">New notices from the college will show up here.</p>
               </div>
-            </div>
-          </div>
+            ) : (
+              <ul className="space-y-3">
+                {notices.map((notice, i) => {
+                  const a = NOTICE_ACCENT[notice.category] || NOTICE_ACCENT.general
+                  const preview = notice.content?.length > 120 ? notice.content.slice(0, 120).trimEnd() + '…' : notice.content
+                  return (
+                    <li key={notice.id ?? i}>
+                      <button
+                        onClick={() => navigate('/notice')}
+                        className="glass-card w-full text-left p-5 flex gap-4 focus:outline-none"
+                      >
+                        <span className={`mt-1 w-9 h-9 rounded-xl ${a.dot} flex items-center justify-center text-white shrink-0`}>
+                          <i className={`fas ${a.icon} text-sm`} aria-hidden="true"></i>
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-center justify-between gap-3">
+                            <span className="font-display font-semibold glass-text truncate">{notice.title}</span>
+                            <span className="text-xs glass-text-muted shrink-0">{relativeDate(notice.created_at)}</span>
+                          </span>
+                          {preview && <span className="block text-sm glass-text-muted mt-1 line-clamp-2">{preview}</span>}
+                        </span>
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </section>
 
-          {/* College Announcements */}
-          <div className="glass-card p-6 cursor-pointer">
-            <h3 className="text-xl font-display font-bold glass-text mb-4">
-              College Announcements
-            </h3>
-            <div className="space-y-2 glass-text-muted">
-              <p> Library hours extended during finals week</p>
-              <p> Summer course registration is now open</p>
-              <p> Campus-wide power outage on May 25th from 1 AM to 5 AM</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Notifications Sidebar */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-display font-bold glass-text mb-4">Notifications</h3>
-          
-          {notices.length === 0 ? (
-            <div className="glass-panel p-6 text-center">
-              <i className="fas fa-bell-slash text-4xl glass-text-muted mb-3"></i>
-              <p className="glass-text-muted">No notifications yet</p>
-            </div>
-          ) : (
-            notices.map((notice, index) => {
-              // Category-based icons and colors (matching Notice Board)
-              const categoryStyles = {
-                general: { icon: 'fas fa-info-circle', bgColor: 'bg-purple-500', hoverColor: 'hover:bg-purple-500/10 dark:hover:bg-purple-500/20' },
-                academic: { icon: 'fas fa-graduation-cap', bgColor: 'bg-blue-500', hoverColor: 'hover:bg-blue-500/10 dark:hover:bg-blue-500/20' },
-                event: { icon: 'fas fa-calendar-alt', bgColor: 'bg-green-500', hoverColor: 'hover:bg-green-500/10 dark:hover:bg-green-500/20' },
-                exam: { icon: 'fas fa-file-alt', bgColor: 'bg-orange-500', hoverColor: 'hover:bg-orange-500/10 dark:hover:bg-orange-500/20' },
-                holiday: { icon: 'fas fa-umbrella-beach', bgColor: 'bg-teal-500', hoverColor: 'hover:bg-teal-500/10 dark:hover:bg-teal-500/20' },
-                sports: { icon: 'fas fa-futbol', bgColor: 'bg-red-500', hoverColor: 'hover:bg-red-500/10 dark:hover:bg-red-500/20' }
-              }
-              
-              // Get category style or default to general
-              const style = categoryStyles[notice.category] || categoryStyles.general
-              const iconClass = style.icon
-              const bgColor = style.bgColor
-              const hoverColor = style.hoverColor
-              
-              // Truncate content for preview
-              const contentPreview = notice.content.length > 150 
-                ? notice.content.substring(0, 150) + '...' 
-                : notice.content
-              
-              return (
-                <div 
-                  key={index}
-                  onClick={() => navigate('/notice')}
-                  className="glass-card p-6 cursor-pointer"
+          {/* Quick access (secondary, quiet) */}
+          <section aria-label="Quick access">
+            <h2 className="text-xl font-display font-bold glass-text mb-4">Quick access</h2>
+            <div className="glass-panel p-2">
+              {QUICK_LINKS.map((link, i) => (
+                <button
+                  key={link.to}
+                  onClick={() => navigate(link.to)}
+                  className={`w-full text-left flex items-center gap-3 p-3 rounded-xl hover:bg-primary/10 transition-colors focus:outline-none ${
+                    i !== QUICK_LINKS.length - 1 ? 'border-b border-white/10' : ''
+                  }`}
                 >
-                  <div className="flex gap-4 mb-3">
-                    <div className={`w-12 h-12 rounded-full ${bgColor} flex items-center justify-center text-white flex-shrink-0`}>
-                      <i className={`${iconClass} text-lg`}></i>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-lg font-display font-bold glass-text mb-2">
-                        {notice.title}
-                      </h4>
-                      <p className="text-sm glass-text-muted mb-2">
-                        {contentPreview}
-                      </p>
-                      {notice.created_at && (
-                        <p className="text-xs glass-text-muted">
-                          {new Date(notice.created_at).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric', 
-                            year: 'numeric' 
-                          })}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  {/* Show content preview instead of image */}
-                  {notice.content && (
-                    <p className="mt-3 text-sm glass-text-muted line-clamp-2">
-                      {notice.content}
-                    </p>
-                  )}
-                </div>
-              )
-            })
-          )}
+                  <span className="w-9 h-9 rounded-xl bg-primary/15 text-primary flex items-center justify-center shrink-0">
+                    <i className={`fas ${link.icon}`} aria-hidden="true"></i>
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-semibold glass-text">{link.label}</span>
+                    <span className="block text-xs glass-text-muted">{link.desc}</span>
+                  </span>
+                  <i className="fas fa-chevron-right text-xs glass-text-muted" aria-hidden="true"></i>
+                </button>
+              ))}
+            </div>
+          </section>
         </div>
-      </div>
       </motion.div>
       <Navigation />
     </>
   )
 }
-
