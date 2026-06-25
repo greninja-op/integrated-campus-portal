@@ -69,24 +69,31 @@
   body {
     min-height: 100vh;
     color: var(--text);
-    /* Light aurora mesh — indigo / violet / cyan / rose blooms on near-white */
-    background-color: hsl(230, 60%, 97%);
+    /* Rich aurora mesh — 4 saturated color zones + a warm core, so adjacent
+       glass panels each refract a different hue (this is where glass lives).
+       Kept light enough that dark text on the white-tinted glass still passes. */
+    background-color: hsl(248, 72%, 95%);
     background-image:
-      radial-gradient(at 15% 18%, hsla(245, 100%, 88%, 0.9) 0px, transparent 50%),
-      radial-gradient(at 85% 12%, hsla(270, 95%, 90%, 0.85) 0px, transparent 50%),
-      radial-gradient(at 78% 82%, hsla(190, 95%, 86%, 0.8) 0px, transparent 50%),
-      radial-gradient(at 22% 88%, hsla(325, 90%, 92%, 0.75) 0px, transparent 45%);
+      radial-gradient(at 14% 12%, hsla(250, 100%, 76%, 0.92) 0px, transparent 55%),
+      radial-gradient(at 88% 8%,  hsla(292, 100%, 78%, 0.88) 0px, transparent 52%),
+      radial-gradient(at 80% 82%, hsla(189, 100%, 68%, 0.85) 0px, transparent 55%),
+      radial-gradient(at 14% 90%, hsla(332, 100%, 80%, 0.85) 0px, transparent 52%),
+      radial-gradient(at 52% 48%, hsla(42, 100%, 80%, 0.50) 0px, transparent 45%);
     background-attachment: fixed;
     background-repeat: no-repeat;
   }
 
   .dark body {
-    background-color: hsl(240, 45%, 8%);
+    /* Deep, NOT flat near-black — jewel-tone zones over a deep indigo base. */
+    background-color: hsl(245, 55%, 9%);
     background-image:
-      radial-gradient(at 15% 18%, hsla(245, 70%, 28%, 0.55) 0px, transparent 50%),
-      radial-gradient(at 85% 12%, hsla(275, 65%, 26%, 0.5) 0px, transparent 50%),
-      radial-gradient(at 78% 82%, hsla(195, 80%, 22%, 0.45) 0px, transparent 50%),
-      radial-gradient(at 22% 88%, hsla(320, 60%, 24%, 0.4) 0px, transparent 45%);
+      radial-gradient(at 14% 12%, hsla(256, 95%, 52%, 0.55) 0px, transparent 55%),
+      radial-gradient(at 88% 8%,  hsla(291, 90%, 52%, 0.50) 0px, transparent 52%),
+      radial-gradient(at 80% 82%, hsla(190, 95%, 46%, 0.42) 0px, transparent 55%),
+      radial-gradient(at 14% 90%, hsla(330, 90%, 52%, 0.45) 0px, transparent 52%),
+      radial-gradient(at 52% 48%, hsla(275, 85%, 42%, 0.38) 0px, transparent 50%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
   }
 
   h1, h2, h3, h4, h5 {
