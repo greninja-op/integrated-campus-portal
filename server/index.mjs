@@ -434,7 +434,35 @@ api.get('/student/get_profile.php', auth, async (req, res) => {
   ok(res, { ...s, id: String(s._id || ''), _id: String(s._id || ''), email: u.email, username: u.username,
             program: s.program || s.department || null, full_name: `${s.first_name || ''} ${s.last_name || ''}`.trim() });
 });
-api.get('/student/get_marks.php', auth, (_req, res) => ok(res, { marks: [], summary: { gpa: '0.00', cgpa: '0.00' } }));
+api.get('/student/get_marks.php', auth, async (req, res) => {
+  // GPA/CGPA computed from exam_marks (10-point absolute scale). Aggregates each
+  // subject's obtained/max across exam types, maps % -> grade point, then averages.
+  const s = await studentForReq(req);
+  if (!s?._id) return ok(res, { marks: [], summary: { gpa: '0.00', cgpa: '0.00' } });
+  const subjMap = await subjectsById();
+  const rows = await db.collection('exam_marks').find({ student_id: s._id }).toArray();
+  const bySub = {};
+  for (const m of rows) {
+    const k = String(m.subject_id);
+    bySub[k] = bySub[k] || { obtained: 0, max: 0, semester: m.semester, subject: subjMap[k] };
+    bySub[k].obtained += Number(m.marks_obtained) || 0;
+    bySub[k].max += Number(m.max_marks) || 0;
+  }
+  const gradePoint = (p) => (p >= 90 ? 10 : p >= 80 ? 9 : p >= 70 ? 8 : p >= 60 ? 7 : p >= 50 ? 6 : p >= 40 ? 5 : 0);
+  const marks = []; const allPts = []; const semPts = [];
+  for (const k of Object.keys(bySub)) {
+    const g = bySub[k]; if (!g.max) continue;
+    const pct = Math.round((g.obtained / g.max) * 100);
+    const gp = gradePoint(pct);
+    marks.push({ subject_name: g.subject?.subject_name || 'Unknown', subject_code: g.subject?.subject_code || '', semester: g.semester, percentage: pct, grade_point: gp });
+    allPts.push(gp);
+    if (g.semester === s.semester) semPts.push(gp);
+  }
+  const avg = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
+  const gpa = (semPts.length ? avg(semPts) : avg(allPts)).toFixed(2);
+  const cgpa = avg(allPts).toFixed(2);
+  ok(res, { marks, summary: { gpa, cgpa } });
+});
 api.get('/student/get_current_results.php', auth, async (req, res) => {
   const s = await studentForReq(req) || {};
   const out = { class_test: [], internal_1: [], internal_2: [] };
