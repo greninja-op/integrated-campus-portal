@@ -7,9 +7,14 @@
  *   node seed-dashboard-demo.mjs [studentEmail]
  */
 import { MongoClient } from 'mongodb';
+import dns from 'node:dns';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+// Some local resolvers refuse DNS SRV lookups (querySrv ECONNREFUSED) used by
+// mongodb+srv:// — fall back to public resolvers for this script.
+try { dns.setServers(['8.8.8.8', '1.1.1.1', ...dns.getServers()]); } catch { /* ignore */ }
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
