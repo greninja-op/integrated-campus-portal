@@ -2,59 +2,281 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =========================================================================
+   DESIGN TOKENS — glassmorphism system. See DESIGN.md. Nothing hardcoded.
+   ========================================================================= */
+:root {
+  /* Accent (iris) */
+  --accent: #6d5efc;
+  --accent-strong: #5b4ef0;
+  --accent-contrast: #ffffff;
+
+  /* Glass surfaces (light mode — white-tinted glass, dark text) */
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-bg-hover: rgba(255, 255, 255, 0.66);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  --glass-blur: 18px;
+  --glass-blur-heavy: 28px;
+  --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.12);
+  --glass-shadow-lg: 0 16px 48px rgba(31, 38, 135, 0.18);
+
+  /* Text */
+  --text: #1e293b;
+  --text-muted: #64748b;
+
+  /* Glass-fallback (no backdrop-filter support) */
+  --glass-fallback: rgba(255, 255, 255, 0.9);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 150ms;
+  --dur-normal: 250ms;
+  --dur-slow: 400ms;
+}
+
+.dark {
+  --accent: #8b7cff;
+  --accent-strong: #6d5efc;
+
+  --glass-bg: rgba(22, 24, 44, 0.45);
+  --glass-bg-strong: rgba(22, 24, 44, 0.62);
+  --glass-bg-hover: rgba(34, 37, 62, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.16);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --glass-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
+
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+
+  --glass-fallback: rgba(22, 24, 44, 0.92);
+}
+
+/* =========================================================================
+   BASE — type + the aurora mesh background (what makes glass read as glass)
+   ========================================================================= */
 @layer base {
+  html {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    @apply bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900;
     min-height: 100vh;
+    color: var(--text);
+    /* Light aurora mesh — indigo / violet / cyan / rose blooms on near-white */
+    background-color: hsl(230, 60%, 97%);
+    background-image:
+      radial-gradient(at 15% 18%, hsla(245, 100%, 88%, 0.9) 0px, transparent 50%),
+      radial-gradient(at 85% 12%, hsla(270, 95%, 90%, 0.85) 0px, transparent 50%),
+      radial-gradient(at 78% 82%, hsla(190, 95%, 86%, 0.8) 0px, transparent 50%),
+      radial-gradient(at 22% 88%, hsla(325, 90%, 92%, 0.75) 0px, transparent 45%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
+
+  .dark body {
+    background-color: hsl(240, 45%, 8%);
+    background-image:
+      radial-gradient(at 15% 18%, hsla(245, 70%, 28%, 0.55) 0px, transparent 50%),
+      radial-gradient(at 85% 12%, hsla(275, 65%, 26%, 0.5) 0px, transparent 50%),
+      radial-gradient(at 78% 82%, hsla(195, 80%, 22%, 0.45) 0px, transparent 50%),
+      radial-gradient(at 22% 88%, hsla(320, 60%, 24%, 0.4) 0px, transparent 45%);
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /* Dynamic numbers shouldn't shift layout as they update */
+  .tabular, [data-tabular] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* =========================================================================
+   GLASS COMPONENT LAYER — reusable surfaces. Prefer these over re-deriving.
+   ========================================================================= */
+@layer components {
+  .glass {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight),
+      inset 1px 0 0 rgba(255, 255, 255, 0.12);
+    color: var(--text);
+  }
+
+  /* Static surface */
+  .glass-panel {
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: blur(var(--glass-blur-heavy));
+    backdrop-filter: blur(var(--glass-blur-heavy));
+    border: 1px solid var(--glass-border);
+    border-radius: 1.25rem;
+    box-shadow:
+      var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+    color: var(--text);
+  }
+
+  /* Interactive surface — lifts on hover */
+  .glass-card {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    box-shadow:
+      var(--glass-shadow),
+      inset 0 1px 0 var(--glass-highlight);
+    color: var(--text);
+    transition: transform var(--dur-normal) var(--ease-out),
+                box-shadow var(--dur-normal) var(--ease-out),
+                background var(--dur-normal) var(--ease-out);
+  }
+
+  .glass-card:hover {
+    background: var(--glass-bg-hover);
+    box-shadow: var(--glass-shadow-lg), inset 0 1px 0 var(--glass-highlight);
+    transform: translateY(-4px);
+  }
+
+  .glass-nav {
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: blur(var(--glass-blur-heavy));
+    backdrop-filter: blur(var(--glass-blur-heavy));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
+  }
+
+  .glass-input {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    color: var(--text);
+    transition: border-color var(--dur-fast) var(--ease-out),
+                box-shadow var(--dur-fast) var(--ease-out),
+                background var(--dur-fast) var(--ease-out);
+  }
+
+  .glass-input::placeholder { color: var(--text-muted); }
+
+  .glass-input:focus {
+    outline: none;
+    background: var(--glass-bg-hover);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  /* Primary action — opaque iris, one per screen */
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 40%, transparent);
+    transition: transform var(--dur-fast) var(--ease-out),
+                box-shadow var(--dur-fast) var(--ease-out),
+                background var(--dur-fast) var(--ease-out);
+  }
+  .btn-primary:hover { background: var(--accent-strong); box-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 50%, transparent); transform: translateY(-2px); }
+  .btn-primary:active:not(.static) { transform: scale(0.96); }
+
+  /* Secondary glass action */
+  .btn-glass {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    color: var(--text);
+    font-weight: 600;
+    box-shadow: inset 0 1px 0 var(--glass-highlight);
+    transition: transform var(--dur-fast) var(--ease-out),
+                background var(--dur-fast) var(--ease-out);
+  }
+  .btn-glass:hover { background: var(--glass-bg-hover); transform: translateY(-2px); }
+  .btn-glass:active:not(.static) { transform: scale(0.96); }
+
+  .glass-modal {
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: blur(var(--glass-blur-heavy));
+    backdrop-filter: blur(var(--glass-blur-heavy));
+    border: 1px solid var(--glass-border);
+    border-radius: 1.5rem;
+    box-shadow: 0 24px 64px rgba(31, 38, 135, 0.25), inset 0 1px 0 var(--glass-highlight);
+    color: var(--text);
+  }
+  .dark .glass-modal { box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), inset 0 1px 0 var(--glass-highlight); }
+
+  .glass-backdrop {
+    background: rgba(15, 18, 40, 0.35);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .glass-text { color: var(--text); }
+  .glass-text-muted { color: var(--text-muted); }
+}
+
+/* Visible focus ring for keyboard users (a11y) */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+/* =========================================================================
+   FALLBACK — browsers without backdrop-filter get solid surfaces
+   ========================================================================= */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .glass, .glass-panel, .glass-card, .glass-nav, .glass-modal, .glass-input, .btn-glass {
+    background: var(--glass-fallback);
   }
 }
 
 @layer utilities {
+  /* Legacy hover-card kept working, retuned to the glass system */
   .hover-card {
-    transition: all 0.3s ease !important;
+    transition: transform var(--dur-normal) var(--ease-out),
+                box-shadow var(--dur-normal) var(--ease-out),
+                background var(--dur-normal) var(--ease-out);
   }
-  
   .hover-card:hover {
-    background: rgba(255, 255, 255, 0.4) !important;
-    transform: translateY(-8px) !important;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+    background: var(--glass-bg-hover);
+    transform: translateY(-8px);
+    box-shadow: var(--glass-shadow-lg);
   }
 
   /* Hide scrollbar but keep functionality */
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-  
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;  /* Chrome, Safari and Opera */
-  }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
 }
 
-/* Global scrollbar hiding - applies to entire app */
-* {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+/* Global scrollbar hiding */
+* { -ms-overflow-style: none; scrollbar-width: none; }
+*::-webkit-scrollbar { display: none; }
+html, body { -ms-overflow-style: none; scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 
-*::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
-}
-
-/* Ensure body and html also hide scrollbars */
-html, body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none;
-}
-
-/* Enhanced Select Dropdown Styling */
+/* =========================================================================
+   NATIVE SELECT — glass + iris accent (chevron tinted to accent)
+   ========================================================================= */
 select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%2314b8a6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236d5efc' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
   background-position: right 1rem center;
   background-repeat: no-repeat;
   background-size: 1.25em 1.25em;
@@ -68,37 +290,11 @@ select {
 }
 
 .dark select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%235eead4' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%238b7cff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
 }
 
-/* Select dropdown menu styling - rounded corners */
-select::-ms-expand {
-  display: none;
-}
+select::-ms-expand { display: none; }
 
-/* Webkit scrollbar for select dropdown */
-select::-webkit-scrollbar {
-  width: 8px;
-}
-
-select::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-}
-
-select::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
-  border-radius: 10px;
-}
-
-/* Dropdown menu container - rounded corners */
-select[size],
-select[multiple] {
-  border-radius: 1rem !important;
-  overflow: hidden;
-}
-
-/* Select dropdown options styling */
 select option {
   background-color: #ffffff;
   color: #1e293b;
@@ -106,249 +302,73 @@ select option {
   font-weight: 500;
   font-size: 15px;
   line-height: 1.5;
-  border: none;
-  margin: 0;
-  border-radius: 0;
 }
+.dark select option { background-color: #16182c; color: #e2e8f0; }
 
-.dark select option {
-  background-color: #1f2937;
-  color: #f1f5f9;
-}
-
-/* First and last option rounded corners */
-select option:first-child {
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
-  padding-top: 16px;
-}
-
-select option:last-child {
-  border-bottom-left-radius: 1rem;
-  border-bottom-right-radius: 1rem;
-  padding-bottom: 16px;
-}
-
-/* Selected/Checked option - Teal gradient */
 select option:checked {
-  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%) !important;
-  color: white !important;
+  background: var(--accent) !important;
+  color: #fff !important;
   font-weight: 600;
 }
 
-/* Hover state for options */
-select option:hover {
-  background: linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(13, 148, 136, 0.15) 100%) !important;
-  color: #0d9488 !important;
-  font-weight: 600;
-}
-
-.dark select option:hover {
-  background: linear-gradient(135deg, rgba(20, 184, 166, 0.25) 0%, rgba(13, 148, 136, 0.25) 100%) !important;
-  color: #5eead4 !important;
-}
-
-/* Select focus state */
 select:focus {
   outline: none;
-  border-color: #14b8a6;
-  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.15);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
   transform: translateY(-1px);
 }
-
-/* Select hover state */
 select:hover {
-  border-color: #14b8a6;
-  background-color: rgba(255, 255, 255, 0.8);
+  border-color: var(--accent);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.15);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 18%, transparent);
 }
+select:active { transform: translateY(0); }
 
-.dark select:hover {
-  background-color: rgba(31, 41, 55, 0.8);
-  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.2);
-}
-
-/* Active/Open state */
-select:active {
-  transform: translateY(0);
-}
-
-/* Transition Overlay - 4 Panel Wipe Effect */
+/* Page transition overlay — retuned to the iris/aurora palette */
 .transition-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 9999;
-  pointer-events: none;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 0;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+  z-index: 9999; pointer-events: none;
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 0;
 }
-
 .transition-panel {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(135deg, #6d5efc 0%, #8b5cf6 100%);
+  position: relative; overflow: hidden;
 }
-
 .transition-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.12) 0%, transparent 70%);
 }
 
-/* Remove number input arrows */
+/* Remove number input spinners */
 input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
-input[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-
-/* Smooth Calendar Popup Animations */
-
-/* Calendar icon styling */
+/* Date input — iris accent, soft motion */
 input[type="date"]::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.6;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: invert(0.5);
-  padding: 8px;
-  border-radius: 6px;
+  cursor: pointer; opacity: 0.6;
+  transition: all var(--dur-normal) var(--ease-out);
+  filter: invert(0.5); padding: 8px; border-radius: 6px;
 }
-
 input[type="date"]:hover::-webkit-calendar-picker-indicator {
-  opacity: 1;
-  transform: scale(1.1);
-  filter: invert(0.3);
-  background: rgba(20, 184, 166, 0.1);
+  opacity: 1; transform: scale(1.1); filter: invert(0.3);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
+input[type="date"]:focus::-webkit-calendar-picker-indicator { opacity: 1; }
+input[type="date"] { transition: all var(--dur-normal) var(--ease-out); }
+input[type="date"]:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(31, 38, 135, 0.12); }
+.dark input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.8); }
+.dark input[type="date"]:hover::-webkit-calendar-picker-indicator { filter: invert(1); }
 
-input[type="date"]:focus::-webkit-calendar-picker-indicator {
-  opacity: 1;
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-/* Calendar icon click animation */
-input[type="date"]::-webkit-calendar-picker-indicator:active {
-  transform: scale(0.9);
-  transition: transform 0.1s ease;
-}
-
-/* Pulse animation for calendar icon */
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
+/* =========================================================================
+   REDUCED MOTION — respect the OS setting
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-  50% {
-    transform: scale(1.15);
-    opacity: 0.8;
-  }
-}
-
-/* Smooth focus ring animation */
-input[type="date"]:focus {
-  animation: focusRing 0.3s ease-out;
-}
-
-@keyframes focusRing {
-  0% {
-    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4);
-  }
-  100% {
-    box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
-  }
-}
-
-/* Smooth transition for date input */
-input[type="date"] {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-input[type="date"]:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Dark mode calendar icon */
-.dark input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.8);
-}
-
-.dark input[type="date"]:hover::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-/* Calendar Popup Dropdown Animation - Chrome/Edge */
-input[type="date"]::-webkit-calendar-picker-indicator::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-/* Animate the calendar popup when it opens */
-@keyframes calendarSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes calendarFadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Style the calendar popup container */
-input[type="date"]::-webkit-datetime-edit {
-  transition: all 0.3s ease;
-}
-
-input[type="date"]:focus::-webkit-datetime-edit {
-  transform: translateX(2px);
-}
-
-/* Calendar popup styling - applies when calendar is open */
-input[type="date"][aria-expanded="true"] {
-  box-shadow: 0 8px 24px rgba(20, 184, 166, 0.2);
-  border-color: rgb(20, 184, 166);
-}
-
-/* Smooth calendar table animations */
-::-webkit-calendar-picker-indicator {
-  animation: iconBounce 0.5s ease;
-}
-
-@keyframes iconBounce {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
+  body { background-attachment: scroll; }
 }

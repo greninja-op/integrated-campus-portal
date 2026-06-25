@@ -36,7 +36,7 @@ export default function ThemeToggle() {
     >
       {/* Sliding Blue Pill with Icon */}
       <div
-        className="absolute top-1 h-7 w-7 rounded-full bg-[#4169E1] shadow-lg transition-all duration-300 ease-in-out flex items-center justify-center z-10"
+        className="absolute top-1 h-7 w-7 rounded-full bg-primary shadow-lg transition-all duration-300 ease-in-out flex items-center justify-center z-10"
         style={{
           left: isDark ? 'calc(100% - 2rem)' : '0.25rem'
         }}

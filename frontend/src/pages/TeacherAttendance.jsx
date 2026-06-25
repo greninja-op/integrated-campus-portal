@@ -165,19 +165,19 @@ export default function TeacherAttendance() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => selectedCourse ? setSelectedCourse(null) : navigate('/teacher/dashboard')}
-            className="w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all"
+            className="btn-glass w-10 h-10 rounded-full flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Attendance Management</h1>
+          <h1 className="text-3xl font-display font-bold glass-text">Attendance Management</h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
           <div className="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-white">
             <i className="fas fa-calendar-check text-lg"></i>
           </div>
@@ -185,7 +185,7 @@ export default function TeacherAttendance() {
       </header>
 
       {/* Date Banner - No date picker, just display today */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-600 rounded-2xl p-6 mb-8 text-white shadow-2xl">
+      <div className="bg-gradient-to-r from-orange-500 to-amber-600 rounded-2xl p-6 mb-8 text-white shadow-glass-lg">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
@@ -211,18 +211,18 @@ export default function TeacherAttendance() {
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <i className="fas fa-spinner fa-spin text-6xl text-orange-500 mb-4"></i>
-            <p className="text-slate-600 dark:text-slate-400 text-lg">Loading...</p>
+            <p className="glass-text-muted text-lg">Loading...</p>
           </div>
         </div>
       ) : !selectedCourse ? (
         /* Course Selection Grid */
         <div>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Select Your Course</h2>
+            <h2 className="text-2xl font-display font-bold glass-text">Select Your Course</h2>
             
             {/* Semester Filter */}
             <div className="flex items-center gap-2">
-              <span className="text-slate-600 dark:text-slate-400 font-medium">Semester:</span>
+              <span className="glass-text-muted font-medium">Semester:</span>
               <CustomSelect
                 name="semester"
                 value={semesterFilter}
@@ -242,10 +242,10 @@ export default function TeacherAttendance() {
           </div>
 
           {filteredCourses.length === 0 ? (
-            <div className="text-center py-12 bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-8 border border-white/20">
+            <div className="text-center py-12 glass-panel p-8">
               <i className="fas fa-book-open text-6xl text-slate-300 dark:text-slate-600 mb-4"></i>
-              <p className="text-slate-600 dark:text-slate-400 text-lg mb-2">No courses assigned</p>
-              <p className="text-slate-500 dark:text-slate-500 text-sm">
+              <p className="glass-text-muted text-lg mb-2">No courses assigned</p>
+              <p className="glass-text-muted text-sm">
                 {semesterFilter !== 'all' 
                   ? `No subjects assigned for Semester ${semesterFilter}` 
                   : 'You have no subjects assigned yet'}
@@ -258,19 +258,19 @@ export default function TeacherAttendance() {
                   key={course.id}
                   whileHover={{ scale: 1.02, y: -5 }}
                   onClick={() => handleCourseSelect(course)}
-                  className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg cursor-pointer hover:bg-orange-500/10 dark:hover:bg-orange-500/20 transition-all flex flex-col"
+                  className="glass-card p-6 cursor-pointer flex flex-col"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0">
                       <i className="fas fa-book text-2xl text-orange-500"></i>
                     </div>
-                    <span className="px-3 py-1 bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-full text-sm font-semibold">
+                    <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
                       Sem {course.semester}
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">{course.subject_name}</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">{course.subject_code}</p>
-                  <button className="w-full px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold transition-all mt-auto">
+                  <h3 className="text-lg font-display font-bold glass-text mb-2">{course.subject_name}</h3>
+                  <p className="text-sm glass-text-muted mb-4">{course.subject_code}</p>
+                  <button className="btn-glass w-full py-2 mt-auto">
                     Select Course
                   </button>
                 </motion.div>
@@ -283,7 +283,7 @@ export default function TeacherAttendance() {
         <div>
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg">
+            <div className="bg-primary rounded-2xl p-6 text-white shadow-glass">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-white/90 font-medium">Total Students</p>
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -293,7 +293,7 @@ export default function TeacherAttendance() {
               <p className="text-4xl font-bold">{students.length}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg">
+            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-glass">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-white/90 font-medium">Present</p>
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -303,7 +303,7 @@ export default function TeacherAttendance() {
               <p className="text-4xl font-bold">{getPresentCount()}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white shadow-lg">
+            <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white shadow-glass">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-white/90 font-medium">Absent</p>
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -315,13 +315,13 @@ export default function TeacherAttendance() {
           </div>
 
           {/* Student List */}
-          <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mb-6">
-            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Student Attendance</h3>
+          <div className="glass-panel p-6 mb-6">
+            <h3 className="text-xl font-display font-bold glass-text mb-6">Student Attendance</h3>
             
             {students.length === 0 ? (
               <div className="text-center py-12">
                 <i className="fas fa-user-slash text-6xl text-slate-300 dark:text-slate-600 mb-4"></i>
-                <p className="text-slate-600 dark:text-slate-400 text-lg">No students enrolled</p>
+                <p className="glass-text-muted text-lg">No students enrolled</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -383,8 +383,8 @@ export default function TeacherAttendance() {
                           )}
                         </div>
                         <div>
-                          <p className="font-bold text-slate-800 dark:text-white">{studentName}</p>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">{studentRoll}</p>
+                          <p className="font-bold glass-text">{studentName}</p>
+                          <p className="text-sm glass-text-muted">{studentRoll}</p>
                         </div>
                       </div>
 
@@ -452,7 +452,7 @@ export default function TeacherAttendance() {
               <button
                 onClick={handleSubmit}
                 disabled={getUnmarkedCount() > 0}
-                className={`px-12 py-4 rounded-xl font-bold text-lg shadow-2xl transition-all transform ${
+                className={`px-12 py-4 rounded-xl font-bold text-lg shadow-glass-lg transition-all transform ${
                   getUnmarkedCount() > 0
                     ? 'bg-gray-400 dark:bg-gray-600 text-gray-200 cursor-not-allowed'
                     : 'bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white hover:scale-105'
@@ -468,26 +468,26 @@ export default function TeacherAttendance() {
 
       {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 glass-backdrop flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full shadow-2xl"
+            className="glass-modal p-8 max-w-md w-full"
           >
             <div className="text-center mb-6">
               <div className="w-16 h-16 rounded-full bg-orange-500/20 flex items-center justify-center mx-auto mb-4">
                 <i className="fas fa-exclamation-circle text-3xl text-orange-500"></i>
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Confirm Attendance</h3>
-              <p className="text-slate-600 dark:text-slate-400">
+              <h3 className="text-2xl font-display font-bold glass-text mb-2">Confirm Attendance</h3>
+              <p className="glass-text-muted">
                 Are you sure you want to submit attendance for {selectedCourse?.subject_code}?
               </p>
             </div>
 
-            <div className="bg-slate-100 dark:bg-gray-700 rounded-xl p-4 mb-6">
+            <div className="glass-panel p-4 mb-6">
               <div className="flex justify-between mb-2">
-                <span className="text-slate-600 dark:text-slate-400">Total Students:</span>
-                <span className="font-bold text-slate-800 dark:text-white">{students.length}</span>
+                <span className="glass-text-muted">Total Students:</span>
+                <span className="font-bold glass-text">{students.length}</span>
               </div>
               <div className="flex justify-between mb-2">
                 <span className="text-green-600 dark:text-green-400">Present:</span>
@@ -503,7 +503,7 @@ export default function TeacherAttendance() {
               <button
                 onClick={() => setShowConfirmModal(false)}
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-3 bg-slate-200 dark:bg-gray-700 text-slate-800 dark:text-white rounded-lg font-semibold hover:bg-slate-300 dark:hover:bg-gray-600 transition-all disabled:opacity-50"
+                className="btn-glass flex-1 px-6 py-3 disabled:opacity-50"
               >
                 Cancel
               </button>

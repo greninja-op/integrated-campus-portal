@@ -4,14 +4,14 @@ export default function ConfirmDialog({ isOpen, onClose, onConfirm, title, messa
   if (!isOpen) return null
 
   const colors = {
-    info: 'from-blue-500 to-cyan-500',
+    info: 'from-primary to-primary-400',
     warning: 'from-amber-500 to-orange-500',
     success: 'from-emerald-500 to-teal-500',
     error: 'from-rose-500 to-red-500'
   }
 
   const iconColors = {
-    info: 'text-blue-500',
+    info: 'text-primary',
     warning: 'text-amber-500',
     success: 'text-emerald-500',
     error: 'text-rose-500'
@@ -39,7 +39,7 @@ export default function ConfirmDialog({ isOpen, onClose, onConfirm, title, messa
           exit={{ scale: 0.9, opacity: 0, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+          className="glass-modal w-full max-w-md overflow-hidden"
         >
           {/* Header with gradient */}
           <div className={`h-2 bg-gradient-to-r ${colors[type]}`}></div>
@@ -57,10 +57,10 @@ export default function ConfirmDialog({ isOpen, onClose, onConfirm, title, messa
               </motion.div>
 
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">
+                <h3 className="text-xl font-display font-bold glass-text mb-2">
                   {title}
                 </h3>
-                <p className="text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+                <p className="glass-text-muted whitespace-pre-line leading-relaxed">
                   {message}
                 </p>
               </div>
@@ -71,7 +71,7 @@ export default function ConfirmDialog({ isOpen, onClose, onConfirm, title, messa
               {cancelText && (
                 <button
                   onClick={onClose}
-                  className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-slate-800 dark:text-white rounded-xl font-semibold transition-all"
+                  className="btn-glass flex-1 px-6 py-3"
                 >
                   {cancelText}
                 </button>

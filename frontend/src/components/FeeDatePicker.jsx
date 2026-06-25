@@ -160,7 +160,7 @@ export default function FeeDatePicker({
 
   return (
     <div className="relative">
-      <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+      <label className="block glass-text-muted font-semibold mb-2">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       
@@ -172,7 +172,7 @@ export default function FeeDatePicker({
           placeholder="Select date"
           readOnly
           required={required}
-          className={`w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white cursor-pointer focus:outline-none ${borderColor} transition-all`}
+          className={`w-full px-4 py-3 glass-input cursor-pointer ${borderColor}`}
         />
         <i className={`fas fa-calendar-alt absolute right-4 top-1/2 -translate-y-1/2 ${iconColor} pointer-events-none`}></i>
       </div>
@@ -192,35 +192,35 @@ export default function FeeDatePicker({
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              className="absolute z-50 mt-2 p-4 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 w-80"
+              className="glass-panel absolute z-50 mt-2 p-4 w-80"
             >
               {/* Month/Year Header */}
               <div className="flex items-center justify-between mb-4">
                 <button
                   type="button"
                   onClick={() => changeMonth(-1)}
-                  className="w-10 h-10 rounded-xl bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors"
+                  className="btn-glass w-10 h-10 flex items-center justify-center"
                 >
-                  <i className="fas fa-chevron-left text-slate-300 text-sm"></i>
+                  <i className="fas fa-chevron-left glass-text-muted text-sm"></i>
                 </button>
                 
-                <h3 className="text-lg font-bold text-white">
+                <h3 className="text-lg font-bold glass-text">
                   {monthYear}
                 </h3>
                 
                 <button
                   type="button"
                   onClick={() => changeMonth(1)}
-                  className="w-10 h-10 rounded-xl bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors"
+                  className="btn-glass w-10 h-10 flex items-center justify-center"
                 >
-                  <i className="fas fa-chevron-right text-slate-300 text-sm"></i>
+                  <i className="fas fa-chevron-right glass-text-muted text-sm"></i>
                 </button>
               </div>
 
               {/* Weekday Headers */}
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                  <div key={day} className="text-center text-xs font-medium text-slate-400 py-1">
+                  <div key={day} className="text-center text-xs font-medium glass-text-muted py-1">
                     {day}
                   </div>
                 ))}
@@ -240,16 +240,16 @@ export default function FeeDatePicker({
                       onClick={() => handleDateClick(dayObj.date)}
                       disabled={isDisabled}
                       className={`
-                        h-10 rounded-lg text-sm font-semibold transition-all relative
-                        ${!dayObj.isCurrentMonth ? 'text-slate-600 bg-slate-800/50' : 'text-slate-200 bg-slate-700'}
-                        ${isDisabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-slate-600 cursor-pointer'}
+                        h-10 rounded-lg text-sm font-semibold transition-colors relative
+                        ${!dayObj.isCurrentMonth ? 'glass-text-muted opacity-40' : 'glass-text'}
+                        ${isDisabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-primary/10 cursor-pointer'}
                         ${colorClass}
-                        ${isToday && !colorClass ? 'ring-2 ring-blue-500' : ''}
+                        ${isToday && !colorClass ? 'ring-2 ring-primary' : ''}
                       `}
                     >
                       {isDisabled ? (
                         <div className="relative">
-                          <span className="text-slate-500">{dayObj.day}</span>
+                          <span className="glass-text-muted">{dayObj.day}</span>
                           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                             <div className="w-8 h-0.5 bg-red-500 rotate-45"></div>
                             <div className="absolute w-8 h-0.5 bg-red-500 -rotate-45"></div>
@@ -265,7 +265,7 @@ export default function FeeDatePicker({
 
               {/* Today Display - Only show for normal (without fine) picker */}
               {type === 'normal' && (
-                <div className="w-full px-4 py-3 bg-teal-500 text-white rounded-lg font-semibold text-sm text-center cursor-not-allowed opacity-70">
+                <div className="w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold text-sm text-center cursor-not-allowed opacity-70">
                   <i className="fas fa-calendar-day mr-2"></i>
                   Select Today ({today.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})
                 </div>

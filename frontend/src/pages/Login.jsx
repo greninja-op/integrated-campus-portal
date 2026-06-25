@@ -75,14 +75,14 @@ export default function Login() {
         <ThemeToggle />
       </div>
 
-      <div className="relative bg-white/25 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl w-full max-w-md p-10">
-        <h2 className="text-4xl font-bold text-center text-slate-800 dark:text-white mb-6">
+      <div className="glass-panel relative w-full max-w-md p-10">
+        <h2 className="text-4xl font-display font-bold text-center mb-6 glass-text">
           Login
         </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
-            <label className="block mb-2 text-slate-700 dark:text-slate-300 font-semibold">
+            <label className="block mb-2 font-semibold glass-text-muted">
               Username or Email
             </label>
             <input
@@ -91,12 +91,12 @@ export default function Login() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter your username"
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-slate-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-800/70 transition-all"
+              className="glass-input w-full px-4 py-3"
             />
           </div>
 
           <div className="mb-5">
-            <label className="block mb-2 text-slate-700 dark:text-slate-300 font-semibold">
+            <label className="block mb-2 font-semibold glass-text-muted">
               Password
             </label>
             <input
@@ -105,12 +105,12 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 text-slate-800 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-800/70 transition-all"
+              className="glass-input w-full px-4 py-3"
             />
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+            <div className="mb-4 p-3 bg-danger/10 border border-danger/40 text-danger rounded-xl text-sm">
               {error}
             </div>
           )}
@@ -118,19 +118,19 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500 disabled:opacity-70 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all disabled:transform-none"
+            className="btn-primary w-full py-3 disabled:opacity-70 disabled:transform-none"
           >
-            Log In
+            {isLoading ? 'Logging in…' : 'Log In'}
           </button>
 
           <div 
             ref={selectorRef}
             onMouseLeave={handleMouseLeave}
-            className="relative flex bg-gray-200/30 dark:bg-gray-700/30 rounded-full mt-6 mb-3 border border-gray-200/40 dark:border-gray-600/40 p-1"
+            className="relative flex glass-input mt-6 mb-3 rounded-full p-1"
           >
             <div
               ref={highlightRef}
-              className="absolute top-1 left-0 h-[calc(100%-8px)] bg-blue-500 rounded-full shadow-lg transition-all duration-300 ease-out"
+              className="absolute top-1 left-0 h-[calc(100%-8px)] bg-primary rounded-full shadow-md transition-all duration-300 ease-out"
             />
             
             <input

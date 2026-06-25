@@ -83,17 +83,17 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
     <div className="space-y-6">
       <button
         onClick={onBack}
-        className="text-indigo-500 hover:text-indigo-600 mb-4"
+        className="text-primary hover:opacity-80 mb-4"
       >
         <i className="fas fa-arrow-left mr-2"></i>
         Back
       </button>
 
-      <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg">
-        <h3 className="font-bold text-slate-800 dark:text-white text-lg">
+      <div className="glass-panel p-4">
+        <h3 className="font-bold glass-text text-lg">
           Semester Marks Entry
         </h3>
-        <p className="text-slate-600 dark:text-slate-400 text-sm">
+        <p className="glass-text-muted text-sm">
           Student: {student.name} ({student.rollNo})
         </p>
       </div>
@@ -102,7 +102,7 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-slate-100 dark:bg-slate-800">
+            <tr className="bg-black/5 dark:bg-white/5 glass-text">
               <th className="p-2 text-left">Course Code</th>
               <th className="p-2 text-left">Course</th>
               <th className="p-2 text-center">Credit</th>
@@ -116,7 +116,7 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
               <th className="p-2 text-center">Result</th>
               <th className="p-2"></th>
             </tr>
-            <tr className="bg-slate-50 dark:bg-slate-800/50 text-xs">
+            <tr className="bg-black/5 dark:bg-white/5 text-xs glass-text-muted">
               <th className="p-1"></th>
               <th className="p-1"></th>
               <th className="p-1"></th>
@@ -135,14 +135,14 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
           </thead>
           <tbody>
             {subjects.map((subject, index) => (
-              <tr key={index} className="border-b border-slate-200 dark:border-slate-700">
+              <tr key={index} className="border-b border-white/10 dark:border-white/5">
                 <td className="p-2">
                   <input
                     type="text"
                     value={subject.courseCode}
                     onChange={(e) => updateSubject(index, 'courseCode', e.target.value)}
                     placeholder="Code"
-                    className="w-full px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white text-sm"
+                    className="w-full px-2 py-1 glass-input text-sm"
                   />
                 </td>
                 <td className="p-2">
@@ -151,7 +151,7 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
                     value={subject.courseName}
                     onChange={(e) => updateSubject(index, 'courseName', e.target.value)}
                     placeholder="Course Name"
-                    className="w-full px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white text-sm"
+                    className="w-full px-2 py-1 glass-input text-sm"
                   />
                 </td>
                 <td className="p-2">
@@ -159,7 +159,7 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
                     type="number"
                     value={subject.credit}
                     onChange={(e) => updateSubject(index, 'credit', e.target.value)}
-                    className="w-16 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white text-sm text-center"
+                    className="w-16 px-2 py-1 glass-input text-sm text-center"
                   />
                 </td>
                 <td className="p-2">
@@ -169,10 +169,10 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
                     onChange={(e) => updateSubject(index, 'esaMarks', e.target.value)}
                     max={subject.esaMax}
                     placeholder="0"
-                    className="w-16 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white text-sm text-center"
+                    className="w-16 px-2 py-1 glass-input text-sm text-center"
                   />
                 </td>
-                <td className="p-2 text-center text-slate-600 dark:text-slate-400">{subject.esaMax}</td>
+                <td className="p-2 text-center glass-text-muted">{subject.esaMax}</td>
                 <td className="p-2">
                   <input
                     type="number"
@@ -180,15 +180,15 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
                     onChange={(e) => updateSubject(index, 'isaMarks', e.target.value)}
                     max={subject.isaMax}
                     placeholder="0"
-                    className="w-16 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white text-sm text-center"
+                    className="w-16 px-2 py-1 glass-input text-sm text-center"
                   />
                 </td>
-                <td className="p-2 text-center text-slate-600 dark:text-slate-400">{subject.isaMax}</td>
-                <td className="p-2 text-center font-bold text-slate-800 dark:text-white">{subject.total}</td>
-                <td className="p-2 text-center text-slate-600 dark:text-slate-400">100</td>
-                <td className="p-2 text-center font-bold text-indigo-600 dark:text-indigo-400">{subject.grade}</td>
-                <td className="p-2 text-center font-bold text-slate-800 dark:text-white">{subject.gp}</td>
-                <td className="p-2 text-center font-bold text-slate-800 dark:text-white">{subject.cp}</td>
+                <td className="p-2 text-center glass-text-muted">{subject.isaMax}</td>
+                <td className="p-2 text-center font-bold glass-text">{subject.total}</td>
+                <td className="p-2 text-center glass-text-muted">100</td>
+                <td className="p-2 text-center font-bold text-primary">{subject.grade}</td>
+                <td className="p-2 text-center font-bold glass-text">{subject.gp}</td>
+                <td className="p-2 text-center font-bold glass-text">{subject.cp}</td>
                 <td className={`p-2 text-center font-bold ${subject.result === 'Passed' ? 'text-green-600' : 'text-red-600'}`}>
                   {subject.result}
                 </td>
@@ -206,13 +206,13 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
             ))}
           </tbody>
           <tfoot>
-            <tr className="bg-slate-100 dark:bg-slate-800 font-bold">
+            <tr className="bg-black/5 dark:bg-white/5 font-bold glass-text">
               <td className="p-2" colSpan="2">SEMESTER RESULT</td>
               <td className="p-2 text-center">{totals.totalCredits}</td>
               <td className="p-2 text-center" colSpan="4">SCPA: {totals.scpa}</td>
               <td className="p-2 text-center">{totals.totalMarks}</td>
               <td className="p-2 text-center">{totals.totalMaxMarks}</td>
-              <td className="p-2 text-center text-indigo-600 dark:text-indigo-400">{totals.overallGrade}</td>
+              <td className="p-2 text-center text-primary">{totals.overallGrade}</td>
               <td className="p-2"></td>
               <td className="p-2 text-center">{totals.totalCP}</td>
               <td className={`p-2 text-center ${totals.overallResult === 'Passed' ? 'text-green-600' : 'text-red-600'}`}>
@@ -227,7 +227,7 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
       <div className="flex gap-4">
         <button
           onClick={addSubject}
-          className="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg transition-all"
+          className="btn-glass px-6 py-3"
         >
           <i className="fas fa-plus mr-2"></i>
           Add Subject
@@ -236,7 +236,7 @@ export default function SemesterMarksForm({ student, onSubmit, onBack }) {
         <button
           onClick={handleSubmit}
           disabled={subjects.some(s => !s.courseCode || !s.courseName)}
-          className="flex-1 py-3 bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all"
+          className="btn-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <i className="fas fa-check mr-2"></i>
           Submit Semester Marks

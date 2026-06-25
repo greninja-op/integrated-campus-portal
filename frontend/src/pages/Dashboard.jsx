@@ -80,19 +80,19 @@ export default function Dashboard() {
         className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
       >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Dashboard</h1>
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
+        <h1 className="text-3xl font-display font-bold glass-text">Dashboard</h1>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name || 'Student'}</span>
+          <span className="glass-text-muted font-medium">{user?.full_name || 'Student'}</span>
           {user?.profile_image ? (
             <img 
               src={user.profile_image} 
               alt={user.full_name} 
-              className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500"
+              className="w-10 h-10 rounded-full object-cover border-2 border-primary"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
               {user?.full_name?.charAt(0) || 'S'}
             </div>
           )}
@@ -103,23 +103,23 @@ export default function Dashboard() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Welcome Card */}
-          <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg flex items-center gap-4">
+          <div className="glass-panel p-6 flex items-center gap-4">
             {user?.profile_image ? (
               <img 
                 src={user.profile_image} 
                 alt={user.full_name} 
-                className="w-16 h-16 rounded-full object-cover border-4 border-indigo-500 flex-shrink-0"
+                className="w-16 h-16 rounded-full object-cover border-4 border-primary flex-shrink-0"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white flex-shrink-0 text-2xl font-bold">
+              <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white flex-shrink-0 text-2xl font-bold">
                 {user?.full_name?.charAt(0) || 'S'}
               </div>
             )}
             <div>
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-1">
+              <h2 className="text-2xl font-display font-bold glass-text mb-1">
                 Welcome Back, {user?.full_name?.split(' ')[0] || 'Student'}!
               </h2>
-              <p className="text-slate-600 dark:text-slate-400">
+              <p className="glass-text-muted">
                 {user?.department && `${user.department} • Semester ${user.semester || 'N/A'}`}
               </p>
             </div>
@@ -128,8 +128,8 @@ export default function Dashboard() {
           {/* Stats Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Attendance Percentage */}
-            <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all cursor-pointer">
-              <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4">
+            <div className="glass-card p-6 cursor-pointer">
+              <h3 className="text-xl font-display font-bold glass-text mb-4">
                 Attendance Percentage
               </h3>
               <div className="flex flex-col items-center">
@@ -156,53 +156,53 @@ export default function Dashboard() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-bold text-slate-800 dark:text-white">{attendancePercentage}%</span>
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Overall</span>
+                    <span className="text-4xl font-bold glass-text">{attendancePercentage}%</span>
+                    <span className="text-sm glass-text-muted">Overall</span>
                   </div>
                 </div>
-                <p className="mt-4 text-center text-slate-600 dark:text-slate-400">
+                <p className="mt-4 text-center glass-text-muted">
                   {attendancePercentage >= 75 ? 'Great attendance! Keep it up.' : attendancePercentage >= 60 ? 'Good, but try to improve.' : 'Attendance is low. Please attend regularly.'}
                 </p>
               </div>
             </div>
 
             {/* Upcoming Assignments */}
-            <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-indigo-500/10 dark:hover:bg-indigo-500/20 transition-all cursor-pointer">
-              <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4">
+            <div className="glass-card p-6 cursor-pointer">
+              <h3 className="text-xl font-display font-bold glass-text mb-4">
                 Upcoming Assignments
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="font-semibold text-slate-800 dark:text-white">CS101: Final Project</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">Due: May 15, 2024</p>
+                    <h4 className="font-semibold glass-text">CS101: Final Project</h4>
+                    <p className="text-sm glass-text-muted">Due: May 15, 2024</p>
                   </div>
-                  <a href="#" className="text-blue-500 text-sm hover:underline">View</a>
+                  <a href="#" className="text-primary text-sm hover:underline">View</a>
                 </div>
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="font-semibold text-slate-800 dark:text-white">ENG203: Essay on Modernism</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">Due: May 20, 2024</p>
+                    <h4 className="font-semibold glass-text">ENG203: Essay on Modernism</h4>
+                    <p className="text-sm glass-text-muted">Due: May 20, 2024</p>
                   </div>
-                  <a href="#" className="text-blue-500 text-sm hover:underline">View</a>
+                  <a href="#" className="text-primary text-sm hover:underline">View</a>
                 </div>
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="font-semibold text-slate-800 dark:text-white">MATH305: Problem Set 5</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">Due: May 22, 2024</p>
+                    <h4 className="font-semibold glass-text">MATH305: Problem Set 5</h4>
+                    <p className="text-sm glass-text-muted">Due: May 22, 2024</p>
                   </div>
-                  <a href="#" className="text-blue-500 text-sm hover:underline">View</a>
+                  <a href="#" className="text-primary text-sm hover:underline">View</a>
                 </div>
               </div>
             </div>
           </div>
 
           {/* College Announcements */}
-          <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-indigo-500/10 dark:hover:bg-indigo-500/20 transition-all cursor-pointer">
-            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4">
+          <div className="glass-card p-6 cursor-pointer">
+            <h3 className="text-xl font-display font-bold glass-text mb-4">
               College Announcements
             </h3>
-            <div className="space-y-2 text-slate-600 dark:text-slate-400">
+            <div className="space-y-2 glass-text-muted">
               <p> Library hours extended during finals week</p>
               <p> Summer course registration is now open</p>
               <p> Campus-wide power outage on May 25th from 1 AM to 5 AM</p>
@@ -212,12 +212,12 @@ export default function Dashboard() {
 
         {/* Notifications Sidebar */}
         <div className="space-y-4">
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4">Notifications</h3>
+          <h3 className="text-xl font-display font-bold glass-text mb-4">Notifications</h3>
           
           {notices.length === 0 ? (
-            <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg text-center">
-              <i className="fas fa-bell-slash text-4xl text-slate-400 mb-3"></i>
-              <p className="text-slate-600 dark:text-slate-400">No notifications yet</p>
+            <div className="glass-panel p-6 text-center">
+              <i className="fas fa-bell-slash text-4xl glass-text-muted mb-3"></i>
+              <p className="glass-text-muted">No notifications yet</p>
             </div>
           ) : (
             notices.map((notice, index) => {
@@ -246,21 +246,21 @@ export default function Dashboard() {
                 <div 
                   key={index}
                   onClick={() => navigate('/notice')}
-                  className={`bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg ${hoverColor} transition-all cursor-pointer`}
+                  className="glass-card p-6 cursor-pointer"
                 >
                   <div className="flex gap-4 mb-3">
                     <div className={`w-12 h-12 rounded-full ${bgColor} flex items-center justify-center text-white flex-shrink-0`}>
                       <i className={`${iconClass} text-lg`}></i>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-lg font-bold text-slate-800 dark:text-white mb-2">
+                      <h4 className="text-lg font-display font-bold glass-text mb-2">
                         {notice.title}
                       </h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                      <p className="text-sm glass-text-muted mb-2">
                         {contentPreview}
                       </p>
                       {notice.created_at && (
-                        <p className="text-xs text-slate-500 dark:text-slate-500">
+                        <p className="text-xs glass-text-muted">
                           {new Date(notice.created_at).toLocaleDateString('en-US', { 
                             month: 'short', 
                             day: 'numeric', 
@@ -272,7 +272,7 @@ export default function Dashboard() {
                   </div>
                   {/* Show content preview instead of image */}
                   {notice.content && (
-                    <p className="mt-3 text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                    <p className="mt-3 text-sm glass-text-muted line-clamp-2">
                       {notice.content}
                     </p>
                   )}

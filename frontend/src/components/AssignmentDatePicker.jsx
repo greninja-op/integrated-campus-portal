@@ -68,7 +68,7 @@ export default function AssignmentDatePicker({ label, name, value, onChange, req
 
   return (
     <div className="relative">
-      <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+      <label className="block text-sm font-semibold glass-text-muted mb-2">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       
@@ -80,9 +80,9 @@ export default function AssignmentDatePicker({ label, name, value, onChange, req
           placeholder="Select due date"
           readOnly
           required={required}
-          className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-700/50 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+          className="w-full px-4 py-3 glass-input cursor-pointer"
         />
-        <i className="fas fa-calendar-alt absolute right-4 top-1/2 -translate-y-1/2 text-indigo-500 pointer-events-none"></i>
+        <i className="fas fa-calendar-alt absolute right-4 top-1/2 -translate-y-1/2 text-primary pointer-events-none"></i>
       </div>
 
       <AnimatePresence>
@@ -95,25 +95,25 @@ export default function AssignmentDatePicker({ label, name, value, onChange, req
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              className="absolute z-50 mt-2 p-4 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 w-80"
+              className="glass-panel absolute z-50 mt-2 p-4 w-80"
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <button type="button" onClick={() => changeMonth(-1)}
-                  className="w-10 h-10 rounded-xl bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors">
-                  <i className="fas fa-chevron-left text-slate-300 text-sm"></i>
+                  className="btn-glass w-10 h-10 flex items-center justify-center">
+                  <i className="fas fa-chevron-left glass-text-muted text-sm"></i>
                 </button>
-                <h3 className="text-lg font-bold text-white">{monthYear}</h3>
+                <h3 className="text-lg font-bold glass-text">{monthYear}</h3>
                 <button type="button" onClick={() => changeMonth(1)}
-                  className="w-10 h-10 rounded-xl bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors">
-                  <i className="fas fa-chevron-right text-slate-300 text-sm"></i>
+                  className="btn-glass w-10 h-10 flex items-center justify-center">
+                  <i className="fas fa-chevron-right glass-text-muted text-sm"></i>
                 </button>
               </div>
 
               {/* Weekdays */}
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
-                  <div key={d} className="text-center text-xs font-medium text-slate-400 py-1">{d}</div>
+                  <div key={d} className="text-center text-xs font-medium glass-text-muted py-1">{d}</div>
                 ))}
               </div>
 
@@ -126,15 +126,15 @@ export default function AssignmentDatePicker({ label, name, value, onChange, req
 
                   return (
                     <button key={i} type="button" onClick={() => handleDateClick(dayObj.date)} disabled={disabled}
-                      className={`h-10 rounded-lg text-sm font-semibold transition-all relative
-                        ${!dayObj.isCurrentMonth ? 'text-slate-600 bg-slate-800/50' : 'text-slate-200 bg-slate-700'}
-                        ${disabled ? 'cursor-not-allowed opacity-40' : 'hover:bg-slate-600 cursor-pointer'}
-                        ${selected ? 'ring-4 ring-indigo-500 shadow-lg shadow-indigo-500/50 !bg-indigo-600 text-white' : ''}
-                        ${isToday && !selected ? 'ring-2 ring-blue-400' : ''}
+                      className={`h-10 rounded-lg text-sm font-semibold transition-colors relative
+                        ${!dayObj.isCurrentMonth ? 'glass-text-muted opacity-40' : 'glass-text'}
+                        ${disabled ? 'cursor-not-allowed opacity-40' : 'hover:bg-primary/10 cursor-pointer'}
+                        ${selected ? '!bg-primary !text-white' : ''}
+                        ${isToday && !selected ? 'ring-2 ring-primary' : ''}
                       `}>
                       {disabled && dayObj.isCurrentMonth ? (
                         <div className="relative">
-                          <span className="text-slate-500">{dayObj.day}</span>
+                          <span className="glass-text-muted">{dayObj.day}</span>
                           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                             <div className="w-6 h-0.5 bg-red-500/70 rotate-45"></div>
                           </div>

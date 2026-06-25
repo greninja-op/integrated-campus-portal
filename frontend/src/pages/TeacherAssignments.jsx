@@ -171,21 +171,21 @@ export default function TeacherAssignments() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
-          <button onClick={goBack} className="w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all">
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+          <button onClick={goBack} className="btn-glass w-10 h-10 rounded-full flex items-center justify-center">
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Assignments</h1>
+          <h1 className="text-3xl font-display font-bold glass-text">Assignments</h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
         </div>
       </header>
 
       {/* Banner */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 mb-8 text-white shadow-2xl">
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 mb-8 text-white shadow-glass-lg">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
             <i className="fas fa-tasks text-3xl"></i>
@@ -209,47 +209,47 @@ export default function TeacherAssignments() {
         /* Mode Selection */
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <motion.div whileHover={{ scale: 1.02 }} onClick={() => setMode('upload')}
-            className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-8 border border-white/20 shadow-lg cursor-pointer hover:bg-indigo-500/10 transition-all">
+            className="glass-card p-8 cursor-pointer">
             <div className="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center mb-4">
               <i className="fas fa-upload text-3xl text-indigo-500"></i>
             </div>
-            <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Upload Assignment</h3>
-            <p className="text-slate-600 dark:text-slate-400">Create a new assignment for your students</p>
+            <h3 className="text-2xl font-display font-bold glass-text mb-2">Upload Assignment</h3>
+            <p className="glass-text-muted">Create a new assignment for your students</p>
           </motion.div>
           
           <motion.div whileHover={{ scale: 1.02 }} onClick={() => { fetchAssignments(); setMode('view') }}
-            className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-8 border border-white/20 shadow-lg cursor-pointer hover:bg-purple-500/10 transition-all">
+            className="glass-card p-8 cursor-pointer">
             <div className="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
               <i className="fas fa-eye text-3xl text-purple-500"></i>
             </div>
-            <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">View Assignments</h3>
-            <p className="text-slate-600 dark:text-slate-400">View and manage your assignments</p>
+            <h3 className="text-2xl font-display font-bold glass-text mb-2">View Assignments</h3>
+            <p className="glass-text-muted">View and manage your assignments</p>
           </motion.div>
         </div>
       ) : mode === 'upload' ? (
         /* Upload Form */
-        <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-8 border border-white/20 shadow-lg">
+        <div className="glass-panel p-8">
           <form onSubmit={handleUpload} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Title *</label>
+              <label className="block text-sm font-semibold glass-text-muted mb-2">Title *</label>
               <input type="text" value={uploadForm.title} onChange={(e) => setUploadForm({...uploadForm, title: e.target.value})}
-                className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-700/50 border border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 text-slate-800 dark:text-white"
+                className="glass-input w-full px-4 py-3"
                 placeholder="Assignment title" />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Description</label>
+              <label className="block text-sm font-semibold glass-text-muted mb-2">Description</label>
               <textarea value={uploadForm.description} onChange={(e) => setUploadForm({...uploadForm, description: e.target.value})}
-                className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-700/50 border border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-indigo-500 text-slate-800 dark:text-white"
+                className="glass-input w-full px-4 py-3"
                 rows="3" placeholder="Assignment description or instructions" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Semester *</label>
+                <label className="block text-sm font-semibold glass-text-muted mb-2">Semester *</label>
                 <CustomSelect name="semester" value={uploadForm.semester} onChange={handleSemesterChange}
                   options={[1,2,3,4,5,6].map(s => ({ value: s.toString(), label: `Semester ${s}` }))} placeholder="Select Semester" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Subject *</label>
+                <label className="block text-sm font-semibold glass-text-muted mb-2">Subject *</label>
                 <CustomSelect name="subject" value={uploadForm.subject_id} onChange={(e) => setUploadForm({...uploadForm, subject_id: e.target.value})}
                   options={semesterSubjects.map(s => ({ value: s.id.toString(), label: `${s.subject_name} (${s.subject_code})` }))} 
                   placeholder={uploadForm.semester ? "Select Subject" : "Select semester first"} disabled={!uploadForm.semester} />
@@ -264,9 +264,9 @@ export default function TeacherAssignments() {
                 required
               />
               <div>
-                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Attachment (Optional)</label>
+                <label className="block text-sm font-semibold glass-text-muted mb-2">Attachment (Optional)</label>
                 <input type="file" onChange={handleFileChange} accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                  className="w-full px-4 py-3 rounded-xl bg-white/50 dark:bg-gray-700/50 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-500 file:text-white" />
+                  className="glass-input w-full px-4 py-3 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-white" />
               </div>
             </div>
             <button type="submit" disabled={loading} className="w-full py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-bold text-lg hover:from-indigo-600 hover:to-purple-700 transition-all disabled:opacity-50">
@@ -279,9 +279,9 @@ export default function TeacherAssignments() {
         /* View Assignments */
         <div>
           {assignments.length === 0 ? (
-            <div className="text-center py-12 bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl border border-white/20">
+            <div className="text-center py-12 glass-panel">
               <i className="fas fa-folder-open text-6xl text-slate-300 dark:text-slate-600 mb-4"></i>
-              <p className="text-slate-600 dark:text-slate-400 text-lg">No assignments created yet</p>
+              <p className="glass-text-muted text-lg">No assignments created yet</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -289,7 +289,7 @@ export default function TeacherAssignments() {
                 const isPastDue = new Date(assignment.due_date) < new Date()
                 return (
                   <motion.div key={assignment.id} whileHover={{ scale: 1.02 }}
-                    className={`bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg ${isPastDue ? 'opacity-70' : ''}`}>
+                    className={`glass-card p-6 ${isPastDue ? 'opacity-70' : ''}`}>
                     <div className="flex items-start justify-between mb-4">
                       <div className="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center">
                         <i className="fas fa-file-alt text-xl text-indigo-500"></i>
@@ -298,18 +298,18 @@ export default function TeacherAssignments() {
                         {isPastDue ? 'Past Due' : 'Active'}
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2">{assignment.title}</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">{assignment.subject_name}</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-500 mb-4">
+                    <h3 className="text-lg font-display font-bold glass-text mb-2">{assignment.title}</h3>
+                    <p className="text-sm glass-text-muted mb-2">{assignment.subject_name}</p>
+                    <p className="text-sm glass-text-muted mb-4">
                       <i className="fas fa-calendar mr-1"></i> Due: {new Date(assignment.due_date).toLocaleDateString()}
                     </p>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
+                      <span className="text-sm glass-text-muted">
                         <i className="fas fa-users mr-1"></i> {assignment.submission_count}/{assignment.total_students} submitted
                       </span>
                     </div>
                     <button onClick={() => handleViewSubmissions(assignment)}
-                      className="w-full py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-semibold transition-all">
+                      className="btn-primary w-full py-2">
                       View Submissions
                     </button>
                   </motion.div>
@@ -323,27 +323,27 @@ export default function TeacherAssignments() {
         <div>
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg">
+            <div className="bg-primary rounded-2xl p-6 text-white shadow-glass">
               <p className="text-white/90 font-medium mb-1">Total Students</p>
               <p className="text-4xl font-bold">{submissions.submitted.length + submissions.not_submitted.length}</p>
             </div>
-            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg">
+            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-glass">
               <p className="text-white/90 font-medium mb-1">Submitted</p>
               <p className="text-4xl font-bold">{submissions.submitted.length}</p>
             </div>
-            <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white shadow-lg">
+            <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white shadow-glass">
               <p className="text-white/90 font-medium mb-1">Not Submitted</p>
               <p className="text-4xl font-bold">{submissions.not_submitted.length}</p>
             </div>
           </div>
 
           {/* Submitted List */}
-          <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mb-6">
-            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+          <div className="glass-panel p-6 mb-6">
+            <h3 className="text-xl font-display font-bold glass-text mb-4 flex items-center gap-2">
               <i className="fas fa-check-circle text-green-500"></i> Submitted ({submissions.submitted.length})
             </h3>
             {submissions.submitted.length === 0 ? (
-              <p className="text-slate-500 dark:text-slate-400 text-center py-4">No submissions yet</p>
+              <p className="glass-text-muted text-center py-4">No submissions yet</p>
             ) : (
               <div className="space-y-3">
                 {submissions.submitted.map((student) => (
@@ -357,9 +357,9 @@ export default function TeacherAssignments() {
                         {student.first_name?.[0]}{student.last_name?.[0]}
                       </div>
                       <div>
-                        <p className="font-bold text-slate-800 dark:text-white">{student.first_name} {student.last_name}</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">{student.student_id}</p>
-                        <p className="text-xs text-slate-500">{new Date(student.submitted_at).toLocaleString()}</p>
+                        <p className="font-bold glass-text">{student.first_name} {student.last_name}</p>
+                        <p className="text-sm glass-text-muted">{student.student_id}</p>
+                        <p className="text-xs glass-text-muted">{new Date(student.submitted_at).toLocaleString()}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -368,7 +368,7 @@ export default function TeacherAssignments() {
                         student.status === 'accepted' ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'
                       }`}>{student.status}</span>
                       <a href={`${API_ORIGIN}${student.file_path}`} target="_blank" rel="noopener noreferrer"
-                        className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-sm font-semibold">
+                        className="btn-primary px-4 py-2 text-sm">
                         <i className="fas fa-eye mr-1"></i> View
                       </a>
                       {student.status !== 'rejected' && (
@@ -385,12 +385,12 @@ export default function TeacherAssignments() {
           </div>
 
           {/* Not Submitted List */}
-          <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
-            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+          <div className="glass-panel p-6">
+            <h3 className="text-xl font-display font-bold glass-text mb-4 flex items-center gap-2">
               <i className="fas fa-times-circle text-red-500"></i> Not Submitted ({submissions.not_submitted.length})
             </h3>
             {submissions.not_submitted.length === 0 ? (
-              <p className="text-slate-500 dark:text-slate-400 text-center py-4">All students have submitted!</p>
+              <p className="glass-text-muted text-center py-4">All students have submitted!</p>
             ) : (
               <div className="space-y-3">
                 {submissions.not_submitted.map((student) => (
@@ -400,8 +400,8 @@ export default function TeacherAssignments() {
                         {student.first_name?.[0]}{student.last_name?.[0]}
                       </div>
                       <div>
-                        <p className="font-bold text-slate-800 dark:text-white">{student.first_name} {student.last_name}</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">{student.student_id}</p>
+                        <p className="font-bold glass-text">{student.first_name} {student.last_name}</p>
+                        <p className="text-sm glass-text-muted">{student.student_id}</p>
                       </div>
                     </div>
                     <span className="px-3 py-1 bg-yellow-500 text-white rounded-full text-xs font-semibold">Pending</span>
@@ -415,27 +415,27 @@ export default function TeacherAssignments() {
 
       {/* Reject Dialog */}
       {rejectDialog.show && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 glass-backdrop flex items-center justify-center z-50 p-4">
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            className="glass-modal p-8 max-w-md w-full">
             <div className="text-center mb-6">
               <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
                 <i className="fas fa-times-circle text-3xl text-red-500"></i>
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Reject Submission</h3>
-              <p className="text-slate-600 dark:text-slate-400">
+              <h3 className="text-2xl font-display font-bold glass-text mb-2">Reject Submission</h3>
+              <p className="glass-text-muted">
                 Rejecting submission from {rejectDialog.submission?.first_name} {rejectDialog.submission?.last_name}
               </p>
             </div>
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Reason for Rejection</label>
+              <label className="block text-sm font-semibold glass-text-muted mb-2">Reason for Rejection</label>
               <textarea value={rejectDialog.reason} onChange={(e) => setRejectDialog({...rejectDialog, reason: e.target.value})}
-                className="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-gray-700 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-white"
+                className="glass-input w-full px-4 py-3"
                 rows="3" placeholder="Enter reason for rejection..." />
             </div>
             <div className="flex gap-3">
               <button onClick={() => setRejectDialog({ show: false, submission: null, reason: '' })}
-                className="flex-1 px-6 py-3 bg-slate-200 dark:bg-gray-700 text-slate-800 dark:text-white rounded-lg font-semibold">Cancel</button>
+                className="btn-glass flex-1 px-6 py-3">Cancel</button>
               <button onClick={handleReject}
                 className="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold">Reject</button>
             </div>

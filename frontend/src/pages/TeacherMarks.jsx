@@ -212,23 +212,23 @@ export default function TeacherMarks() {
         className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
       >
         {/* Header */}
-        <header className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Marks Management</h1>
+        <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
+          <h1 className="text-3xl font-display font-bold glass-text">Marks Management</h1>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
+            <span className="glass-text-muted font-medium">{user?.full_name}</span>
             <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white">
               <i className="fas fa-user-tie text-xl"></i>
             </div>
           </div>
         </header>
 
-        <p className="text-slate-600 dark:text-slate-400 mb-8">Enter test and exam marks for students</p>
+        <p className="glass-text-muted mb-8">Enter test and exam marks for students</p>
 
         {/* Add Marks Card */}
         <div 
           onClick={handleOpenModal}
-          className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-8 mb-8 text-white shadow-2xl cursor-pointer hover:shadow-2xl transition-all"
+          className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-8 mb-8 text-white shadow-glass-lg cursor-pointer hover:shadow-glass-lg transition-all"
         >
           <div className="flex items-center gap-4">
             <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
@@ -242,34 +242,34 @@ export default function TeacherMarks() {
         </div>
 
         {/* Recent Marks History */}
-        <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-4">Recent Submissions</h2>
+        <div className="glass-panel p-6">
+          <h2 className="text-2xl font-display font-bold glass-text mb-4">Recent Submissions</h2>
           
           {submissions.length === 0 ? (
-            <p className="text-slate-600 dark:text-slate-400">No marks submitted yet</p>
+            <p className="glass-text-muted">No marks submitted yet</p>
           ) : (
             <div className="space-y-4">
               {submissions.map((submission) => (
-                <div key={submission.id} className="bg-white/50 dark:bg-gray-700/50 rounded-xl p-4 border border-slate-200 dark:border-slate-600">
+                <div key={submission.id} className="bg-white/40 dark:bg-white/5 rounded-xl p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-bold text-slate-800 dark:text-white text-lg">
+                      <h3 className="font-bold glass-text text-lg">
                         {submission.examLabel}
                       </h3>
-                      <p className="text-slate-600 dark:text-slate-400 mt-1">
+                      <p className="glass-text-muted mt-1">
                         <i className="fas fa-book mr-2"></i>
                         {submission.subjectLabel} - Semester {submission.semester}
                       </p>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm mt-1">
+                      <p className="glass-text-muted text-sm mt-1">
                         <i className="fas fa-users mr-2"></i>
                         {submission.studentCount} students • Max Marks: {submission.maxMarks}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                      <p className="text-sm glass-text-muted">
                         {new Date(submission.submittedAt).toLocaleDateString()}
                       </p>
-                      <p className="text-xs text-slate-400 dark:text-slate-500">
+                      <p className="text-xs glass-text-muted">
                         {new Date(submission.submittedAt).toLocaleTimeString()}
                       </p>
                     </div>
@@ -283,14 +283,14 @@ export default function TeacherMarks() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 glass-backdrop flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full my-8 shadow-2xl max-h-[85vh] flex flex-col"
+            className="glass-modal max-w-2xl w-full my-8 max-h-[85vh] flex flex-col"
           >
             <div className="flex justify-between items-center p-8 pb-4">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Add Marks</h2>
+              <h2 className="text-2xl font-display font-bold glass-text">Add Marks</h2>
               <button
                 onClick={() => setShowModal(false)}
                 className="w-10 h-10 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition-all"
@@ -320,17 +320,17 @@ export default function TeacherMarks() {
               <div className="space-y-6">
                 <button
                   onClick={() => setExamType('')}
-                  className="text-indigo-500 hover:text-indigo-600 mb-4"
+                  className="text-primary hover:text-primary mb-4"
                 >
                   <i className="fas fa-arrow-left mr-2"></i>
                   Back
                 </button>
 
-                <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg mb-4">
-                  <p className="text-slate-800 dark:text-white font-semibold">
+                <div className="bg-primary/10 p-4 rounded-lg mb-4">
+                  <p className="glass-text font-semibold">
                     {examTypes.find(e => e.value === examType)?.label}
                   </p>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">Department: {teacherDepartment}</p>
+                  <p className="glass-text-muted text-sm">Department: {teacherDepartment}</p>
                 </div>
 
                 <CustomSelect
@@ -345,7 +345,7 @@ export default function TeacherMarks() {
                 <button
                   onClick={() => selectedSemester && setSelectedSemester(selectedSemester)}
                   disabled={!selectedSemester}
-                  className="w-full py-3 bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all"
+                  className="btn-primary w-full py-3 disabled:opacity-50"
                 >
                   Continue
                 </button>
@@ -357,17 +357,17 @@ export default function TeacherMarks() {
               <div className="space-y-6">
                 <button
                   onClick={() => setSelectedSemester('')}
-                  className="text-indigo-500 hover:text-indigo-600 mb-4"
+                  className="text-primary hover:text-primary mb-4"
                 >
                   <i className="fas fa-arrow-left mr-2"></i>
                   Back
                 </button>
 
-                <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg mb-4">
-                  <p className="text-slate-800 dark:text-white font-semibold">
+                <div className="bg-primary/10 p-4 rounded-lg mb-4">
+                  <p className="glass-text font-semibold">
                     {examTypes.find(e => e.value === examType)?.label} - Semester {selectedSemester}
                   </p>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">Department: {teacherDepartment}</p>
+                  <p className="glass-text-muted text-sm">Department: {teacherDepartment}</p>
                 </div>
 
                 <CustomSelect
@@ -381,14 +381,14 @@ export default function TeacherMarks() {
 
                 {examType !== 'semester' && (
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                    <label className="block glass-text-muted font-semibold mb-2">
                       Maximum Marks
                     </label>
                     <input
                       type="number"
                       value={maxMarks}
                       onChange={(e) => setMaxMarks(parseInt(e.target.value))}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 transition-all"
+                      className="glass-input w-full px-4 py-3"
                     />
                   </div>
                 )}
@@ -396,7 +396,7 @@ export default function TeacherMarks() {
                 <button
                   onClick={() => selectedSubject && setSelectedSubject(selectedSubject)}
                   disabled={!selectedSubject}
-                  className="w-full py-3 bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all"
+                  className="btn-primary w-full py-3 disabled:opacity-50"
                 >
                   Continue
                 </button>
@@ -408,25 +408,25 @@ export default function TeacherMarks() {
               <div className="space-y-6">
                 <button
                   onClick={() => setSelectedSubject('')}
-                  className="text-indigo-500 hover:text-indigo-600 mb-4"
+                  className="text-primary hover:text-primary mb-4"
                 >
                   <i className="fas fa-arrow-left mr-2"></i>
                   Back
                 </button>
 
-                <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg mb-4">
-                  <p className="text-slate-800 dark:text-white font-semibold">
+                <div className="bg-primary/10 p-4 rounded-lg mb-4">
+                  <p className="glass-text font-semibold">
                     {examTypes.find(e => e.value === examType)?.label} - {availableSubjects.find(s => s.value === selectedSubject)?.label}
                   </p>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">Maximum Marks: {maxMarks}</p>
+                  <p className="glass-text-muted text-sm">Maximum Marks: {maxMarks}</p>
                 </div>
 
                 <div className="space-y-3">
                   {students.filter(s => s.semester === parseInt(selectedSemester)).map(student => (
-                    <div key={student.id} className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                    <div key={student.id} className="flex items-center gap-4 p-4 bg-white/40 dark:bg-white/5 rounded-lg">
                       <div className="flex-1">
-                        <p className="font-semibold text-slate-800 dark:text-white">{student.name}</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">{student.rollNo}</p>
+                        <p className="font-semibold glass-text">{student.name}</p>
+                        <p className="text-sm glass-text-muted">{student.rollNo}</p>
                       </div>
                       <div className="w-32">
                         <input
@@ -436,7 +436,7 @@ export default function TeacherMarks() {
                           value={marks[student.id] || ''}
                           onChange={(e) => handleMarkChange(student.id, e.target.value)}
                           placeholder={`/ ${maxMarks}`}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500"
+                          className="glass-input w-full px-3 py-2"
                         />
                       </div>
                     </div>
@@ -458,17 +458,17 @@ export default function TeacherMarks() {
               <div className="space-y-6">
                 <button
                   onClick={() => setSelectedSubject('')}
-                  className="text-indigo-500 hover:text-indigo-600 mb-4"
+                  className="text-primary hover:text-primary mb-4"
                 >
                   <i className="fas fa-arrow-left mr-2"></i>
                   Back
                 </button>
 
-                <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-lg mb-4">
-                  <p className="text-slate-800 dark:text-white font-semibold">
+                <div className="bg-primary/10 p-4 rounded-lg mb-4">
+                  <p className="glass-text font-semibold">
                     Semester Exam - {availableSubjects.find(s => s.value === selectedSubject)?.label}
                   </p>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">Select a student to enter marks</p>
+                  <p className="glass-text-muted text-sm">Select a student to enter marks</p>
                 </div>
 
                 <div className="space-y-3">
@@ -476,11 +476,11 @@ export default function TeacherMarks() {
                     <div 
                       key={student.id} 
                       onClick={() => setSelectedStudent(student)}
-                      className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/20 cursor-pointer transition-all"
+                      className="flex items-center gap-4 p-4 bg-white/40 dark:bg-white/5 rounded-lg hover:bg-primary/10 cursor-pointer transition-all"
                     >
                       <div className="flex-1">
-                        <p className="font-semibold text-slate-800 dark:text-white">{student.name}</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">{student.rollNo} - Semester {student.semester}</p>
+                        <p className="font-semibold glass-text">{student.name}</p>
+                        <p className="text-sm glass-text-muted">{student.rollNo} - Semester {student.semester}</p>
                       </div>
                       <i className="fas fa-chevron-right text-slate-400"></i>
                     </div>

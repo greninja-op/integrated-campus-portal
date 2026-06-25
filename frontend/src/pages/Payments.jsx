@@ -170,26 +170,26 @@ export default function Payments() {
         className="min-h-screen pb-24 px-4 py-6 max-w-6xl mx-auto"
       >
         {/* Top Header */}
-        <header className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Fee Payments</h1>
+        <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
+          <h1 className="text-3xl font-display font-bold glass-text">Fee Payments</h1>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name || 'Student'}</span>
+            <span className="glass-text-muted font-medium">{user?.full_name || 'Student'}</span>
             {user?.profile_image ? (
               <img 
                 src={user.profile_image} 
                 alt={user.full_name} 
-                className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500"
+                className="w-10 h-10 rounded-full object-cover border-2 border-primary"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
                 {user?.full_name?.charAt(0) || 'S'}
               </div>
             )}
           </div>
         </header>
 
-        <p className="text-slate-600 dark:text-slate-400 mb-8">Manage your payments and dues</p>
+        <p className="glass-text-muted mb-8">Manage your payments and dues</p>
 
         {/* Categorize payments */}
         {(() => {
@@ -232,7 +232,7 @@ export default function Payments() {
                 key={index}
                 className={`p-5 rounded-xl transition-all border-2 ${
                       payment.status === 'paid' 
-                        ? 'bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800/70 border-green-500/40' 
+                        ? 'bg-white/5 hover:bg-white/10 border-green-500/40' 
                         : isOverdue
                           ? 'bg-red-500/10 dark:bg-red-500/20 hover:bg-red-500/20 dark:hover:bg-red-500/30 border-red-500/50'
                           : 'bg-orange-500/10 dark:bg-orange-500/20 hover:bg-orange-500/20 dark:hover:bg-orange-500/30 border-orange-500/30'
@@ -252,11 +252,11 @@ export default function Payments() {
                           }`}></i>
                         </div>
                         <div className="flex-1">
-                          <h3 className="font-bold text-lg text-slate-800 dark:text-white mb-1">
+                          <h3 className="font-bold text-lg glass-text mb-1">
                             {payment.description}
                           </h3>
                           <div className="space-y-1 text-sm">
-                            <p className="text-slate-600 dark:text-slate-400">
+                            <p className="glass-text-muted">
                               <i className="fas fa-calendar mr-2"></i>
                               Due: {new Date(payment.due_date).toLocaleDateString('en-IN', { 
                                 weekday: 'short', 
@@ -278,11 +278,11 @@ export default function Payments() {
                             
                             {payment.feeDetails && (
                               <>
-                                <p className="text-slate-600 dark:text-slate-400">
+                                <p className="glass-text-muted">
                                   <i className="fas fa-info-circle mr-2"></i>
                                   Fine: ?{payment.feeDetails.fineAmount} | Super Fine: ?{payment.feeDetails.superFineAmount}
                                 </p>
-                                <p className="text-slate-600 dark:text-slate-400">
+                                <p className="glass-text-muted">
                                   <i className="fas fa-calendar-times mr-2"></i>
                                   With Fine: {new Date(payment.feeDetails.lastDateFine).toLocaleDateString('en-IN')} | 
                                   Final: {new Date(payment.feeDetails.lastDateSuperFine).toLocaleDateString('en-IN')}
@@ -293,7 +293,7 @@ export default function Payments() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-bold text-slate-800 dark:text-white">
+                        <p className="text-2xl font-bold glass-text">
                           ?{payment.amount.toLocaleString()}
                         </p>
                         {applicableFine > 0 && (
@@ -310,10 +310,10 @@ export default function Payments() {
                     </div>
                     
                     {payment.status === 'paid' && (
-                      <div className="mt-4 pt-4 border-t border-slate-300 dark:border-slate-600">
+                      <div className="mt-4 pt-4 border-t border-white/10">
                         <button
                           onClick={() => generateReceipt(payment, user)}
-                          className="w-full py-3 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+                          className="w-full py-3 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-bold rounded-lg shadow-glass hover:shadow-glass-lg transform hover:-translate-y-0.5 transition-all"
                         >
                           <i className="fas fa-download mr-2"></i>
                           Download Receipt
@@ -322,10 +322,10 @@ export default function Payments() {
                     )}
                     
                     {payment.status === 'pending' && (
-                      <div className="mt-4 pt-4 border-t border-slate-300 dark:border-slate-600">
+                      <div className="mt-4 pt-4 border-t border-white/10">
                         <button
                           onClick={() => handlePayNow(payment)}
-                          className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+                          className="btn-primary w-full py-3"
                         >
                           <i className="fas fa-credit-card mr-2"></i>
                           Pay Now via QR Code / UPI / Card
@@ -340,9 +340,9 @@ export default function Payments() {
             <div className="space-y-8">
               {/* Overdue Fees Section */}
               {overduePayments.length > 0 && (
-                <div className="bg-red-500/10 dark:bg-red-500/20 backdrop-blur-xl rounded-2xl p-6 border-2 border-red-500/50 shadow-lg">
+                <div className="bg-red-500/10 dark:bg-red-500/20 backdrop-blur-xl rounded-2xl p-6 border-2 border-red-500/50 shadow-glass">
                   <div className="flex items-center mb-4">
-                    <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 flex items-center gap-3">
+                    <h2 className="text-2xl font-display font-bold text-red-600 dark:text-red-400 flex items-center gap-3">
                       <i className="fas fa-exclamation-triangle"></i>
                       Overdue Fees ({overduePayments.length})
                     </h2>
@@ -359,14 +359,14 @@ export default function Payments() {
 
               {/* Pending Fees Section */}
               {pendingPayments.length > 0 && (
-                <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
+                <div className="glass-panel p-6">
                   <div className="flex items-center mb-4">
-                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
+                    <h2 className="text-2xl font-display font-bold glass-text flex items-center gap-3">
                       <i className="fas fa-clock text-orange-500"></i>
                       Pending Fees ({pendingPayments.length})
                     </h2>
                   </div>
-                  <p className="text-slate-600 dark:text-slate-400 mb-4">
+                  <p className="glass-text-muted mb-4">
                     <i className="fas fa-info-circle mr-2"></i>
                     Pay before the due date to avoid fines.
                   </p>
@@ -378,9 +378,9 @@ export default function Payments() {
 
               {/* Paid Fees Section */}
               {paidPayments.length > 0 && (
-                <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
+                <div className="glass-panel p-6">
                   <div className="flex items-center mb-4">
-                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-3">
+                    <h2 className="text-2xl font-display font-bold glass-text flex items-center gap-3">
                       <i className="fas fa-check-circle text-green-500"></i>
                       Paid Fees
                     </h2>
@@ -395,7 +395,7 @@ export default function Payments() {
               {payments.length === 0 && (
                 <div className="text-center py-12">
                   <i className="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
-                  <p className="text-slate-600 dark:text-slate-400 text-lg">No fee payments found!</p>
+                  <p className="glass-text-muted text-lg">No fee payments found!</p>
                 </div>
               )}
             </div>

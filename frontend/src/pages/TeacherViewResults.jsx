@@ -109,19 +109,19 @@ export default function TeacherViewResults() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => navigate('/teacher/dashboard')}
-            className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 shadow-md flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-purple-500 hover:text-white transition-all"
+            className="btn-glass w-10 h-10 rounded-full flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Student Results</h1>
+          <h1 className="text-3xl font-display font-bold glass-text">Student Results</h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
           <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white">
             <i className="fas fa-user-tie text-xl"></i>
           </div>
@@ -129,10 +129,10 @@ export default function TeacherViewResults() {
       </header>
 
       {/* Filters */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg mb-8">
+      <div className="glass-panel p-6 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Semester</label>
+            <label className="block glass-text-muted font-semibold mb-2">Semester</label>
             <select
               value={selectedSemester}
               onChange={(e) => {
@@ -140,7 +140,7 @@ export default function TeacherViewResults() {
                 setSelectedSubject('')
                 setResults([])
               }}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500"
+              className="glass-input w-full px-4 py-3"
             >
               <option value="">Select Semester</option>
               {semesterOptions.map(opt => (
@@ -150,12 +150,12 @@ export default function TeacherViewResults() {
           </div>
 
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Subject</label>
+            <label className="block glass-text-muted font-semibold mb-2">Subject</label>
             <select
               value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
               disabled={!selectedSemester}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500 disabled:opacity-50"
+              className="glass-input w-full px-4 py-3 disabled:opacity-50"
             >
               <option value="">Select Subject</option>
               {availableSubjects.map(sub => (
@@ -168,7 +168,7 @@ export default function TeacherViewResults() {
             <button
               onClick={handleSearch}
               disabled={!selectedSubject || loading}
-              className="w-full py-3 bg-purple-500 hover:bg-purple-600 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all shadow-lg hover:shadow-purple-500/30"
+              className="w-full py-3 bg-purple-500 hover:bg-purple-600 disabled:bg-gray-400 text-white font-bold rounded-lg transition-all shadow-glass hover:shadow-glass-lg"
             >
               {loading ? <i className="fas fa-spinner fa-spin"></i> : 'View Results'}
             </button>
@@ -178,9 +178,9 @@ export default function TeacherViewResults() {
 
       {/* Results Table */}
       {results.length > 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-            <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+        <div className="glass-panel overflow-hidden">
+          <div className="p-6 border-b border-white/20 flex justify-between items-center">
+            <h2 className="text-xl font-display font-bold glass-text">
               Results for {availableSubjects.find(s => s.value === selectedSubject)?.label}
             </h2>
             <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-semibold transition-all">
@@ -191,7 +191,7 @@ export default function TeacherViewResults() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 dark:bg-gray-700/50 text-slate-600 dark:text-slate-300 text-sm uppercase tracking-wider">
+                <tr className="bg-white/30 dark:bg-white/5 glass-text-muted text-sm uppercase tracking-wider">
                   <th className="p-4 font-semibold">Roll No</th>
                   <th className="p-4 font-semibold">Student Name</th>
                   <th className="p-4 font-semibold text-center">Internal 1 (40)</th>
@@ -202,15 +202,15 @@ export default function TeacherViewResults() {
                   <th className="p-4 font-semibold text-center">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="divide-y divide-white/10">
                 {results.map((result) => (
-                  <tr key={result.id} className="hover:bg-slate-50 dark:hover:bg-gray-700/30 transition-colors">
-                    <td className="p-4 text-slate-800 dark:text-white font-medium">{result.rollNo}</td>
-                    <td className="p-4 text-slate-800 dark:text-white">{result.name}</td>
-                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.internal1}</td>
-                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.internal2}</td>
-                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.assignment}</td>
-                    <td className="p-4 text-center text-slate-600 dark:text-slate-300">{result.attendance}</td>
+                  <tr key={result.id} className="hover:bg-white/20 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 glass-text font-medium">{result.rollNo}</td>
+                    <td className="p-4 glass-text">{result.name}</td>
+                    <td className="p-4 text-center glass-text-muted">{result.internal1}</td>
+                    <td className="p-4 text-center glass-text-muted">{result.internal2}</td>
+                    <td className="p-4 text-center glass-text-muted">{result.assignment}</td>
+                    <td className="p-4 text-center glass-text-muted">{result.attendance}</td>
                     <td className="p-4 text-center font-bold text-purple-600 dark:text-purple-400">{result.total}</td>
                     <td className="p-4 text-center">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -231,10 +231,10 @@ export default function TeacherViewResults() {
 
       {results.length === 0 && !loading && selectedSubject && (
         <div className="text-center py-12">
-          <div className="w-20 h-20 bg-slate-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-20 h-20 bg-white/40 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
             <i className="fas fa-search text-3xl text-slate-400"></i>
           </div>
-          <p className="text-slate-500 dark:text-slate-400">No results found for this selection</p>
+          <p className="glass-text-muted">No results found for this selection</p>
         </div>
       )}
     </motion.div>

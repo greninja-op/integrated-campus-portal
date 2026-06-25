@@ -71,17 +71,17 @@ export default function AdminDashboard() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Admin Dashboard</h1>
-        <div className="flex items-center gap-4">
+      <header className="flex flex-wrap justify-between items-center gap-3 mb-6">
+        <h1 className="text-2xl sm:text-3xl font-display font-bold glass-text">Admin Dashboard</h1>
+        <div className="flex items-center gap-3 sm:gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
-          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white">
+          <span className="hidden sm:inline glass-text-muted font-medium">{user?.full_name}</span>
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white shrink-0">
             <i className="fas fa-user-shield text-xl"></i>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+            className="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold transition-all shrink-0"
           >
             Logout
           </button>
@@ -93,31 +93,31 @@ export default function AdminDashboard() {
         <motion.div 
           whileHover={{ scale: 1.02, y: -5 }}
           onClick={() => setShowStudentModal(true)}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
           <div className="flex items-center justify-between mb-2">
-            <p className="text-white/90 font-medium">View Students</p>
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-              <i className="fas fa-user-graduate text-white"></i>
+            <p className="glass-text-muted font-medium">View Students</p>
+            <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
+              <i className="fas fa-user-graduate text-primary"></i>
             </div>
           </div>
-          <p className="text-4xl font-bold text-white mb-1">Students</p>
-          <p className="text-blue-100 text-sm">Browse by year and department</p>
+          <p className="text-4xl font-display font-bold glass-text mb-1">Students</p>
+          <p className="glass-text-muted text-sm">Browse by year and department</p>
         </motion.div>
 
         <motion.div 
           whileHover={{ scale: 1.02, y: -5 }}
           onClick={() => setShowTeacherModal(true)}
-          className="bg-gradient-to-br from-green-500 to-green-600 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
           <div className="flex items-center justify-between mb-2">
-            <p className="text-white/90 font-medium">View Teachers</p>
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-              <i className="fas fa-chalkboard-teacher text-white"></i>
+            <p className="glass-text-muted font-medium">View Teachers</p>
+            <div className="w-10 h-10 rounded-full bg-emerald-500/15 flex items-center justify-center">
+              <i className="fas fa-chalkboard-teacher text-emerald-500"></i>
             </div>
           </div>
-          <p className="text-4xl font-bold text-white mb-1">Teachers</p>
-          <p className="text-green-100 text-sm">Browse by department</p>
+          <p className="text-4xl font-display font-bold glass-text mb-1">Teachers</p>
+          <p className="glass-text-muted text-sm">Browse by department</p>
         </motion.div>
       </div>
 
@@ -130,26 +130,26 @@ export default function AdminDashboard() {
           Exclude individual fee notices
           ============================================ */}
       <div className="mb-8">
-        <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-8 border border-white/20 shadow-lg">
+        <div className="glass-panel p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center">
-                <i className="fas fa-bullhorn text-3xl text-blue-500"></i>
+              <div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center">
+                <i className="fas fa-bullhorn text-3xl text-primary"></i>
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 dark:text-white">Recent Notices</h3>
+              <h3 className="text-2xl font-display font-bold glass-text">Recent Notices</h3>
             </div>
             <button 
               onClick={() => navigate('/admin/notices')}
-              className="text-blue-500 hover:text-blue-600 font-semibold text-base"
+              className="text-primary hover:text-primary/80 font-semibold text-base"
             >
               View All →
             </button>
           </div>
           
           {loading ? (
-            <div className="text-center py-8 text-slate-600 dark:text-slate-400">Loading notices...</div>
+            <div className="text-center py-8 glass-text-muted">Loading notices...</div>
           ) : recentNotices.length === 0 ? (
-            <div className="text-center py-8 text-slate-600 dark:text-slate-400">No recent notices</div>
+            <div className="text-center py-8 glass-text-muted">No recent notices</div>
           ) : (
             <div className="relative">
               {/* Carousel Container */}
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -100 }}
                     transition={{ duration: 0.15 }}
-                    className="p-6 bg-white dark:bg-gray-700 rounded-xl cursor-pointer hover:shadow-lg transition-all"
+                    className="glass-card p-6 cursor-pointer"
                     onClick={() => navigate('/admin/notices')}
                   >
                     <div className="flex flex-col md:flex-row gap-6">
@@ -169,19 +169,19 @@ export default function AdminDashboard() {
                       <div className="flex-1">
                         <div className="flex items-start gap-3 mb-4">
                           <div className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${
-                            recentNotices[currentNoticeIndex].category === 'urgent' ? 'bg-red-500' :
-                            recentNotices[currentNoticeIndex].category === 'event' ? 'bg-blue-500' :
+                            recentNotices[currentNoticeIndex].category === 'urgent' ? 'bg-danger' :
+                            recentNotices[currentNoticeIndex].category === 'event' ? 'bg-primary' :
                             recentNotices[currentNoticeIndex].category === 'academic' ? 'bg-purple-500' :
-                            'bg-green-500'
+                            'bg-emerald-500'
                           }`}></div>
                           <div className="flex-1">
-                            <h4 className="font-bold text-slate-800 dark:text-white text-xl mb-3">
+                            <h4 className="font-display font-bold glass-text text-xl mb-3">
                               {recentNotices[currentNoticeIndex].title}
                             </h4>
-                            <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed mb-3">
+                            <p className="glass-text-muted text-base leading-relaxed mb-3">
                               {recentNotices[currentNoticeIndex].content}
                             </p>
-                            <span className="text-sm text-slate-500 dark:text-slate-500">
+                            <span className="text-sm glass-text-muted">
                               {new Date(recentNotices[currentNoticeIndex].date).toLocaleDateString()}
                             </span>
                           </div>
@@ -209,7 +209,7 @@ export default function AdminDashboard() {
                     onClick={() => setCurrentNoticeIndex((prev) => 
                       prev === 0 ? recentNotices.length - 1 : prev - 1
                     )}
-                    className="w-10 h-10 rounded-full bg-blue-500/20 hover:bg-blue-500/30 flex items-center justify-center text-blue-500 transition-all text-lg"
+                    className="w-10 h-10 rounded-full bg-primary/15 hover:bg-primary/25 flex items-center justify-center text-primary transition-all text-lg"
                   >
                     <i className="fas fa-chevron-left"></i>
                   </button>
@@ -222,7 +222,7 @@ export default function AdminDashboard() {
                         onClick={() => setCurrentNoticeIndex(index)}
                         className={`h-2.5 rounded-full transition-all ${
                           index === currentNoticeIndex 
-                            ? 'bg-blue-500 w-8' 
+                            ? 'bg-primary w-8' 
                             : 'bg-slate-400 dark:bg-slate-600 w-2.5'
                         }`}
                       />
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
                     onClick={() => setCurrentNoticeIndex((prev) => 
                       prev === recentNotices.length - 1 ? 0 : prev + 1
                     )}
-                    className="w-10 h-10 rounded-full bg-blue-500/20 hover:bg-blue-500/30 flex items-center justify-center text-blue-500 transition-all text-lg"
+                    className="w-10 h-10 rounded-full bg-primary/15 hover:bg-primary/25 flex items-center justify-center text-primary transition-all text-lg"
                   >
                     <i className="fas fa-chevron-right"></i>
                   </button>
@@ -249,14 +249,14 @@ export default function AdminDashboard() {
         {/* Manage Students */}
         <div 
           onClick={() => navigate('/admin/students')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-blue-500/10 dark:hover:bg-blue-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
-          <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mb-4">
-            <i className="fas fa-user-graduate text-2xl text-blue-500"></i>
+          <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center mb-4">
+            <i className="fas fa-user-graduate text-2xl text-primary"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Manage Students</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">Add, edit, or remove student records</p>
-          <button className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Manage Students</h3>
+          <p className="glass-text-muted mb-4">Add, edit, or remove student records</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -264,14 +264,14 @@ export default function AdminDashboard() {
         {/* Manage Teachers */}
         <div 
           onClick={() => navigate('/admin/teachers')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
-          <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
-            <i className="fas fa-chalkboard-teacher text-2xl text-green-500"></i>
+          <div className="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center mb-4">
+            <i className="fas fa-chalkboard-teacher text-2xl text-emerald-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Manage Teachers</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">Add, edit, or remove teacher profiles</p>
-          <button className="w-full py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Manage Teachers</h3>
+          <p className="glass-text-muted mb-4">Add, edit, or remove teacher profiles</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -279,14 +279,14 @@ export default function AdminDashboard() {
         {/* Manage Courses */}
         <div 
           onClick={() => navigate('/admin/courses')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-purple-500/10 dark:hover:bg-purple-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
-          <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-full bg-purple-500/15 flex items-center justify-center mb-4">
             <i className="fas fa-book text-2xl text-purple-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Manage Courses</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">Create and manage course catalog</p>
-          <button className="w-full py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Manage Courses</h3>
+          <p className="glass-text-muted mb-4">Create and manage course catalog</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -294,14 +294,14 @@ export default function AdminDashboard() {
         {/* Post Notices */}
         <div 
           onClick={() => navigate('/admin/notices')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-red-500/10 dark:hover:bg-red-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
-          <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-4">
-            <i className="fas fa-bullhorn text-2xl text-red-500"></i>
+          <div className="w-12 h-12 rounded-full bg-danger/15 flex items-center justify-center mb-4">
+            <i className="fas fa-bullhorn text-2xl text-danger"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Post Notices</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">Create and manage announcements</p>
-          <button className="w-full py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Post Notices</h3>
+          <p className="glass-text-muted mb-4">Create and manage announcements</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -309,14 +309,14 @@ export default function AdminDashboard() {
         {/* Fee Management */}
         <div 
           onClick={() => navigate('/admin/fee-management')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-teal-500/10 dark:hover:bg-teal-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
-          <div className="w-12 h-12 rounded-full bg-teal-500/20 flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-full bg-teal-500/15 flex items-center justify-center mb-4">
             <i className="fas fa-dollar-sign text-2xl text-teal-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Fee Management</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">Track and manage fee payments</p>
-          <button className="w-full py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Fee Management</h3>
+          <p className="glass-text-muted mb-4">Track and manage fee payments</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -324,14 +324,14 @@ export default function AdminDashboard() {
         {/* Upload Study Materials */}
         <div 
           onClick={() => navigate('/admin/upload-materials')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-purple-500/10 dark:hover:bg-purple-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
-          <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-full bg-purple-500/15 flex items-center justify-center mb-4">
             <i className="fas fa-file-pdf text-2xl text-purple-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Upload Study Materials</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">Upload notes and question papers</p>
-          <button className="w-full py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Upload Study Materials</h3>
+          <p className="glass-text-muted mb-4">Upload notes and question papers</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -341,7 +341,7 @@ export default function AdminDashboard() {
       <AnimatePresence>
         {showStudentModal && (
           <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 glass-backdrop flex items-center justify-center z-50 p-4"
           onClick={() => {
             setShowStudentModal(false)
             setSelectedYear(null)
@@ -352,26 +352,26 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-4xl w-full shadow-2xl max-h-[80vh] overflow-y-auto"
+            className="glass-modal p-8 max-w-4xl w-full max-h-[80vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Browse Students</h2>
+              <h2 className="text-2xl font-display font-bold glass-text">Browse Students</h2>
               <button
                 onClick={() => {
                   setShowStudentModal(false)
                   setSelectedYear(null)
                   setSelectedDepartment(null)
                 }}
-                className="w-10 h-10 rounded-full bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 flex items-center justify-center transition-all"
+                className="btn-glass w-10 h-10 rounded-full flex items-center justify-center"
               >
-                <i className="fas fa-times text-slate-800 dark:text-white"></i>
+                <i className="fas fa-times glass-text"></i>
               </button>
             </div>
 
             {!selectedYear ? (
               /* Year Selection */
               <div>
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Select Academic Year</h3>
+                <h3 className="text-lg font-semibold glass-text mb-4">Select Academic Year</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {['1st Year', '2nd Year', '3rd Year', '4th Year'].map((year) => (
                     <motion.button
@@ -379,9 +379,9 @@ export default function AdminDashboard() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setSelectedYear(year)}
-                      className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all"
+                      className="glass-card p-6 glass-text font-bold text-lg"
                     >
-                      <i className="fas fa-graduation-cap text-3xl mb-2"></i>
+                      <i className="fas fa-graduation-cap text-3xl mb-2 text-primary"></i>
                       <p>{year}</p>
                     </motion.button>
                   ))}
@@ -392,12 +392,12 @@ export default function AdminDashboard() {
               <div>
                 <button
                   onClick={() => setSelectedYear(null)}
-                  className="mb-4 flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline"
+                  className="mb-4 flex items-center gap-2 text-primary hover:underline"
                 >
                   <i className="fas fa-arrow-left"></i>
                   Back to Year Selection
                 </button>
-                <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
+                <h3 className="text-lg font-semibold glass-text mb-4">
                   Select Department - {selectedYear}
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -411,9 +411,9 @@ export default function AdminDashboard() {
                         // Navigate to students page with filters
                         navigate(`/admin/students?year=${selectedYear}&department=${dept}`)
                       }}
-                      className="p-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+                      className="glass-card p-6 glass-text font-bold"
                     >
-                      <i className="fas fa-building text-3xl mb-2"></i>
+                      <i className="fas fa-building text-3xl mb-2 text-purple-500"></i>
                       <p>{dept}</p>
                     </motion.button>
                   ))}
@@ -429,7 +429,7 @@ export default function AdminDashboard() {
       <AnimatePresence>
         {showTeacherModal && (
           <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 glass-backdrop flex items-center justify-center z-50 p-4"
           onClick={() => {
             setShowTeacherModal(false)
             setSelectedDepartment(null)
@@ -439,22 +439,22 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-4xl w-full shadow-2xl"
+            className="glass-modal p-8 max-w-4xl w-full"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Browse Teachers</h2>
+              <h2 className="text-2xl font-display font-bold glass-text">Browse Teachers</h2>
               <button
                 onClick={() => {
                   setShowTeacherModal(false)
                   setSelectedDepartment(null)
                 }}
-                className="w-10 h-10 rounded-full bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 flex items-center justify-center transition-all"
+                className="btn-glass w-10 h-10 rounded-full flex items-center justify-center"
               >
-                <i className="fas fa-times text-slate-800 dark:text-white"></i>
+                <i className="fas fa-times glass-text"></i>
               </button>
             </div>
 
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">Select Department</h3>
+            <h3 className="text-lg font-semibold glass-text mb-4">Select Department</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {['BCA', 'BBA', 'B.Com', 'BSc Physics'].map((dept) => (
                 <motion.button
@@ -466,9 +466,9 @@ export default function AdminDashboard() {
                     // Navigate to teachers page with filter
                     navigate(`/admin/teachers?department=${dept}`)
                   }}
-                  className="p-6 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+                  className="glass-card p-6 glass-text font-bold"
                 >
-                  <i className="fas fa-chalkboard-teacher text-3xl mb-2"></i>
+                  <i className="fas fa-chalkboard-teacher text-3xl mb-2 text-emerald-500"></i>
                   <p>{dept}</p>
                 </motion.button>
               ))}

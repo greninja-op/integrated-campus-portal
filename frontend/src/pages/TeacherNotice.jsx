@@ -72,19 +72,19 @@ export default function TeacherNotice() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/teacher/dashboard')}
-            className="w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all"
+            className="btn-glass w-10 h-10 rounded-full flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Notice Board</h1>
+          <h1 className="text-3xl font-display font-bold glass-text">Notice Board</h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
           <div className="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center text-white">
             <i className="fas fa-bullhorn text-lg"></i>
           </div>
@@ -92,7 +92,7 @@ export default function TeacherNotice() {
       </header>
 
       {/* Banner */}
-      <div className="bg-gradient-to-r from-teal-500 to-cyan-600 rounded-2xl p-6 mb-8 text-white shadow-2xl">
+      <div className="bg-gradient-to-r from-teal-500 to-cyan-600 rounded-2xl p-6 mb-8 text-white shadow-glass-lg">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
             <i className="fas fa-bullhorn text-3xl"></i>
@@ -107,9 +107,9 @@ export default function TeacherNotice() {
       {/* Notices */}
       <div className="space-y-6">
         {notices.length === 0 ? (
-          <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-12 border border-white/20 shadow-lg text-center">
+          <div className="glass-panel p-12 text-center">
             <i className="fas fa-bullhorn text-6xl text-slate-400 mb-4"></i>
-            <p className="text-slate-600 dark:text-slate-400 text-lg">No notices available at the moment.</p>
+            <p className="glass-text-muted text-lg">No notices available at the moment.</p>
           </div>
         ) : (
           notices.map((notice, index) => (
@@ -118,7 +118,7 @@ export default function TeacherNotice() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg overflow-hidden hover:shadow-xl transition-all ${
+              className={`glass-card overflow-hidden ${
                 notice.image_url ? 'flex flex-col md:flex-row' : ''
               }`}
             >
@@ -132,8 +132,8 @@ export default function TeacherNotice() {
                         <i className={`fas ${getCategoryIcon(notice.category)} text-lg`}></i>
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-slate-800 dark:text-white">{notice.title}</h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                        <h3 className="text-xl font-display font-bold glass-text">{notice.title}</h3>
+                        <p className="text-sm glass-text-muted">
                           {notice.created_by && `Posted by ${notice.created_by} • `}
                           {new Date(notice.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </p>
@@ -155,7 +155,7 @@ export default function TeacherNotice() {
                 </div>
 
                 {/* Content */}
-                <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">{notice.content}</p>
+                <p className="glass-text whitespace-pre-wrap leading-relaxed">{notice.content}</p>
               </div>
 
               {/* Image (if exists) */}

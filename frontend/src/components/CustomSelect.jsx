@@ -37,7 +37,7 @@ export default function CustomSelect({ name, value, onChange, options, label, ic
   return (
     <div className="relative">
       {label && (
-        <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+        <label className="block font-semibold mb-2 glass-text-muted">
           {icon && <i className={`${icon} mr-2`}></i>}
           {label}
         </label>
@@ -46,15 +46,15 @@ export default function CustomSelect({ name, value, onChange, options, label, ic
       <div
         ref={selectRef}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full min-w-[200px] px-4 py-3 rounded-lg border bg-white dark:bg-slate-700 text-slate-800 dark:text-white cursor-pointer transition-all flex items-center justify-between ${
-          isOpen ? 'border-teal-500 shadow-lg' : 'border-gray-300 dark:border-gray-600'
+        className={`glass-input w-full min-w-0 px-4 py-3 cursor-pointer flex items-center justify-between ${
+          isOpen ? 'border-primary shadow-glass-lg' : ''
         }`}
       >
-        <span className={`flex-1 truncate ${selectedValue ? 'font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
+        <span className={`flex-1 truncate ${selectedValue ? 'font-medium glass-text' : 'glass-text-muted'}`}>
           {getSelectedLabel()}
         </span>
         <motion.i 
-          className="fas fa-chevron-down text-teal-500 ml-2 flex-shrink-0"
+          className="fas fa-chevron-down text-primary ml-2 flex-shrink-0"
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.15 }}
         ></motion.i>
@@ -68,10 +68,10 @@ export default function CustomSelect({ name, value, onChange, options, label, ic
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute z-[10001] mt-2 w-full bg-slate-800 dark:bg-slate-800 rounded-lg shadow-2xl border border-slate-700 overflow-hidden max-h-80 overflow-y-auto"
+            className="glass-panel absolute z-[10001] mt-2 w-full rounded-xl overflow-hidden max-h-80 overflow-y-auto"
           >
             {options.length === 0 ? (
-              <div className="px-5 py-3.5 text-slate-400 text-center">
+              <div className="px-5 py-3.5 glass-text-muted text-center">
                 No options available
               </div>
             ) : (
@@ -84,10 +84,10 @@ export default function CustomSelect({ name, value, onChange, options, label, ic
                   animate={{ opacity: 1 }}
                   transition={{ delay: index * 0.02 }}
                   onClick={() => handleSelect(option.value)}
-                  className={`px-5 py-3 cursor-pointer transition-all ${
+                  className={`px-5 py-3 cursor-pointer transition-colors ${
                     isSelected
-                      ? 'bg-blue-600 text-white font-semibold'
-                      : 'hover:bg-slate-700 text-white'
+                      ? 'bg-primary text-white font-semibold'
+                      : 'glass-text hover:bg-primary/10'
                   }`}
                 >
                   <span>{option.label}</span>

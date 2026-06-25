@@ -434,27 +434,27 @@ export default function AdminStudents() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/admin/dashboard')}
-            className="w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all"
+            className="btn-glass w-10 h-10 rounded-lg flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
+          <h1 className="text-3xl font-display font-bold glass-text">
             {urlYear || urlDepartment ? 'View Students' : 'Manage Students'}
           </h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
-          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white">
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
             <i className="fas fa-user-shield text-xl"></i>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+            className="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold transition-all"
           >
             Logout
           </button>
@@ -519,7 +519,7 @@ export default function AdminStudents() {
                 setShowAddForm(true)
               }
             }}
-            className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold shadow-lg flex items-center gap-2 transition-all"
+            className="btn-primary px-6 py-3 flex items-center gap-2"
           >
             <i className={`fas ${showAddForm ? 'fa-times' : 'fa-plus'}`}></i>
             {showAddForm ? 'Cancel' : 'Add New Student'}
@@ -540,10 +540,10 @@ export default function AdminStudents() {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mb-6"
+          className="glass-panel p-6 mb-6"
         >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+          <div className="flex flex-wrap gap-3 justify-between items-center mb-6">
+            <h2 className="text-2xl font-display font-bold glass-text">
               {isEditMode ? 'Edit Student' : 'Add New Student'}
             </h2>
             <button
@@ -574,7 +574,7 @@ export default function AdminStudents() {
                 })
                 setFormKey(Date.now())
               }}
-              className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold text-sm"
+              className="btn-glass px-4 py-2 text-sm"
             >
               <i className="fas fa-eraser mr-2"></i>
               Clear Form
@@ -582,13 +582,13 @@ export default function AdminStudents() {
           </div>
           <form key={`form-${formKey}`} onSubmit={handleSubmit} className="space-y-6" autoComplete="off">
             {/* Profile Photo Upload */}
-            <div className="flex items-center gap-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <div className="flex items-center gap-6 p-4 bg-primary/5 rounded-lg">
               <div>
                 {imagePreview ? (
                   <img 
                     src={imagePreview} 
                     alt="Preview" 
-                    className="w-24 h-24 rounded-full object-cover border-4 border-blue-500"
+                    className="w-24 h-24 rounded-full object-cover border-4 border-primary"
                   />
                 ) : (
                   <div className="w-24 h-24 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
@@ -597,14 +597,14 @@ export default function AdminStudents() {
                 )}
               </div>
               <div className="flex-1">
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                <label className="block glass-text-muted font-semibold mb-2">
                   Profile Photo (Optional)
                 </label>
                 <div className="flex gap-3">
                   <button
                     type="button"
                     onClick={() => setShowCropper(true)}
-                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold text-sm"
+                    className="btn-primary px-4 py-2 text-sm"
                   >
                     <i className="fas fa-camera mr-2"></i>
                     {imagePreview ? 'Change Photo' : 'Upload Photo'}
@@ -616,13 +616,13 @@ export default function AdminStudents() {
                         setImagePreview(null)
                         setSelectedImage(null)
                       }}
-                      className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold text-sm"
+                      className="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold text-sm"
                     >
                       <i className="fas fa-trash"></i>
                     </button>
                   )}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                <p className="text-xs glass-text-muted mt-2">
                   Image will be auto-cropped to circular format
                 </p>
               </div>
@@ -631,8 +631,8 @@ export default function AdminStudents() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Student ID */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                Student ID <span className="text-red-500">*</span>
+              <label className="block glass-text-muted font-semibold mb-2">
+                Student ID <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -645,14 +645,14 @@ export default function AdminStudents() {
                 title="Student ID must be exactly 12 digits"
                 maxLength="12"
                 minLength="12"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                className="glass-input w-full px-4 py-3"
               />
             </div>
 
             {/* Full Name */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                Full Name <span className="text-red-500">*</span>
+              <label className="block glass-text-muted font-semibold mb-2">
+                Full Name <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
@@ -661,14 +661,14 @@ export default function AdminStudents() {
                 onChange={handleInputChange}
                 placeholder="Enter full name"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                className="glass-input w-full px-4 py-3"
               />
             </div>
 
             {/* Username */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                Username <span className="text-red-500">*</span>
+              <label className="block glass-text-muted font-semibold mb-2">
+                Username <span className="text-danger">*</span>
               </label>
               <input
                 key={`username-${formKey}`}
@@ -684,14 +684,14 @@ export default function AdminStudents() {
                 autoComplete="new-username"
                 readOnly={fieldsReadOnly}
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                className="glass-input w-full px-4 py-3"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                Email <span className="text-red-500">*</span>
+              <label className="block glass-text-muted font-semibold mb-2">
+                Email <span className="text-danger">*</span>
               </label>
               <input
                 type="email"
@@ -700,14 +700,14 @@ export default function AdminStudents() {
                 onChange={handleInputChange}
                 placeholder="student@university.edu"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                className="glass-input w-full px-4 py-3"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                Password <span className="text-red-500">*</span>
+              <label className="block glass-text-muted font-semibold mb-2">
+                Password <span className="text-danger">*</span>
               </label>
               <input
                 key={`password-${formKey}`}
@@ -724,7 +724,7 @@ export default function AdminStudents() {
                 data-form-type="other"
                 readOnly={fieldsReadOnly}
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                className="glass-input w-full px-4 py-3"
               />
             </div>
 
@@ -734,7 +734,7 @@ export default function AdminStudents() {
               value={formData.department}
               onChange={handleInputChange}
               options={departmentOptions}
-              label={<>Department <span className="text-red-500">*</span></>}
+              label={<>Department <span className="text-danger">*</span></>}
               placeholder="Select department"
               icon="fas fa-building"
             />
@@ -745,15 +745,15 @@ export default function AdminStudents() {
               value={formData.semester}
               onChange={handleInputChange}
               options={semesterOptions}
-              label={<>Semester <span className="text-red-500">*</span></>}
+              label={<>Semester <span className="text-danger">*</span></>}
               placeholder="Select semester"
               icon="fas fa-calendar-alt"
             />
 
             {/* Year of Admission */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                Year of Admission <span className="text-red-500">*</span>
+              <label className="block glass-text-muted font-semibold mb-2">
+                Year of Admission <span className="text-danger">*</span>
               </label>
               <input
                 type="number"
@@ -763,13 +763,13 @@ export default function AdminStudents() {
                 min="2020"
                 max="2030"
                 required
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                className="glass-input w-full px-4 py-3"
               />
             </div>
 
             {/* Phone */}
             <div>
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+              <label className="block glass-text-muted font-semibold mb-2">
                 Phone Number
               </label>
               <input
@@ -782,7 +782,7 @@ export default function AdminStudents() {
                 title="Phone number must be exactly 10 digits"
                 maxLength="10"
                 minLength="10"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                className="glass-input w-full px-4 py-3"
               />
             </div>
 
@@ -804,7 +804,7 @@ export default function AdminStudents() {
                 { value: 'female', label: 'Female' },
                 { value: 'other', label: 'Other' }
               ]}
-              label={<>Gender <span className="text-red-500">*</span></>}
+              label={<>Gender <span className="text-danger">*</span></>}
               placeholder="Select gender"
             />
 
@@ -829,7 +829,7 @@ export default function AdminStudents() {
 
             {/* Address */}
             <div className="md:col-span-2">
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+              <label className="block glass-text-muted font-semibold mb-2">
                 Address
               </label>
               <textarea
@@ -838,29 +838,29 @@ export default function AdminStudents() {
                 onChange={handleInputChange}
                 placeholder="Enter full address"
                 rows="4"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all resize-none"
+                className="glass-input w-full px-4 py-3 resize-none"
               ></textarea>
             </div>
 
             {/* Parent/Guardian Information */}
-            <div className="md:col-span-2 space-y-6 bg-slate-100 dark:bg-slate-800/50 p-6 rounded-xl">
+            <div className="md:col-span-2 space-y-6 bg-primary/5 p-6 rounded-xl">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+                <h3 className="text-lg font-display font-bold glass-text">
                   <i className="fas fa-users mr-2"></i>
                   Parent/Guardian Information
                 </h3>
-                <span className="text-sm text-red-500 font-medium">* At least one required</span>
+                <span className="text-sm text-danger font-medium">* At least one required</span>
               </div>
 
               {/* Parent 1 */}
-              <div className="bg-white dark:bg-slate-700/50 p-5 rounded-lg border border-slate-200/30 dark:border-slate-600/30">
-                <h4 className="text-md font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center">
-                  <i className="fas fa-user-circle mr-2 text-blue-500"></i>
+              <div className="glass-card p-5">
+                <h4 className="text-md font-semibold glass-text mb-4 flex items-center">
+                  <i className="fas fa-user-circle mr-2 text-primary"></i>
                   Parent/Guardian 1
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                    <label className="block glass-text-muted font-medium mb-2 text-sm">
                       Name
                     </label>
                     <input
@@ -869,11 +869,11 @@ export default function AdminStudents() {
                       value={formData.parent1_name}
                       onChange={handleInputChange}
                       placeholder="Enter parent name"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+                      className="glass-input w-full px-4 py-2.5"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                    <label className="block glass-text-muted font-medium mb-2 text-sm">
                       Phone Number
                     </label>
                     <input
@@ -885,11 +885,11 @@ export default function AdminStudents() {
                       pattern="\d{10}"
                       maxLength="10"
                       minLength="10"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+                      className="glass-input w-full px-4 py-2.5"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                    <label className="block glass-text-muted font-medium mb-2 text-sm">
                       Relationship
                     </label>
                     <CustomSelect
@@ -913,14 +913,14 @@ export default function AdminStudents() {
               </div>
 
               {/* Parent 2 */}
-              <div className="bg-white dark:bg-slate-700/50 p-5 rounded-lg border border-slate-200/30 dark:border-slate-600/30">
-                <h4 className="text-md font-semibold text-slate-700 dark:text-slate-300 mb-4 flex items-center">
+              <div className="glass-card p-5">
+                <h4 className="text-md font-semibold glass-text mb-4 flex items-center">
                   <i className="fas fa-user-circle mr-2 text-green-500"></i>
-                  Parent/Guardian 2 <span className="text-sm font-normal text-slate-500 ml-2">(Optional)</span>
+                  Parent/Guardian 2 <span className="text-sm font-normal glass-text-muted ml-2">(Optional)</span>
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                    <label className="block glass-text-muted font-medium mb-2 text-sm">
                       Name
                     </label>
                     <input
@@ -929,11 +929,11 @@ export default function AdminStudents() {
                       value={formData.parent2_name}
                       onChange={handleInputChange}
                       placeholder="Enter parent name"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+                      className="glass-input w-full px-4 py-2.5"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                    <label className="block glass-text-muted font-medium mb-2 text-sm">
                       Phone Number
                     </label>
                     <input
@@ -945,11 +945,11 @@ export default function AdminStudents() {
                       pattern="\d{10}"
                       maxLength="10"
                       minLength="10"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+                      className="glass-input w-full px-4 py-2.5"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-2 text-sm">
+                    <label className="block glass-text-muted font-medium mb-2 text-sm">
                       Relationship
                     </label>
                     <CustomSelect
@@ -978,7 +978,7 @@ export default function AdminStudents() {
               <button
                 type="submit"
                 disabled={uploading || loading}
-                className="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {uploading ? (
                   <>
@@ -1001,7 +1001,7 @@ export default function AdminStudents() {
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="flex-1 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
+                  className="btn-glass flex-1 py-3"
                 >
                   <i className="fas fa-times mr-2"></i>
                   Cancel
@@ -1015,15 +1015,15 @@ export default function AdminStudents() {
 
       {/* Students List - Hidden when form is open */}
       {!showAddForm && (
-      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
+      <div className="glass-panel p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white">
+          <h2 className="text-2xl font-display font-bold glass-text">
             {urlYear || urlDepartment ? 'Filtered Students' : 'All Students'}
           </h2>
           {(urlYear || urlDepartment) && (
             <div className="flex items-center gap-2">
               {urlYear && (
-                <span className="px-3 py-1 bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg font-semibold text-sm">
+                <span className="px-3 py-1 bg-primary/15 text-primary rounded-lg font-semibold text-sm">
                   {urlYear}
                 </span>
               )}
@@ -1034,7 +1034,7 @@ export default function AdminStudents() {
               )}
               <button
                 onClick={() => navigate('/admin/students')}
-                className="px-3 py-1 bg-slate-500/20 text-slate-600 dark:text-slate-400 rounded-lg font-semibold text-sm hover:bg-slate-500/30"
+                className="px-3 py-1 bg-slate-500/20 glass-text-muted rounded-lg font-semibold text-sm hover:bg-slate-500/30"
               >
                 Clear Filters
               </button>
@@ -1049,7 +1049,7 @@ export default function AdminStudents() {
             <select
               value={filterDepartment}
               onChange={(e) => setFilterDepartment(e.target.value)}
-              className="px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+              className="glass-input px-4 py-3"
             >
               <option value="all">All Departments</option>
               {departments.map(dept => (
@@ -1061,7 +1061,7 @@ export default function AdminStudents() {
             <select
               value={filterYear}
               onChange={(e) => setFilterYear(e.target.value)}
-              className="px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+              className="glass-input px-4 py-3"
             >
               <option value="all">All Years</option>
               <option value="1">Year 1</option>
@@ -1077,7 +1077,7 @@ export default function AdminStudents() {
                   setFilterDepartment('all')
                   setFilterYear('all')
                 }}
-                className="px-4 py-3 bg-slate-500/20 hover:bg-slate-500/30 text-slate-600 dark:text-slate-400 rounded-lg font-semibold transition-all"
+                className="px-4 py-3 bg-slate-500/20 hover:bg-slate-500/30 glass-text-muted rounded-lg font-semibold transition-all"
               >
                 <i className="fas fa-times mr-2"></i>
                 Clear Filters
@@ -1094,7 +1094,7 @@ export default function AdminStudents() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name..."
-              className="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+              className="glass-input w-full px-4 py-3 pl-12"
             />
             <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
             {searchQuery && (
@@ -1107,7 +1107,7 @@ export default function AdminStudents() {
             )}
           </div>
           {searchQuery && (
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+            <p className="text-sm glass-text-muted mt-2">
               Found {filteredStudents.length} student{filteredStudents.length !== 1 ? 's' : ''}
             </p>
           )}
@@ -1116,7 +1116,7 @@ export default function AdminStudents() {
         {filteredStudents.length === 0 ? (
           <div className="text-center py-12">
             <i className="fas fa-users text-6xl text-slate-400 mb-4"></i>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="glass-text-muted">
               {urlYear || urlDepartment ? 'No students found matching the filters.' : 'No students found. Add your first student!'}
             </p>
           </div>
@@ -1125,32 +1125,32 @@ export default function AdminStudents() {
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-slate-300 dark:border-slate-600">
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Student ID</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Name</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Department</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Year</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Semester</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Actions</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Student ID</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Name</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Department</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Year</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Semester</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredStudents.map((student, index) => (
-                  <tr key={index} className="border-b border-slate-200 dark:border-slate-700 hover:bg-indigo-500/10 dark:hover:bg-indigo-500/20 transition-all">
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">{student.student_id}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">{student.full_name}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">{student.department}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">Year {student.year}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">Sem {student.semester}</td>
+                  <tr key={index} className="border-b border-slate-200 dark:border-slate-700 hover:bg-primary/5 transition-all">
+                    <td className="px-4 py-3 glass-text">{student.student_id}</td>
+                    <td className="px-4 py-3 glass-text">{student.full_name}</td>
+                    <td className="px-4 py-3 glass-text">{student.department}</td>
+                    <td className="px-4 py-3 glass-text">Year {student.year}</td>
+                    <td className="px-4 py-3 glass-text">Sem {student.semester}</td>
                     <td className="px-4 py-3">
                       <button 
                         onClick={() => handleEdit(student)}
-                        className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 mr-2 transition-all"
+                        className="btn-primary px-3 py-1.5 mr-2"
                       >
                         <i className="fas fa-edit"></i>
                       </button>
                       <button 
                         onClick={() => handleDelete(student.student_id)}
-                        className="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+                        className="px-3 py-1.5 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold shadow-md transition-all"
                       >
                         <i className="fas fa-trash"></i>
                       </button>
@@ -1174,33 +1174,33 @@ export default function AdminStudents() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 glass-backdrop flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full shadow-2xl border border-red-200 dark:border-red-900"
+            className="glass-modal p-8 max-w-md w-full border border-danger/30"
           >
             <div className="text-center">
               <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
                 <i className="fas fa-exclamation-triangle text-3xl text-red-600 dark:text-red-400"></i>
               </div>
-              <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">
+              <h3 className="text-2xl font-display font-bold glass-text mb-3">
                 Delete Student
               </h3>
-              <p className="text-slate-600 dark:text-slate-300 mb-6">
+              <p className="glass-text-muted mb-6">
                 Are you sure you want to delete this student? This action cannot be undone and will permanently remove all student data.
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={cancelDelete}
-                  className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-slate-800 dark:text-white rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+                  className="btn-glass flex-1 px-6 py-3"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmDelete}
-                  className="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
+                  className="flex-1 px-6 py-3 bg-danger hover:bg-danger/90 text-white rounded-xl font-semibold shadow-md transition-all"
                 >
                   <i className="fas fa-trash mr-2"></i>
                   Delete

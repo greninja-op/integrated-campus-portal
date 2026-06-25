@@ -93,33 +93,33 @@ export default function Notice() {
         className="min-h-screen pb-24 px-4 py-6 max-w-5xl mx-auto"
       >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Notice Board</h1>
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
+        <h1 className="text-3xl font-display font-bold glass-text">Notice Board</h1>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name || 'Student'}</span>
+          <span className="glass-text-muted font-medium">{user?.full_name || 'Student'}</span>
           {user?.profile_image ? (
             <img 
               src={user.profile_image} 
               alt={user.full_name} 
-              className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500"
+              className="w-10 h-10 rounded-full object-cover border-2 border-primary"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
               {user?.full_name?.charAt(0) || 'S'}
             </div>
           )}
         </div>
       </header>
 
-      <p className="text-slate-600 dark:text-slate-400 mb-8">Stay updated with announcements</p>
+      <p className="glass-text-muted mb-8">Stay updated with announcements</p>
 
       {/* Notices */}
       <div className="space-y-6">
         {notices.length === 0 ? (
-          <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-12 border border-white/20 shadow-lg text-center">
-            <i className="fas fa-bullhorn text-6xl text-slate-400 mb-4"></i>
-            <p className="text-slate-600 dark:text-slate-400 text-lg">No notices available at the moment.</p>
+          <div className="glass-panel p-12 text-center">
+            <i className="fas fa-bullhorn text-6xl glass-text-muted mb-4"></i>
+            <p className="glass-text-muted text-lg">No notices available at the moment.</p>
           </div>
         ) : (
           notices.map((notice, index) => (
@@ -129,7 +129,7 @@ export default function Notice() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
               whileHover={{ y: -4 }}
-              className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-lg overflow-hidden hover:shadow-2xl transition-all"
+              className="glass-card overflow-hidden"
             >
               <div className="flex">
                 {/* Notice Content */}
@@ -140,8 +140,8 @@ export default function Notice() {
                       <i className={`fas ${getCategoryIcon(notice.category || 'general')} text-white text-lg`}></i>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-1">{notice.title}</h3>
-                      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                      <h3 className="text-2xl font-display font-bold glass-text mb-1">{notice.title}</h3>
+                      <div className="flex items-center gap-2 text-sm glass-text-muted">
                         <i className="fas fa-user-circle"></i>
                         <span>{notice.created_by || 'Admin'}</span>
                         <span>•</span>
@@ -164,12 +164,12 @@ export default function Notice() {
                   </div>
 
                   {/* Content */}
-                  <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">{notice.content}</p>
+                  <p className="glass-text whitespace-pre-wrap leading-relaxed">{notice.content}</p>
                 </div>
                 
                 {/* Notice Image on Far Right */}
                 {notice.image_url && (
-                  <div className="w-64 flex-shrink-0 bg-slate-100 dark:bg-slate-700 flex items-center justify-center p-4">
+                  <div className="w-64 flex-shrink-0 bg-white/5 flex items-center justify-center p-4">
                     <img 
                       src={`${API_ORIGIN}${notice.image_url}`}
                       alt={notice.title}
@@ -186,15 +186,15 @@ export default function Notice() {
                 {/* Pay Now Button for Fee Notices */}
                 {notice.feeDetails && (
                   <div className="p-6 pt-0">
-                    <div className="pt-6 border-t border-slate-300 dark:border-slate-600">
+                    <div className="pt-6 border-t border-white/10">
                     <button
                       onClick={() => navigate('/payments')}
-                      className="w-full py-4 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-bold text-lg rounded-xl shadow-lg transition-all flex items-center justify-center gap-3"
+                      className="w-full py-4 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-bold text-lg rounded-xl shadow-glass transition-all flex items-center justify-center gap-3"
                     >
                       <i className="fas fa-credit-card text-xl"></i>
                       Pay Now - ₹{notice.feeDetails.amount}
                     </button>
-                    <p className="text-center text-sm text-slate-600 dark:text-slate-400 mt-3">
+                    <p className="text-center text-sm glass-text-muted mt-3">
                       <i className="fas fa-info-circle mr-1"></i>
                       Click to proceed to payment page
                     </p>

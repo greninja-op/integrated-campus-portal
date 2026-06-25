@@ -61,11 +61,11 @@ export default function TeacherDashboard() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Teacher Dashboard</h1>
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
+        <h1 className="text-3xl font-display font-bold glass-text">Teacher Dashboard</h1>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
           {profile?.profile_image ? (
             <img 
               src={`${API_ORIGIN}${profile.profile_image}`}
@@ -87,7 +87,7 @@ export default function TeacherDashboard() {
       </header>
 
       {/* Welcome Card */}
-      <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-8 mb-8 text-white shadow-2xl">
+      <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-8 mb-8 text-white shadow-glass-lg">
         <div className="flex items-center gap-4">
           {profile?.profile_image ? (
             <img 
@@ -111,30 +111,30 @@ export default function TeacherDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <motion.div 
           whileHover={{ scale: 1.02, y: -5 }}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg"
+          className="glass-card p-6"
         >
           <div className="flex items-center justify-between mb-2">
-            <p className="text-white/90 font-medium">My Courses</p>
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-              <i className="fas fa-book-open text-white"></i>
+            <p className="glass-text-muted font-medium">My Courses</p>
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+              <i className="fas fa-book-open text-primary"></i>
             </div>
           </div>
-          <p className="text-4xl font-bold text-white mb-1">{stats.courses}</p>
-          <p className="text-blue-100 text-sm">Active this semester</p>
+          <p className="text-4xl font-bold glass-text mb-1">{stats.courses}</p>
+          <p className="glass-text-muted text-sm">Active this semester</p>
         </motion.div>
 
         <motion.div 
           whileHover={{ scale: 1.02, y: -5 }}
-          className="bg-gradient-to-br from-purple-500 to-purple-600 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg"
+          className="glass-card p-6"
         >
           <div className="flex items-center justify-between mb-2">
-            <p className="text-white/90 font-medium">My Students</p>
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-              <i className="fas fa-users text-white"></i>
+            <p className="glass-text-muted font-medium">My Students</p>
+            <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <i className="fas fa-users text-purple-500"></i>
             </div>
           </div>
-          <p className="text-4xl font-bold text-white mb-1">{stats.students}</p>
-          <p className="text-purple-100 text-sm">In your courses</p>
+          <p className="text-4xl font-bold glass-text mb-1">{stats.students}</p>
+          <p className="glass-text-muted text-sm">In your courses</p>
         </motion.div>
       </div>
 
@@ -145,14 +145,14 @@ export default function TeacherDashboard() {
         {/* View Study Materials */}
         <div 
           onClick={() => navigate('/teacher/view-materials')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-purple-500/10 dark:hover:bg-purple-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
           <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
             <i className="fas fa-book-reader text-2xl text-purple-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">View Study Materials</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">View notes and question papers</p>
-          <button className="w-full py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">View Study Materials</h3>
+          <p className="glass-text-muted mb-4">View notes and question papers</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -160,14 +160,14 @@ export default function TeacherDashboard() {
         {/* Add Marks */}
         <div 
           onClick={() => navigate('/teacher/marks')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
           <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
             <i className="fas fa-pen text-2xl text-green-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Add Marks</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">Enter test and exam marks</p>
-          <button className="w-full py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Add Marks</h3>
+          <p className="glass-text-muted mb-4">Enter test and exam marks</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -175,14 +175,14 @@ export default function TeacherDashboard() {
         {/* View Results */}
         <div 
           onClick={() => navigate('/teacher/results')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-purple-500/10 dark:hover:bg-purple-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
           <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center mb-4">
             <i className="fas fa-chart-bar text-2xl text-purple-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">View Results</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">Check student performance</p>
-          <button className="w-full py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">View Results</h3>
+          <p className="glass-text-muted mb-4">Check student performance</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -190,14 +190,14 @@ export default function TeacherDashboard() {
         {/* Attendance */}
         <div 
           onClick={() => navigate('/teacher/attendance')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-orange-500/10 dark:hover:bg-orange-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
           <div className="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center mb-4">
             <i className="fas fa-calendar-check text-2xl text-orange-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Attendance</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">Mark student attendance</p>
-          <button className="w-full py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Attendance</h3>
+          <p className="glass-text-muted mb-4">Mark student attendance</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -205,14 +205,14 @@ export default function TeacherDashboard() {
         {/* Student List */}
         <div 
           onClick={() => navigate('/teacher/students')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-red-500/10 dark:hover:bg-red-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
           <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-4">
             <i className="fas fa-users text-2xl text-red-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Student List</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">View enrolled students</p>
-          <button className="w-full py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Student List</h3>
+          <p className="glass-text-muted mb-4">View enrolled students</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>
@@ -220,14 +220,14 @@ export default function TeacherDashboard() {
         {/* Announcements */}
         <div 
           onClick={() => navigate('/teacher/notices')}
-          className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg hover:bg-teal-500/10 dark:hover:bg-teal-500/20 transition-all cursor-pointer"
+          className="glass-card p-6 cursor-pointer"
         >
           <div className="w-12 h-12 rounded-full bg-teal-500/20 flex items-center justify-center mb-4">
             <i className="fas fa-bullhorn text-2xl text-teal-500"></i>
           </div>
-          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Announcements</h3>
-          <p className="text-slate-600 dark:text-slate-400 mb-4">View and post class notices</p>
-          <button className="w-full py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-semibold transition-all">
+          <h3 className="text-xl font-display font-bold glass-text mb-2">Announcements</h3>
+          <p className="glass-text-muted mb-4">View and post class notices</p>
+          <button className="btn-glass w-full py-2">
             Open
           </button>
         </div>

@@ -193,25 +193,25 @@ export default function AdminNotices() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/admin/dashboard')}
-            className="w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all"
+            className="btn-glass w-10 h-10 rounded-lg flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Post Notices</h1>
+          <h1 className="text-3xl font-display font-bold glass-text">Post Notices</h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
-          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white">
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
             <i className="fas fa-user-shield text-xl"></i>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+            className="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold transition-all"
           >
             Logout
           </button>
@@ -219,20 +219,20 @@ export default function AdminNotices() {
       </header>
 
       {/* Stats Banner */}
-      <div className="bg-gradient-to-r from-red-500 to-rose-600 rounded-2xl p-6 mb-8 text-white shadow-2xl">
+      <div className="glass-panel p-6 mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
-              <i className="fas fa-bullhorn text-3xl"></i>
+            <div className="w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
+              <i className="fas fa-bullhorn text-3xl text-primary"></i>
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Notice Management</h2>
-              <p className="text-red-100">Create and manage announcements</p>
+              <h2 className="text-2xl font-display font-bold glass-text">Notice Management</h2>
+              <p className="glass-text-muted">Create and manage announcements</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-5xl font-bold">{notices.length}</p>
-            <p className="text-red-100">Total Notices</p>
+            <p className="text-5xl font-display font-bold glass-text">{notices.length}</p>
+            <p className="glass-text-muted">Total Notices</p>
           </div>
         </div>
       </div>
@@ -241,7 +241,7 @@ export default function AdminNotices() {
       <div className="mb-6">
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-6 py-3 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white rounded-lg font-semibold shadow-lg flex items-center gap-2 transition-all"
+          className="btn-primary px-6 py-3 flex items-center gap-2"
         >
           <i className="fas fa-plus"></i>
           Create New Notice
@@ -251,9 +251,9 @@ export default function AdminNotices() {
       {/* Notices List */}
       <div className="space-y-6">
         {notices.length === 0 ? (
-          <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-12 border border-white/20 shadow-lg text-center">
+          <div className="glass-panel p-12 text-center">
             <i className="fas fa-bullhorn text-6xl text-slate-400 mb-4"></i>
-            <p className="text-slate-600 dark:text-slate-400 text-lg">No notices posted yet. Create your first notice!</p>
+            <p className="glass-text-muted text-lg">No notices posted yet. Create your first notice!</p>
           </div>
         ) : (
           notices.map((notice, index) => (
@@ -262,7 +262,7 @@ export default function AdminNotices() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg overflow-hidden ${
+              className={`glass-card overflow-hidden ${
                 notice.image_url ? 'flex flex-col md:flex-row' : ''
               }`}
             >
@@ -276,8 +276,8 @@ export default function AdminNotices() {
                         <i className={`fas ${getCategoryIcon(notice.category)} text-lg`}></i>
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-slate-800 dark:text-white">{notice.title}</h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">
+                        <h3 className="text-xl font-display font-bold glass-text">{notice.title}</h3>
+                        <p className="text-sm glass-text-muted">
                           Posted by {notice.created_by} • {new Date(notice.created_at).toLocaleDateString()}
                         </p>
                       </div>
@@ -302,7 +302,7 @@ export default function AdminNotices() {
                 </div>
 
                 {/* Content */}
-                <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{notice.content}</p>
+                <p className="glass-text whitespace-pre-wrap">{notice.content}</p>
               </div>
 
               {/* Image (if exists) */}
@@ -322,7 +322,7 @@ export default function AdminNotices() {
 
       {/* Add Notice Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 glass-backdrop">
           {/* Backdrop */}
           <div 
             className="absolute inset-0 z-0"
@@ -335,26 +335,26 @@ export default function AdminNotices() {
           {/* Modal Content */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-3xl w-full shadow-2xl max-h-[90vh] overflow-y-auto z-[10000] scrollbar-hide"
+            className="relative glass-modal p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto z-[10000] scrollbar-hide"
           >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Create New Notice</h2>
+                <h2 className="text-2xl font-display font-bold glass-text">Create New Notice</h2>
                 <button
                   onClick={() => {
                     setShowAddModal(false)
                     resetForm()
                   }}
-                  className="w-10 h-10 rounded-full bg-slate-200 dark:bg-gray-700 hover:bg-slate-300 dark:hover:bg-gray-600 flex items-center justify-center transition-all"
+                  className="btn-glass w-10 h-10 rounded-full flex items-center justify-center"
                 >
-                  <i className="fas fa-times text-slate-800 dark:text-white"></i>
+                  <i className="fas fa-times glass-text"></i>
                 </button>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Title */}
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                    Title <span className="text-red-500">*</span>
+                  <label className="block glass-text-muted font-semibold mb-2">
+                    Title <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
@@ -363,7 +363,7 @@ export default function AdminNotices() {
                     onChange={handleInputChange}
                     placeholder="Enter notice title"
                     required
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:border-red-500 transition-all"
+                    className="glass-input w-full px-4 py-3"
                   />
                 </div>
 
@@ -374,7 +374,7 @@ export default function AdminNotices() {
                     value={formData.category}
                     onChange={handleInputChange}
                     options={categories}
-                    label={<>Category <span className="text-red-500">*</span></>}
+                    label={<>Category <span className="text-danger">*</span></>}
                     placeholder="Select category"
                   />
 
@@ -383,7 +383,7 @@ export default function AdminNotices() {
                     value={formData.priority}
                     onChange={handleInputChange}
                     options={priorities}
-                    label={<>Priority <span className="text-red-500">*</span></>}
+                    label={<>Priority <span className="text-danger">*</span></>}
                     placeholder="Select priority"
                   />
                 </div>
@@ -417,8 +417,8 @@ export default function AdminNotices() {
 
                 {/* Content */}
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                    Content <span className="text-red-500">*</span>
+                  <label className="block glass-text-muted font-semibold mb-2">
+                    Content <span className="text-danger">*</span>
                   </label>
                   <textarea
                     name="content"
@@ -427,13 +427,13 @@ export default function AdminNotices() {
                     placeholder="Enter notice content or description"
                     required
                     rows="6"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:border-red-500 transition-all resize-none"
+                    className="glass-input w-full px-4 py-3 resize-none"
                   ></textarea>
                 </div>
 
                 {/* Image Upload */}
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                  <label className="block glass-text-muted font-semibold mb-2">
                     Event Poster / Image (Optional)
                   </label>
                   
@@ -447,16 +447,16 @@ export default function AdminNotices() {
                       <button
                         type="button"
                         onClick={handleRemoveImage}
-                        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition-all"
+                        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-danger hover:bg-danger/90 text-white flex items-center justify-center transition-all"
                       >
                         <i className="fas fa-times"></i>
                       </button>
                     </div>
                   ) : (
-                    <label className="block w-full p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-red-500 dark:hover:border-red-500 transition-all cursor-pointer bg-white/50 dark:bg-gray-700/50">
+                    <label className="block w-full p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary dark:hover:border-primary transition-all cursor-pointer bg-white/50 dark:bg-gray-700/50">
                       <div className="text-center">
                         <i className="fas fa-cloud-upload-alt text-4xl text-slate-400 mb-2"></i>
-                        <p className="text-slate-600 dark:text-slate-400">Click to upload image</p>
+                        <p className="glass-text-muted">Click to upload image</p>
                         <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">Max size: 5MB</p>
                       </div>
                       <input
@@ -477,14 +477,14 @@ export default function AdminNotices() {
                       setShowAddModal(false)
                       resetForm()
                     }}
-                    className="flex-1 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg transition-all"
+                    className="btn-glass flex-1 py-3"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={uploading || loading}
-                    className="flex-1 py-3 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-bold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {uploading ? (
                       <>

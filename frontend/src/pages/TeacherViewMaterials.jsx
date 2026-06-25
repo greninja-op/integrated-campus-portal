@@ -70,32 +70,32 @@ export default function TeacherViewMaterials() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/teacher/dashboard')}
-            className="w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all"
+            className="btn-glass w-10 h-10 rounded-lg flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Study Materials</h1>
-            <p className="text-slate-600 dark:text-slate-400 mt-1">Department: {teacherDepartment} (View Only)</p>
+            <h1 className="text-3xl font-display font-bold glass-text">Study Materials</h1>
+            <p className="glass-text-muted mt-1">Department: {teacherDepartment} (View Only)</p>
           </div>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
         </div>
       </header>
 
       {/* Filters */}
-      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-4 border border-white/20 shadow-lg mb-6">
+      <div className="glass-panel p-4 mb-6">
         <div className="flex gap-4 flex-wrap">
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500"
+            className="glass-input px-4 py-2"
           >
             <option value="all">All Types</option>
             <option value="notes">Notes</option>
@@ -105,7 +105,7 @@ export default function TeacherViewMaterials() {
           <select
             value={filterSemester}
             onChange={(e) => setFilterSemester(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white focus:outline-none focus:border-purple-500"
+            className="glass-input px-4 py-2"
           >
             <option value="all">All Semesters</option>
             {[1, 2, 3, 4, 5, 6].map(sem => (
@@ -116,16 +116,16 @@ export default function TeacherViewMaterials() {
       </div>
 
       {/* Materials List */}
-      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Available Materials</h2>
+      <div className="glass-panel p-6">
+        <h2 className="text-2xl font-display font-bold glass-text mb-6">Available Materials</h2>
         
         {loading ? (
-          <div className="text-center py-12 text-slate-600 dark:text-slate-400">
+          <div className="text-center py-12 glass-text-muted">
             <i className="fas fa-spinner fa-spin text-4xl mb-4"></i>
             <p>Loading materials...</p>
           </div>
         ) : materials.length === 0 ? (
-          <div className="text-center py-12 text-slate-600 dark:text-slate-400">
+          <div className="text-center py-12 glass-text-muted">
             <i className="fas fa-folder-open text-6xl mb-4"></i>
             <p>No materials found</p>
           </div>
@@ -136,19 +136,19 @@ export default function TeacherViewMaterials() {
                 key={material.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-br from-white/40 to-white/20 dark:from-gray-800/40 dark:to-gray-800/20 backdrop-blur-xl rounded-2xl p-6 border border-white/30 dark:border-gray-700/30 shadow-lg hover:shadow-xl transition-all"
+                className="glass-card p-6"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1 min-w-0">
+                    <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-glass">
                       <i className="fas fa-file-pdf text-3xl text-white"></i>
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-1">
+                      <h3 className="text-xl font-display font-bold glass-text mb-1">
                         {material.subject} - Semester {material.semester}
                       </h3>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-3 py-1 bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-full text-sm font-semibold">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-semibold">
                           {material.material_type === 'notes' ? 'Notes' : 'Question Paper'}
                         </span>
                         {material.year && (
@@ -162,11 +162,11 @@ export default function TeacherViewMaterials() {
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
+                      <p className="text-sm glass-text-muted mb-1">
                         <i className="fas fa-file mr-2"></i>
                         {material.file_name}
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-500">
+                      <p className="text-xs glass-text-muted">
                         <i className="fas fa-clock mr-2"></i>
                         Uploaded {material.uploaded_at ? new Date(material.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
                       </p>
@@ -175,14 +175,14 @@ export default function TeacherViewMaterials() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => window.open(material.file_url, '_blank')}
-                      className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                      className="btn-primary px-4 py-2 flex items-center gap-2"
                     >
                       <i className="fas fa-eye"></i>
                       View
                     </button>
                     <button
                       onClick={() => handleDownload(material)}
-                      className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                      className="btn-glass px-4 py-2 flex items-center gap-2"
                     >
                       <i className="fas fa-download"></i>
                       Download

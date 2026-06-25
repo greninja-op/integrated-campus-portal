@@ -223,7 +223,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4"
+        className="fixed inset-0 glass-backdrop flex items-center justify-center z-50 p-4"
         onClick={onCancel}
       >
         <motion.div
@@ -232,25 +232,25 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
           exit={{ scale: 0.8, opacity: 0, y: 50 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 max-w-5xl w-full shadow-2xl border border-slate-700/50"
+          className="glass-modal p-8 max-w-5xl w-full"
         >
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
                 <i className="fas fa-crop-alt text-white text-xl"></i>
               </div>
               <div>
-                <h3 className="text-3xl font-bold text-white">
+                <h3 className="text-3xl font-bold glass-text">
                   Crop Profile Photo
                 </h3>
-                <p className="text-slate-400 text-sm">Adjust and preview your profile picture</p>
+                <p className="glass-text-muted text-sm">Adjust and preview your profile picture</p>
               </div>
             </div>
             <motion.button
               whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.9 }}
               onClick={onCancel}
-              className="w-10 h-10 rounded-full bg-slate-700/50 hover:bg-red-500/20 border border-slate-600 hover:border-red-500 flex items-center justify-center text-slate-400 hover:text-red-400 transition-all"
+              className="btn-glass w-10 h-10 rounded-full hover:!bg-red-500/20 hover:border-red-500 flex items-center justify-center glass-text-muted hover:!text-red-400"
             >
               <i className="fas fa-times"></i>
             </motion.button>
@@ -260,18 +260,18 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="border-2 border-dashed border-slate-600 rounded-2xl p-16 text-center bg-slate-800/50 hover:bg-slate-800/70 hover:border-blue-500 transition-all"
+              className="border-2 border-dashed border-slate-400/60 dark:border-slate-600 rounded-2xl p-16 text-center hover:border-primary transition-all"
             >
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               >
-                <i className="fas fa-cloud-upload-alt text-7xl text-blue-400 mb-6"></i>
+                <i className="fas fa-cloud-upload-alt text-7xl text-primary mb-6"></i>
               </motion.div>
-              <p className="text-slate-300 text-lg mb-2 font-semibold">
+              <p className="glass-text text-lg mb-2 font-semibold">
                 Upload Your Photo
               </p>
-              <p className="text-slate-500 mb-6 text-sm">
+              <p className="glass-text-muted mb-6 text-sm">
                 Drag and drop or click to browse
               </p>
               <input
@@ -283,7 +283,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
               />
               <label
                 htmlFor="file-input"
-                className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-semibold cursor-pointer inline-flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+                className="btn-primary px-8 py-4 cursor-pointer inline-flex items-center gap-2"
               >
                 <i className="fas fa-image"></i>
                 Choose Image
@@ -299,8 +299,8 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                   className="text-center"
                 >
                   <div className="flex items-center justify-center gap-2 mb-3">
-                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-                    <p className="text-sm text-slate-300 font-semibold">Adjust Crop Area</p>
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                    <p className="text-sm glass-text font-semibold">Adjust Crop Area</p>
                   </div>
                   <div 
                     ref={containerRef}
@@ -330,7 +330,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                           ? '0 0 0 9999px rgba(0, 0, 0, 0.7)' 
                           : '0 0 0 9999px rgba(0, 0, 0, 0.6)'
                       }}
-                      className="absolute border-4 border-blue-500 rounded-full cursor-move shadow-2xl"
+                      className="absolute border-4 border-primary rounded-full cursor-move shadow-2xl"
                       style={{
                         left: `${crop.x}px`,
                         top: `${crop.y}px`,
@@ -351,7 +351,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                       <motion.div
                         whileHover={{ scale: 1.2 }}
                         whileTap={{ scale: 0.9 }}
-                        className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full cursor-se-resize border-4 border-white shadow-xl flex items-center justify-center"
+                        className="absolute bottom-0 right-0 w-10 h-10 bg-primary rounded-full cursor-se-resize border-4 border-white shadow-xl flex items-center justify-center"
                         style={{ transform: 'translate(50%, 50%)' }}
                         onMouseDown={(e) => handleMouseDown(e, 'resize')}
                       >
@@ -360,8 +360,8 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                     </motion.div>
                   </div>
                   <div className="flex items-center justify-center gap-2 mt-3">
-                    <i className="fas fa-hand-pointer text-blue-400 text-xs"></i>
-                    <p className="text-xs text-slate-400">
+                    <i className="fas fa-hand-pointer text-primary text-xs"></i>
+                    <p className="text-xs glass-text-muted">
                       Drag to move • Drag corner to resize • Scroll to zoom ({Math.round(zoom * 100)}%)
                     </p>
                   </div>
@@ -372,7 +372,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                   animate={{ x: [0, 10, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <i className="fas fa-arrow-right text-4xl text-blue-400"></i>
+                  <i className="fas fa-arrow-right text-4xl text-primary"></i>
                 </motion.div>
                 
                 {/* Cropped Preview */}
@@ -383,7 +383,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                 >
                   <div className="flex items-center justify-center gap-2 mb-3">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <p className="text-sm text-slate-300 font-semibold">Preview</p>
+                    <p className="text-sm glass-text font-semibold">Preview</p>
                   </div>
                   {croppedImage ? (
                     <motion.div
@@ -391,7 +391,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ type: "spring", damping: 20 }}
                     >
-                      <div className="w-72 h-72 rounded-full border-4 border-blue-500 shadow-2xl ring-4 ring-blue-500/20 overflow-hidden bg-white">
+                      <div className="w-72 h-72 rounded-full border-4 border-primary shadow-2xl ring-4 ring-primary/20 overflow-hidden bg-white">
                         <img
                           src={croppedImage}
                           alt="Cropped"
@@ -404,8 +404,8 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                       </div>
                     </motion.div>
                   ) : (
-                    <div className="w-72 h-72 rounded-full border-4 border-slate-600 bg-slate-700/50 flex items-center justify-center">
-                      <i className="fas fa-spinner fa-spin text-4xl text-blue-400"></i>
+                    <div className="w-72 h-72 rounded-full border-4 border-slate-300 dark:border-slate-600 glass flex items-center justify-center">
+                      <i className="fas fa-spinner fa-spin text-4xl text-primary"></i>
                     </div>
                   )}
                 </motion.div>
@@ -415,7 +415,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
               <canvas ref={canvasRef} className="hidden" />
               
               {/* Buttons */}
-              <div className="flex gap-4 justify-center pt-6 border-t border-slate-700">
+              <div className="flex gap-4 justify-center pt-6 border-t border-slate-300/50 dark:border-slate-700">
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
@@ -424,7 +424,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                     setImageSrc(null)
                     setCroppedImage(null)
                   }}
-                  className="px-8 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-semibold shadow-lg flex items-center gap-2 transition-all border border-slate-600"
+                  className="btn-glass px-8 py-3 flex items-center gap-2"
                 >
                   <i className="fas fa-sync-alt"></i>
                   Change Image
@@ -445,7 +445,7 @@ export default function ImageCropper({ onImageCropped, onCancel }) {
                   type="button"
                   onClick={handleConfirm}
                   disabled={!croppedImage}
-                  className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-xl font-semibold shadow-lg flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="btn-primary px-8 py-3 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   <i className="fas fa-check"></i>
                   Use This Photo

@@ -15,7 +15,7 @@ export default function Navigation() {
 
   return (
     <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
-      <div className="flex items-center justify-center gap-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg rounded-full shadow-lg p-2 border border-white/20 dark:border-slate-800">
+      <div className="flex items-center justify-center gap-2 glass-nav rounded-full p-2">
         <Link
           to="/dashboard"
           className={`relative flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold transition-colors ${
@@ -27,7 +27,7 @@ export default function Navigation() {
           {isActive('/dashboard') && (
             <motion.div
               layoutId="activeTab"
-              className="absolute inset-0 bg-[#137fec] rounded-full shadow-md"
+              className="absolute inset-0 bg-primary rounded-full shadow-md"
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           )}
@@ -48,7 +48,7 @@ export default function Navigation() {
           {isActive('/subjects') && (
             <motion.div
               layoutId="activeTab"
-              className="absolute inset-0 bg-[#137fec] rounded-full shadow-md"
+              className="absolute inset-0 bg-primary rounded-full shadow-md"
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           )}
@@ -69,7 +69,7 @@ export default function Navigation() {
           {isActive('/notice') && (
             <motion.div
               layoutId="activeTab"
-              className="absolute inset-0 bg-[#137fec] rounded-full shadow-md"
+              className="absolute inset-0 bg-primary rounded-full shadow-md"
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           )}
@@ -90,7 +90,7 @@ export default function Navigation() {
           {isActive('/result') && (
             <motion.div
               layoutId="activeTab"
-              className="absolute inset-0 bg-[#137fec] rounded-full shadow-md"
+              className="absolute inset-0 bg-primary rounded-full shadow-md"
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           )}
@@ -111,7 +111,7 @@ export default function Navigation() {
           {isActive('/materials') && (
             <motion.div
               layoutId="activeTab"
-              className="absolute inset-0 bg-[#137fec] rounded-full shadow-md"
+              className="absolute inset-0 bg-primary rounded-full shadow-md"
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           )}
@@ -132,7 +132,7 @@ export default function Navigation() {
           {isActive('/payments') && (
             <motion.div
               layoutId="activeTab"
-              className="absolute inset-0 bg-[#137fec] rounded-full shadow-md"
+              className="absolute inset-0 bg-primary rounded-full shadow-md"
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           )}
@@ -153,7 +153,7 @@ export default function Navigation() {
           {isActive('/analysis') && (
             <motion.div
               layoutId="activeTab"
-              className="absolute inset-0 bg-[#137fec] rounded-full shadow-md"
+              className="absolute inset-0 bg-primary rounded-full shadow-md"
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           )}
@@ -174,7 +174,7 @@ export default function Navigation() {
           {isActive('/attendance') && (
             <motion.div
               layoutId="activeTab"
-              className="absolute inset-0 bg-[#137fec] rounded-full shadow-md"
+              className="absolute inset-0 bg-primary rounded-full shadow-md"
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             />
           )}

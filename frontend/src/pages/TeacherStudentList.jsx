@@ -236,20 +236,20 @@ export default function TeacherStudentList() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/teacher/dashboard')}
-            className="w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all"
+            className="btn-glass w-10 h-10 rounded-full flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Student List</h1>
+          <h1 className="text-3xl font-display font-bold glass-text">Student List</h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
-          <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white shadow-lg">
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
+          <div className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white shadow-glass">
             <i className="fas fa-users text-lg"></i>
           </div>
         </div>
@@ -257,12 +257,12 @@ export default function TeacherStudentList() {
 
       {/* Page Title - Exact Design */}
       <div className="mb-8">
-        <h1 className="text-5xl font-bold text-slate-900 dark:text-white mb-3">Student List</h1>
-        <p className="text-lg text-slate-600 dark:text-slate-400">Manage your students and view their academic progress.</p>
+        <h1 className="text-5xl font-display font-bold glass-text mb-3">Student List</h1>
+        <p className="text-lg glass-text-muted">Manage your students and view their academic progress.</p>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mb-6 relative z-20">
+      <div className="glass-panel p-6 mb-6 relative z-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
           <div className="relative md:col-span-2 lg:col-span-1">
@@ -272,7 +272,7 @@ export default function TeacherStudentList() {
               placeholder="Search students..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white/50 dark:bg-gray-700/50 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00a9ff]"
+              className="glass-input w-full pl-12 pr-4 py-3"
             />
           </div>
 
@@ -321,7 +321,7 @@ export default function TeacherStudentList() {
               setSelectedStudent(student)
               setShowFullDetails(true)
             }}
-            className="overflow-hidden rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] cursor-pointer hover:shadow-[0_20px_60px_rgb(0,0,0,0.3)] hover:-translate-y-2 transition-all duration-300"
+            className="glass-card overflow-hidden cursor-pointer"
           >
             {/* Red Header - Compact */}
             <div className="relative bg-gradient-to-r from-red-500 via-rose-600 to-red-600 p-5 text-white shadow-[inset_0_-2px_10px_rgba(0,0,0,0.2)]">
@@ -338,22 +338,22 @@ export default function TeacherStudentList() {
             </div>
 
             {/* Light Red Body with 3D depth */}
-            <div className="relative bg-red-50 dark:bg-red-900/20 p-5 shadow-[inset_0_2px_8px_rgba(0,0,0,0.06)]">
+            <div className="relative p-5">
               {/* Department Icon and Name */}
               <div className="flex items-center gap-2 mb-4">
-                <i className="fas fa-building text-slate-800 dark:text-slate-200 text-sm"></i>
-                <span className="text-sm font-bold text-slate-800 dark:text-slate-200">{student.department}</span>
+                <i className="fas fa-building glass-text text-sm"></i>
+                <span className="text-sm font-bold glass-text">{student.department}</span>
               </div>
 
               {/* Stats Grid with 3D depth */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Attendance</p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white">{student.attendance}%</p>
+                <div className="bg-white/40 dark:bg-white/5 rounded-xl p-3">
+                  <p className="text-xs glass-text-muted mb-1">Attendance</p>
+                  <p className="text-2xl font-bold glass-text">{student.attendance}%</p>
                 </div>
-                <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">CGPA</p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white">{student.cgpa}</p>
+                <div className="bg-white/40 dark:bg-white/5 rounded-xl p-3">
+                  <p className="text-xs glass-text-muted mb-1">CGPA</p>
+                  <p className="text-2xl font-bold glass-text">{student.cgpa}</p>
                 </div>
               </div>
             </div>
@@ -368,7 +368,7 @@ export default function TeacherStudentList() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 glass-backdrop flex items-center justify-center z-50 p-4"
             onClick={() => {
               setSelectedStudent(null)
               setShowFullDetails(false)
@@ -379,7 +379,7 @@ export default function TeacherStudentList() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className={`bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden ${
+              className={`glass-modal overflow-hidden ${
                 showFullDetails ? 'w-full max-w-6xl max-h-[90vh]' : 'w-full max-w-2xl'
               } transition-all duration-300`}
             >
@@ -387,7 +387,7 @@ export default function TeacherStudentList() {
               <div className="bg-gradient-to-r from-red-500 via-rose-600 to-red-600 p-5 text-white">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-red-200/50 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    <div className="w-16 h-16 rounded-full bg-red-200/50 flex items-center justify-center text-white font-bold text-xl shadow-glass">
                       {selectedStudent.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
@@ -422,23 +422,23 @@ export default function TeacherStudentList() {
                   <div className="space-y-6">
                     {/* Basic Info */}
                     <div>
-                      <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Basic Information</h3>
+                      <h3 className="text-lg font-display font-bold glass-text mb-4">Basic Information</h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Email</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">{selectedStudent.email}</p>
+                          <p className="text-sm glass-text-muted">Email</p>
+                          <p className="font-semibold glass-text">{selectedStudent.email}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Phone</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">{selectedStudent.phone}</p>
+                          <p className="text-sm glass-text-muted">Phone</p>
+                          <p className="font-semibold glass-text">{selectedStudent.phone}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Department</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">{selectedStudent.department}</p>
+                          <p className="text-sm glass-text-muted">Department</p>
+                          <p className="font-semibold glass-text">{selectedStudent.department}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Semester</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">Semester {selectedStudent.semester}</p>
+                          <p className="text-sm glass-text-muted">Semester</p>
+                          <p className="font-semibold glass-text">Semester {selectedStudent.semester}</p>
                         </div>
                       </div>
                     </div>
@@ -448,26 +448,26 @@ export default function TeacherStudentList() {
                       <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 border border-red-200 dark:border-red-800">
                         <div className="flex items-center gap-2 mb-2">
                           <i className="fas fa-calendar-check text-red-500"></i>
-                          <p className="text-xs text-slate-600 dark:text-slate-400">Attendance</p>
+                          <p className="text-xs glass-text-muted">Attendance</p>
                         </div>
-                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{selectedStudent.attendance}%</p>
+                        <p className="text-3xl font-bold glass-text">{selectedStudent.attendance}%</p>
                         <p className="text-xs text-red-600 dark:text-red-400 mt-1 cursor-pointer hover:underline">View Full Attendance →</p>
                       </div>
-                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                      <div className="bg-primary/10 rounded-xl p-4 border border-primary/30">
                         <div className="flex items-center gap-2 mb-2">
-                          <i className="fas fa-chart-line text-blue-500"></i>
-                          <p className="text-xs text-slate-600 dark:text-slate-400">CGPA</p>
+                          <i className="fas fa-chart-line text-primary"></i>
+                          <p className="text-xs glass-text-muted">CGPA</p>
                         </div>
-                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{selectedStudent.cgpa}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Out of 10.0</p>
+                        <p className="text-3xl font-bold glass-text">{selectedStudent.cgpa}</p>
+                        <p className="text-xs glass-text-muted mt-1">Out of 10.0</p>
                       </div>
                       <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
                         <div className="flex items-center gap-2 mb-2">
                           <i className="fas fa-book text-purple-500"></i>
-                          <p className="text-xs text-slate-600 dark:text-slate-400">Courses</p>
+                          <p className="text-xs glass-text-muted">Courses</p>
                         </div>
-                        <p className="text-3xl font-bold text-slate-900 dark:text-white">{selectedStudent.courses.length}</p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Enrolled</p>
+                        <p className="text-3xl font-bold glass-text">{selectedStudent.courses.length}</p>
+                        <p className="text-xs glass-text-muted mt-1">Enrolled</p>
                       </div>
                     </div>
 
@@ -487,7 +487,7 @@ export default function TeacherStudentList() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className={`${getAttendanceBgColor(selectedStudent.attendance)} rounded-xl p-6`}>
                         <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Attendance</p>
+                          <p className="text-sm glass-text-muted">Attendance</p>
                           <i className="fas fa-calendar-check text-2xl text-slate-400"></i>
                         </div>
                         <p className={`text-4xl font-bold ${getAttendanceColor(selectedStudent.attendance)} mb-2`}>
@@ -501,65 +501,65 @@ export default function TeacherStudentList() {
                         </button>
                       </div>
 
-                      <div className="bg-blue-500/20 rounded-xl p-6">
+                      <div className="bg-primary/20 rounded-xl p-6">
                         <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm text-slate-600 dark:text-slate-400">CGPA</p>
+                          <p className="text-sm glass-text-muted">CGPA</p>
                           <i className="fas fa-chart-line text-2xl text-slate-400"></i>
                         </div>
-                        <p className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">{selectedStudent.cgpa}</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">Out of 10.0</p>
+                        <p className="text-4xl font-bold text-primary mb-2">{selectedStudent.cgpa}</p>
+                        <p className="text-sm glass-text-muted">Out of 10.0</p>
                       </div>
 
                       <div className="bg-purple-500/20 rounded-xl p-6">
                         <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Courses</p>
+                          <p className="text-sm glass-text-muted">Courses</p>
                           <i className="fas fa-book text-2xl text-slate-400"></i>
                         </div>
                         <p className="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">
                           {selectedStudent.courses.length}
                         </p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">Enrolled</p>
+                        <p className="text-sm glass-text-muted">Enrolled</p>
                       </div>
                     </div>
 
                     {/* Personal Information */}
-                    <div className="bg-slate-100 dark:bg-gray-700/50 rounded-xl p-6">
-                      <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Personal Information</h3>
+                    <div className="glass-panel p-6">
+                      <h3 className="text-lg font-display font-bold glass-text mb-4">Personal Information</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Date of Birth</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">{selectedStudent.dateOfBirth}</p>
+                          <p className="text-sm glass-text-muted">Date of Birth</p>
+                          <p className="font-semibold glass-text">{selectedStudent.dateOfBirth}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Blood Group</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">{selectedStudent.bloodGroup}</p>
+                          <p className="text-sm glass-text-muted">Blood Group</p>
+                          <p className="font-semibold glass-text">{selectedStudent.bloodGroup}</p>
                         </div>
                         <div className="md:col-span-2">
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Address</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">{selectedStudent.address}</p>
+                          <p className="text-sm glass-text-muted">Address</p>
+                          <p className="font-semibold glass-text">{selectedStudent.address}</p>
                         </div>
                       </div>
                     </div>
 
                     {/* Guardian Information */}
-                    <div className="bg-slate-100 dark:bg-gray-700/50 rounded-xl p-6">
-                      <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Guardian Information</h3>
+                    <div className="glass-panel p-6">
+                      <h3 className="text-lg font-display font-bold glass-text mb-4">Guardian Information</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Guardian Name</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">{selectedStudent.guardianName}</p>
+                          <p className="text-sm glass-text-muted">Guardian Name</p>
+                          <p className="font-semibold glass-text">{selectedStudent.guardianName}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">Guardian Phone</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">{selectedStudent.guardianPhone}</p>
+                          <p className="text-sm glass-text-muted">Guardian Phone</p>
+                          <p className="font-semibold glass-text">{selectedStudent.guardianPhone}</p>
                         </div>
                       </div>
                     </div>
 
                     {/* Recent Marks */}
-                    <div className="bg-slate-100 dark:bg-gray-700/50 rounded-xl p-6">
+                    <div className="glass-panel p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-bold text-slate-800 dark:text-white">Recent Marks</h3>
+                        <h3 className="text-lg font-display font-bold glass-text">Recent Marks</h3>
                         <button
                           onClick={() => navigate('/teacher/student-marks/' + selectedStudent.id)}
                           className="text-sm text-red-600 dark:text-red-400 hover:underline"
@@ -569,11 +569,11 @@ export default function TeacherStudentList() {
                       </div>
                       <div className="space-y-3">
                         {selectedStudent.recentMarks.map((mark, index) => (
-                          <div key={index} className="flex items-center justify-between p-3 bg-white dark:bg-gray-600/50 rounded-lg">
-                            <span className="font-medium text-slate-800 dark:text-white">{mark.subject}</span>
+                          <div key={index} className="flex items-center justify-between p-3 bg-white/40 dark:bg-white/5 rounded-lg">
+                            <span className="font-medium glass-text">{mark.subject}</span>
                             <div className="flex items-center gap-2">
-                              <span className="text-2xl font-bold text-slate-800 dark:text-white">{mark.marks}</span>
-                              <span className="text-slate-600 dark:text-slate-400">/ {mark.total}</span>
+                              <span className="text-2xl font-bold glass-text">{mark.marks}</span>
+                              <span className="glass-text-muted">/ {mark.total}</span>
                               <span className={`ml-2 px-2 py-1 rounded text-sm font-semibold ${
                                 (mark.marks / mark.total) * 100 >= 90 ? 'bg-green-500/20 text-green-600 dark:text-green-400' :
                                 (mark.marks / mark.total) * 100 >= 75 ? 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-400' :
@@ -588,8 +588,8 @@ export default function TeacherStudentList() {
                     </div>
 
                     {/* Enrolled Courses */}
-                    <div className="bg-slate-100 dark:bg-gray-700/50 rounded-xl p-6">
-                      <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Enrolled Courses</h3>
+                    <div className="glass-panel p-6">
+                      <h3 className="text-lg font-display font-bold glass-text mb-4">Enrolled Courses</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedStudent.courses.map((course, index) => (
                           <span

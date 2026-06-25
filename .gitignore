@@ -106,3 +106,9 @@ volumes/
 
 # Server uploaded files (binaries should not be committed)
 server/uploads/
+
+# Playwright MCP visual-verification artifacts
+.playwright-mcp/
+
+# Cloned DesignSoul skill (separate repo / dev tooling, not part of the app)
+DesignSoul/

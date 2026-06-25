@@ -163,12 +163,12 @@ export default function AnimatedDatePicker({ name, value, onChange, label }) {
 
   return (
     <div>
-      <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+      <label className="block glass-text-muted font-semibold mb-2">
         {label}
       </label>
       <div className="grid grid-cols-3 gap-3">
         <div>
-          <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1 font-medium">
+          <label className="block text-xs glass-text-muted mb-1 font-medium">
             Day
           </label>
           <input
@@ -177,11 +177,11 @@ export default function AnimatedDatePicker({ name, value, onChange, label }) {
             onChange={handleDayChange}
             placeholder="DD"
             maxLength="2"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all text-center font-semibold text-lg"
+            className="w-full px-4 py-3 glass-input text-center font-semibold text-lg"
           />
         </div>
         <div>
-          <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1 font-medium">
+          <label className="block text-xs glass-text-muted mb-1 font-medium">
             Month
           </label>
           <input
@@ -190,11 +190,11 @@ export default function AnimatedDatePicker({ name, value, onChange, label }) {
             onChange={handleMonthChange}
             placeholder="MM"
             maxLength="2"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all text-center font-semibold text-lg"
+            className="w-full px-4 py-3 glass-input text-center font-semibold text-lg"
           />
         </div>
         <div>
-          <label className="block text-xs text-slate-500 dark:text-slate-400 mb-1 font-medium">
+          <label className="block text-xs glass-text-muted mb-1 font-medium">
             Year
           </label>
           <input
@@ -203,7 +203,7 @@ export default function AnimatedDatePicker({ name, value, onChange, label }) {
             onChange={handleYearChange}
             placeholder="YYYY"
             maxLength="4"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all text-center font-semibold text-lg"
+            className="w-full px-4 py-3 glass-input text-center font-semibold text-lg"
           />
         </div>
       </div>

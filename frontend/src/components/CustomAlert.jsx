@@ -30,11 +30,11 @@ export default function CustomAlert({ show, message, type = 'success', onClose }
     },
     info: {
       icon: 'fa-circle-info',
-      gradient: 'from-blue-500 to-indigo-600',
-      bg: 'bg-blue-50 dark:bg-blue-950/30',
-      border: 'border-blue-200 dark:border-blue-800',
-      iconBg: 'bg-gradient-to-br from-blue-500 to-indigo-600',
-      text: 'text-blue-700 dark:text-blue-300'
+      gradient: 'from-primary to-primary-400',
+      bg: 'bg-primary/10 dark:bg-primary/20',
+      border: 'border-primary/30 dark:border-primary/40',
+      iconBg: 'bg-gradient-to-br from-primary to-primary-400',
+      text: 'text-primary-700 dark:text-primary-200'
     }
   }
 
@@ -55,7 +55,7 @@ export default function CustomAlert({ show, message, type = 'success', onClose }
           exit={{ opacity: 0, scale: 0.8, y: 50 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className="relative bg-white dark:bg-gray-900 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden"
+          className="glass-modal relative max-w-md w-full overflow-hidden"
         >
           {/* Decorative top bar */}
           <div className={`h-1.5 bg-gradient-to-r ${currentConfig.gradient}`} />

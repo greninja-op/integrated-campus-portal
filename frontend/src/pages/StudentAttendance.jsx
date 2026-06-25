@@ -126,30 +126,30 @@ export default function StudentAttendance() {
   ].filter(item => item.value > 0)
 
   return (
-    <div className="min-h-screen pb-24 bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+    <div className="min-h-screen pb-24">
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header */}
-        <header className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">My Attendance</h1>
+        <header className="flex flex-wrap gap-3 justify-between items-center mb-8">
+          <h1 className="text-3xl font-display font-bold glass-text">My Attendance</h1>
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/30">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/30">
               {user?.full_name?.charAt(0) || 'S'}
             </div>
           </div>
         </header>
 
         {/* View Mode Toggle & Filters */}
-        <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6">
+        <div className="glass-panel p-6 mb-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             {/* View Mode Toggle */}
-            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
+            <div className="flex items-center gap-2 glass-input rounded-lg p-1">
               <button
                 onClick={() => setViewMode('daily')}
                 className={`px-6 py-2 rounded-lg font-semibold transition-all ${
                   viewMode === 'daily'
-                    ? 'bg-indigo-500 text-white shadow-lg'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                    ? 'bg-primary text-white shadow-lg'
+                    : 'glass-text-muted hover:bg-white/10'
                 }`}
               >
                 <i className="fas fa-calendar-day mr-2"></i>
@@ -159,8 +159,8 @@ export default function StudentAttendance() {
                 onClick={() => setViewMode('summary')}
                 className={`px-6 py-2 rounded-lg font-semibold transition-all ${
                   viewMode === 'summary'
-                    ? 'bg-indigo-500 text-white shadow-lg'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                    ? 'bg-primary text-white shadow-lg'
+                    : 'glass-text-muted hover:bg-white/10'
                 }`}
               >
                 <i className="fas fa-chart-bar mr-2"></i>
@@ -169,7 +169,7 @@ export default function StudentAttendance() {
             </div>
 
             {/* Filters */}
-            <div className="flex items-center gap-3">
+            <div className="grid grid-cols-1 sm:flex sm:items-center gap-3 w-full sm:w-auto">
               {/* Semester Filter */}
               <CustomSelect
                 name="semester"
@@ -209,8 +209,8 @@ export default function StudentAttendance() {
         {loading ? (
           <div className="flex justify-center py-20">
             <div className="text-center">
-              <i className="fas fa-spinner fa-spin text-6xl text-indigo-500 mb-4"></i>
-              <p className="text-slate-600 dark:text-slate-400 text-lg">Loading attendance...</p>
+              <i className="fas fa-spinner fa-spin text-6xl text-primary mb-4"></i>
+              <p className="glass-text-muted text-lg">Loading attendance...</p>
             </div>
           </div>
         ) : viewMode === 'daily' ? (
@@ -221,17 +221,17 @@ export default function StudentAttendance() {
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700"
+                className="glass-panel p-6"
               >
-                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium mb-1">Total</p>
-                <p className="text-3xl font-bold text-slate-800 dark:text-white">{stats.total}</p>
+                <p className="glass-text-muted text-sm font-medium mb-1">Total</p>
+                <p className="text-3xl font-bold glass-text">{stats.total}</p>
               </motion.div>
               
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700"
+                className="glass-panel p-6"
               >
                 <p className="text-green-600 dark:text-green-400 text-sm font-medium mb-1">Present</p>
                 <p className="text-3xl font-bold text-green-600 dark:text-green-400">{stats.present}</p>
@@ -241,7 +241,7 @@ export default function StudentAttendance() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700"
+                className="glass-panel p-6"
               >
                 <p className="text-red-600 dark:text-red-400 text-sm font-medium mb-1">Absent</p>
                 <p className="text-3xl font-bold text-red-600 dark:text-red-400">{stats.absent}</p>
@@ -251,7 +251,7 @@ export default function StudentAttendance() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700"
+                className="glass-panel p-6"
               >
                 <p className="text-yellow-600 dark:text-yellow-400 text-sm font-medium mb-1">Late</p>
                 <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{stats.late}</p>
@@ -261,7 +261,7 @@ export default function StudentAttendance() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-2xl shadow-lg text-white"
+                className="bg-primary p-6 rounded-2xl shadow-glass text-white"
               >
                 <p className="text-white/80 text-sm font-medium mb-1">Percentage</p>
                 <p className="text-3xl font-bold">{stats.percentage}%</p>
@@ -274,9 +274,9 @@ export default function StudentAttendance() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700"
+                className="glass-panel p-6"
               >
-                <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-6">Attendance Distribution</h2>
+                <h2 className="text-xl font-display font-bold glass-text mb-6">Attendance Distribution</h2>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
@@ -304,38 +304,38 @@ export default function StudentAttendance() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden"
+              className="glass-panel overflow-hidden"
             >
-              <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-                <h2 className="text-xl font-bold text-slate-800 dark:text-white">Daily Attendance Records</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              <div className="p-6 border-b border-white/10">
+                <h2 className="text-xl font-display font-bold glass-text">Daily Attendance Records</h2>
+                <p className="text-sm glass-text-muted mt-1">
                   Showing records for {new Date(selectedYear, selectedMonth - 1).toLocaleString('default', { month: 'long', year: 'numeric' })}
                 </p>
               </div>
               
               {dailyRecords.length === 0 ? (
-                <div className="p-12 text-center text-slate-500 dark:text-slate-400">
+                <div className="p-12 text-center glass-text-muted">
                   <i className="fas fa-calendar-times text-4xl mb-4 opacity-50"></i>
                   <p>No attendance records found for this period</p>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-200 dark:divide-slate-700">
+                <div className="divide-y divide-white/10">
                   {dailyRecords.map((record, index) => (
-                    <div key={index} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors flex items-center justify-between">
+                    <div key={index} className="p-4 hover:bg-white/5 transition-colors flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getStatusColor(record.status)}`}>
                           <i className={`fas ${getStatusIcon(record.status)}`}></i>
                         </div>
                         <div>
-                          <h3 className="font-semibold text-slate-800 dark:text-white">{record.subject_name}</h3>
-                          <p className="text-sm text-slate-500 dark:text-slate-400">{record.subject_code}</p>
+                          <h3 className="font-semibold glass-text">{record.subject_name}</h3>
+                          <p className="text-sm glass-text-muted">{record.subject_code}</p>
                           {record.remarks && (
-                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{record.remarks}</p>
+                            <p className="text-xs glass-text-muted mt-1">{record.remarks}</p>
                           )}
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium text-slate-800 dark:text-white">
+                        <p className="font-medium glass-text">
                           {new Date(record.attendance_date).toLocaleDateString('en-US', { 
                             weekday: 'short', 
                             month: 'short', 
@@ -356,7 +356,7 @@ export default function StudentAttendance() {
           /* Summary View */
           <div className="space-y-6">
             {summaryData.length === 0 ? (
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-12 text-center text-slate-500 dark:text-slate-400">
+              <div className="glass-panel p-12 text-center glass-text-muted">
                 <i className="fas fa-chart-bar text-4xl mb-4 opacity-50"></i>
                 <p>No historical data available</p>
                 <p className="text-sm mt-2">Summary view shows data from months before the current and previous month</p>
@@ -368,16 +368,16 @@ export default function StudentAttendance() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700"
+                  className="glass-panel p-6"
                 >
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h3 className="text-xl font-bold text-slate-800 dark:text-white">{subject.subject_name}</h3>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">{subject.subject_code}</p>
+                      <h3 className="text-xl font-display font-bold glass-text">{subject.subject_name}</h3>
+                      <p className="text-sm glass-text-muted">{subject.subject_code}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{subject.overall_percentage}%</p>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">Overall</p>
+                      <p className="text-3xl font-bold text-primary">{subject.overall_percentage}%</p>
+                      <p className="text-sm glass-text-muted">Overall</p>
                     </div>
                   </div>
 
@@ -396,12 +396,12 @@ export default function StudentAttendance() {
                   {/* Monthly Details */}
                   <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {subject.months.map((month, mIndex) => (
-                      <div key={mIndex} className="bg-slate-50 dark:bg-slate-700 rounded-lg p-4">
-                        <p className="font-semibold text-slate-800 dark:text-white mb-2">{month.month_name} {month.year}</p>
+                      <div key={mIndex} className="glass rounded-lg p-4">
+                        <p className="font-semibold glass-text mb-2">{month.month_name} {month.year}</p>
                         <div className="space-y-1 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-slate-600 dark:text-slate-400">Total Classes:</span>
-                            <span className="font-medium text-slate-800 dark:text-white">{month.total_classes}</span>
+                            <span className="glass-text-muted">Total Classes:</span>
+                            <span className="font-medium glass-text">{month.total_classes}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-green-600 dark:text-green-400">Present:</span>
@@ -411,9 +411,9 @@ export default function StudentAttendance() {
                             <span className="text-red-600 dark:text-red-400">Absent:</span>
                             <span className="font-medium text-red-600 dark:text-red-400">{month.absent_count}</span>
                           </div>
-                          <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-600">
-                            <span className="text-slate-600 dark:text-slate-400">Percentage:</span>
-                            <span className="font-bold text-indigo-600 dark:text-indigo-400">{month.percentage}%</span>
+                          <div className="flex justify-between pt-2 border-t border-white/10">
+                            <span className="glass-text-muted">Percentage:</span>
+                            <span className="font-bold text-primary">{month.percentage}%</span>
                           </div>
                         </div>
                       </div>

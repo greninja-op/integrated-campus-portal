@@ -223,25 +223,25 @@ export default function AdminCourses() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/admin/dashboard')}
-            className="w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all"
+            className="btn-glass w-10 h-10 rounded-lg flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Course Management</h1>
+          <h1 className="text-3xl font-display font-bold glass-text">Course Management</h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
-          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white">
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
             <i className="fas fa-user-shield text-xl"></i>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+            className="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold transition-all"
           >
             Logout
           </button>
@@ -249,20 +249,20 @@ export default function AdminCourses() {
       </header>
 
       {/* Stats Banner */}
-      <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-6 mb-8 text-white shadow-2xl">
+      <div className="glass-panel p-6 mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
-              <i className="fas fa-book text-3xl"></i>
+            <div className="w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center">
+              <i className="fas fa-book text-3xl text-primary"></i>
             </div>
             <div>
-              <h2 className="text-2xl font-bold">Course Catalog</h2>
-              <p className="text-purple-100">Manage all courses and curriculum</p>
+              <h2 className="text-2xl font-display font-bold glass-text">Course Catalog</h2>
+              <p className="glass-text-muted">Manage all courses and curriculum</p>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-5xl font-bold">{courses.length}</p>
-            <p className="text-purple-100">Total Courses</p>
+            <p className="text-5xl font-display font-bold glass-text">{courses.length}</p>
+            <p className="glass-text-muted">Total Courses</p>
           </div>
         </div>
       </div>
@@ -277,7 +277,7 @@ export default function AdminCourses() {
               placeholder="Search courses by name or code..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+              className="glass-input w-full pl-12 pr-4 py-3"
             />
           </div>
         </div>
@@ -292,7 +292,7 @@ export default function AdminCourses() {
 
         <button
           onClick={handleAddCourse}
-          className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-xl font-bold shadow-lg transition-all whitespace-nowrap"
+          className="btn-primary px-6 py-3 whitespace-nowrap"
         >
           <i className="fas fa-plus mr-2"></i>
           Add New Course
@@ -300,11 +300,11 @@ export default function AdminCourses() {
       </div>
 
       {/* Courses Table */}
-      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl border border-white/20 shadow-lg overflow-hidden">
+      <div className="glass-panel overflow-hidden">
         {filteredCourses.length === 0 ? (
           <div className="text-center py-16">
             <i className="fas fa-book-open text-6xl text-slate-400 mb-4"></i>
-            <p className="text-slate-600 dark:text-slate-400 text-lg">
+            <p className="glass-text-muted text-lg">
               {searchTerm || filterDepartment !== 'all' 
                 ? 'No courses found matching your filters.' 
                 : 'No courses in the catalog yet. Click "Add New Course" to get started!'}
@@ -313,13 +313,13 @@ export default function AdminCourses() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-purple-500/20 dark:bg-purple-900/30">
+              <thead className="bg-primary/10">
                 <tr>
-                  <th className="px-6 py-4 text-left text-slate-700 dark:text-slate-300 font-bold">Course Code</th>
-                  <th className="px-6 py-4 text-left text-slate-700 dark:text-slate-300 font-bold">Course Name</th>
-                  <th className="px-6 py-4 text-left text-slate-700 dark:text-slate-300 font-bold">Department</th>
-                  <th className="px-6 py-4 text-left text-slate-700 dark:text-slate-300 font-bold">Credits</th>
-                  <th className="px-6 py-4 text-center text-slate-700 dark:text-slate-300 font-bold">Actions</th>
+                  <th className="px-6 py-4 text-left glass-text-muted font-bold">Course Code</th>
+                  <th className="px-6 py-4 text-left glass-text-muted font-bold">Course Name</th>
+                  <th className="px-6 py-4 text-left glass-text-muted font-bold">Department</th>
+                  <th className="px-6 py-4 text-left glass-text-muted font-bold">Credits</th>
+                  <th className="px-6 py-4 text-center glass-text-muted font-bold">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -329,23 +329,23 @@ export default function AdminCourses() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="border-b border-slate-200 dark:border-slate-700 hover:bg-purple-500/10 dark:hover:bg-purple-500/20 transition-all"
+                    className="border-b border-slate-200 dark:border-slate-700 hover:bg-primary/5 transition-all"
                   >
-                    <td className="px-6 py-4 text-slate-800 dark:text-white font-mono font-bold">{course.courseCode}</td>
-                    <td className="px-6 py-4 text-slate-800 dark:text-white font-semibold">{course.courseName}</td>
-                    <td className="px-6 py-4 text-slate-800 dark:text-white">{course.department}</td>
-                    <td className="px-6 py-4 text-slate-800 dark:text-white">{course.credits}</td>
+                    <td className="px-6 py-4 glass-text font-mono font-bold">{course.courseCode}</td>
+                    <td className="px-6 py-4 glass-text font-semibold">{course.courseName}</td>
+                    <td className="px-6 py-4 glass-text">{course.department}</td>
+                    <td className="px-6 py-4 glass-text">{course.credits}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleEditCourse(course)}
-                          className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-all"
+                          className="btn-primary px-3 py-2"
                         >
                           <i className="fas fa-edit"></i>
                         </button>
                         <button
                           onClick={() => handleDeleteCourse(course)}
-                          className="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+                          className="px-3 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold transition-all"
                         >
                           <i className="fas fa-trash"></i>
                         </button>
@@ -363,7 +363,7 @@ export default function AdminCourses() {
       <AnimatePresence>
         {showAddModal && (
           <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 glass-backdrop flex items-center justify-center z-50 p-4"
             onClick={() => setShowAddModal(false)}
           >
             <motion.div
@@ -371,24 +371,24 @@ export default function AdminCourses() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollbar-hide"
+              className="glass-modal max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollbar-hide"
             >
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-purple-500 to-indigo-600 p-6 text-white sticky top-0 z-10">
+              <div className="bg-primary/10 p-6 sticky top-0 z-10 rounded-t-3xl">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                      <i className="fas fa-book text-2xl"></i>
+                    <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center">
+                      <i className="fas fa-book text-2xl text-primary"></i>
                     </div>
-                    <h2 className="text-2xl font-bold">
+                    <h2 className="text-2xl font-display font-bold glass-text">
                       {editingCourse ? 'Edit Course' : 'Add New Course'}
                     </h2>
                   </div>
                   <button
                     onClick={() => setShowAddModal(false)}
-                    className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-all"
+                    className="btn-glass w-10 h-10 rounded-full flex items-center justify-center"
                   >
-                    <i className="fas fa-times text-xl"></i>
+                    <i className="fas fa-times text-xl glass-text"></i>
                   </button>
                 </div>
               </div>
@@ -398,8 +398,8 @@ export default function AdminCourses() {
                 {/* Course Code and Name */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                      Course Code <span className="text-red-500">*</span>
+                    <label className="block glass-text-muted font-semibold mb-2">
+                      Course Code <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -407,13 +407,13 @@ export default function AdminCourses() {
                       value={courseForm.courseCode}
                       onChange={handleInputChange}
                       placeholder="e.g., CS101"
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                      className="glass-input w-full px-4 py-3"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                      Course Name <span className="text-red-500">*</span>
+                    <label className="block glass-text-muted font-semibold mb-2">
+                      Course Name <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -421,7 +421,7 @@ export default function AdminCourses() {
                       value={courseForm.courseName}
                       onChange={handleInputChange}
                       placeholder="e.g., Introduction to Computer Science"
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                      className="glass-input w-full px-4 py-3"
                     />
                   </div>
                 </div>
@@ -433,7 +433,7 @@ export default function AdminCourses() {
                     value={courseForm.department}
                     onChange={handleInputChange}
                     options={departments}
-                    label={<>Department <span className="text-red-500">*</span></>}
+                    label={<>Department <span className="text-danger">*</span></>}
                     placeholder="Select Department"
                   />
 
@@ -442,14 +442,14 @@ export default function AdminCourses() {
                     value={courseForm.credits}
                     onChange={handleInputChange}
                     options={creditOptions}
-                    label={<>Credits <span className="text-red-500">*</span></>}
+                    label={<>Credits <span className="text-danger">*</span></>}
                     placeholder="Select Credits"
                   />
                 </div>
 
                 {/* Description */}
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+                  <label className="block glass-text-muted font-semibold mb-2">
                     Course Description
                   </label>
                   <textarea
@@ -458,7 +458,7 @@ export default function AdminCourses() {
                     onChange={handleInputChange}
                     rows="4"
                     placeholder="Brief description of the course content and objectives..."
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
+                    className="glass-input w-full px-4 py-3 resize-none"
                   ></textarea>
                 </div>
 
@@ -466,13 +466,13 @@ export default function AdminCourses() {
                 <div className="flex gap-4">
                   <button
                     onClick={() => setShowAddModal(false)}
-                    className="flex-1 py-3 bg-slate-200 hover:bg-slate-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-slate-800 dark:text-white font-bold rounded-xl transition-all"
+                    className="btn-glass flex-1 py-3"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSaveCourse}
-                    className="flex-1 py-3 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all"
+                    className="btn-primary flex-1 py-3"
                   >
                     <i className="fas fa-save mr-2"></i>
                     {editingCourse ? 'Update Course' : 'Save Course'}

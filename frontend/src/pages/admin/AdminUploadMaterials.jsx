@@ -230,25 +230,25 @@ export default function AdminUploadMaterials() {
       )}
 
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/admin/dashboard')}
-            className="w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all"
+            className="btn-glass w-10 h-10 rounded-lg flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Upload Study Materials</h1>
+          <h1 className="text-3xl font-display font-bold glass-text">Upload Study Materials</h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
-          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white">
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
             <i className="fas fa-user-shield text-xl"></i>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+            className="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold transition-all"
           >
             Logout
           </button>
@@ -256,8 +256,8 @@ export default function AdminUploadMaterials() {
       </header>
 
       {/* Upload Form */}
-      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Upload New Material</h2>
+      <div className="glass-panel p-6 mb-6">
+        <h2 className="text-2xl font-display font-bold glass-text mb-6">Upload New Material</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Department */}
@@ -266,7 +266,7 @@ export default function AdminUploadMaterials() {
               value={formData.department}
               onChange={handleInputChange}
               options={departmentOptions}
-              label={<>Department <span className="text-red-500">*</span></>}
+              label={<>Department <span className="text-danger">*</span></>}
               placeholder="Select department"
               icon="fas fa-building"
             />
@@ -277,7 +277,7 @@ export default function AdminUploadMaterials() {
               value={formData.semester}
               onChange={handleInputChange}
               options={semesterOptions}
-              label={<>Semester <span className="text-red-500">*</span></>}
+              label={<>Semester <span className="text-danger">*</span></>}
               placeholder="Select semester"
               icon="fas fa-calendar-alt"
             />
@@ -288,7 +288,7 @@ export default function AdminUploadMaterials() {
               value={formData.subject}
               onChange={handleInputChange}
               options={subjectOptions}
-              label={<>Subject <span className="text-red-500">*</span></>}
+              label={<>Subject <span className="text-danger">*</span></>}
               placeholder={loadingSubjects ? "Loading subjects..." : "Select subject"}
               icon="fas fa-book"
               disabled={loadingSubjects || availableSubjects.length === 0}
@@ -300,7 +300,7 @@ export default function AdminUploadMaterials() {
               value={formData.materialType}
               onChange={handleInputChange}
               options={materialTypeOptions}
-              label={<>Material Type <span className="text-red-500">*</span></>}
+              label={<>Material Type <span className="text-danger">*</span></>}
               placeholder="Select type"
               icon="fas fa-file-alt"
             />
@@ -312,7 +312,7 @@ export default function AdminUploadMaterials() {
                 value={formData.unit}
                 onChange={handleInputChange}
                 options={unitOptions}
-                label={<>Unit <span className="text-red-500">*</span></>}
+                label={<>Unit <span className="text-danger">*</span></>}
                 placeholder="Select unit"
                 icon="fas fa-list-ol"
               />
@@ -320,8 +320,8 @@ export default function AdminUploadMaterials() {
               <>
                 {/* Year for Question Papers */}
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                    Year <span className="text-red-500">*</span>
+                  <label className="block glass-text-muted font-semibold mb-2">
+                    Year <span className="text-danger">*</span>
                   </label>
                   <input
                     type="number"
@@ -331,7 +331,7 @@ export default function AdminUploadMaterials() {
                     min="2020"
                     max="2030"
                     required
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                    className="glass-input w-full px-4 py-3"
                   />
                 </div>
                 
@@ -341,7 +341,7 @@ export default function AdminUploadMaterials() {
                   value={formData.examType}
                   onChange={handleInputChange}
                   options={examTypeOptions}
-                  label={<>Exam Type <span className="text-red-500">*</span></>}
+                  label={<>Exam Type <span className="text-danger">*</span></>}
                   placeholder="Select exam type"
                   icon="fas fa-clipboard-list"
                 />
@@ -350,7 +350,7 @@ export default function AdminUploadMaterials() {
 
             {/* Description */}
             <div className="md:col-span-2">
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+              <label className="block glass-text-muted font-semibold mb-2">
                 Description
               </label>
               <textarea
@@ -359,24 +359,24 @@ export default function AdminUploadMaterials() {
                 onChange={handleInputChange}
                 placeholder="Brief description of the material"
                 rows="3"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+                className="glass-input w-full px-4 py-3"
               ></textarea>
             </div>
 
             {/* File Upload */}
             <div className="md:col-span-2">
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-                PDF File <span className="text-red-500">*</span>
+              <label className="block glass-text-muted font-semibold mb-2">
+                PDF File <span className="text-danger">*</span>
               </label>
               <div className="flex items-center gap-4">
-                <label className="flex-1 px-4 py-3 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white cursor-pointer hover:border-purple-500 transition-all">
+                <label className="flex-1 px-4 py-3 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 glass-text cursor-pointer hover:border-primary transition-all">
                   <div className="flex items-center gap-3">
                     <i className="fas fa-file-pdf text-2xl text-purple-500"></i>
                     <div>
                       <p className="font-semibold">
                         {selectedFile ? selectedFile.name : 'Click to select PDF file'}
                       </p>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                      <p className="text-sm glass-text-muted">
                         Max size: 10MB
                       </p>
                     </div>
@@ -392,7 +392,7 @@ export default function AdminUploadMaterials() {
                   <button
                     type="button"
                     onClick={() => setSelectedFile(null)}
-                    className="px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold"
+                    className="px-4 py-3 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold"
                   >
                     <i className="fas fa-times"></i>
                   </button>
@@ -405,7 +405,7 @@ export default function AdminUploadMaterials() {
               <button
                 type="submit"
                 disabled={uploading}
-                className="w-full py-3 bg-purple-500 hover:bg-purple-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary w-full py-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {uploading ? (
                   <>
@@ -425,37 +425,37 @@ export default function AdminUploadMaterials() {
       </div>
 
       {/* Uploaded Materials List */}
-      <div className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6">Uploaded Materials</h2>
+      <div className="glass-panel p-6">
+        <h2 className="text-2xl font-display font-bold glass-text mb-6">Uploaded Materials</h2>
         
         {uploadedMaterials.length === 0 ? (
           <div className="text-center py-12">
             <i className="fas fa-file-pdf text-6xl text-slate-400 mb-4"></i>
-            <p className="text-slate-600 dark:text-slate-400">No materials uploaded yet</p>
+            <p className="glass-text-muted">No materials uploaded yet</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-slate-300 dark:border-slate-600">
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Subject</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Department</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Semester</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Type</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Unit/Year</th>
-                  <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-semibold">Actions</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Subject</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Department</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Semester</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Type</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Unit/Year</th>
+                  <th className="px-4 py-3 text-left glass-text-muted font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {uploadedMaterials.map((material, index) => (
-                  <tr key={index} className="border-b border-slate-200 dark:border-slate-700 hover:bg-purple-500/10 dark:hover:bg-purple-500/20 transition-all">
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">{material.subject}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">{material.department}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">Sem {material.semester}</td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">
+                  <tr key={index} className="border-b border-slate-200 dark:border-slate-700 hover:bg-primary/5 transition-all">
+                    <td className="px-4 py-3 glass-text">{material.subject}</td>
+                    <td className="px-4 py-3 glass-text">{material.department}</td>
+                    <td className="px-4 py-3 glass-text">Sem {material.semester}</td>
+                    <td className="px-4 py-3 glass-text">
                       {material.materialType === 'notes' ? 'Notes' : 'Q. Paper'}
                     </td>
-                    <td className="px-4 py-3 text-slate-800 dark:text-white">
+                    <td className="px-4 py-3 glass-text">
                       {material.materialType === 'notes' ? `Unit ${material.unit}` : material.year}
                     </td>
                     <td className="px-4 py-3">
@@ -464,13 +464,13 @@ export default function AdminUploadMaterials() {
                           href={material.file_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-semibold"
+                          className="btn-primary px-3 py-1 text-sm"
                         >
                           <i className="fas fa-eye"></i>
                         </a>
                         <button
                           onClick={() => handleDelete(material.id)}
-                          className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold"
+                          className="px-3 py-1 bg-danger hover:bg-danger/90 text-white rounded-lg text-sm font-semibold"
                         >
                           <i className="fas fa-trash"></i>
                         </button>

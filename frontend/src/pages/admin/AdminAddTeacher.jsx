@@ -199,27 +199,27 @@ export default function AdminAddTeacher() {
       className="min-h-screen pb-24 px-4 py-6 max-w-7xl mx-auto"
     >
       {/* Top Header */}
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex flex-wrap gap-3 justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/admin/teachers')}
-            className="w-10 h-10 rounded-lg bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all"
+            className="btn-glass w-10 h-10 rounded-lg flex items-center justify-center"
           >
-            <i className="fas fa-arrow-left text-slate-800 dark:text-white"></i>
+            <i className="fas fa-arrow-left glass-text"></i>
           </button>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">
+          <h1 className="text-3xl font-display font-bold glass-text">
             {isEditMode ? 'Edit Teacher' : 'Add New Teacher'}
           </h1>
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
-          <span className="text-slate-700 dark:text-slate-300 font-medium">{user?.full_name}</span>
-          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center text-white">
+          <span className="glass-text-muted font-medium">{user?.full_name}</span>
+          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
             <i className="fas fa-user-shield text-xl"></i>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+            className="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold transition-all"
           >
             Logout
           </button>
@@ -230,17 +230,17 @@ export default function AdminAddTeacher() {
       <motion.div
         initial={{ opacity: 0, height: 0 }}
         animate={{ opacity: 1, height: 'auto' }}
-        className="bg-white/30 dark:bg-gray-800/30 backdrop-blur-xl rounded-2xl p-6 border border-white/20 shadow-lg"
+        className="glass-panel p-6"
       >
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Profile Photo Upload */}
-          <div className="flex items-center gap-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+          <div className="flex items-center gap-6 p-4 bg-emerald-500/5 rounded-lg">
             <div>
               {imagePreview ? (
                 <img 
                   src={imagePreview} 
                   alt="Preview" 
-                  className="w-24 h-24 rounded-full object-cover border-4 border-green-500"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-emerald-500"
                 />
               ) : (
                 <div className="w-24 h-24 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
@@ -249,14 +249,14 @@ export default function AdminAddTeacher() {
               )}
             </div>
             <div className="flex-1">
-              <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+              <label className="block glass-text-muted font-semibold mb-2">
                 Profile Photo (Optional)
               </label>
               <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => setShowCropper(true)}
-                  className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold text-sm"
+                  className="btn-primary px-4 py-2 text-sm"
                 >
                   <i className="fas fa-camera mr-2"></i>
                   {imagePreview ? 'Change Photo' : 'Upload Photo'}
@@ -268,13 +268,13 @@ export default function AdminAddTeacher() {
                       setImagePreview(null)
                       setSelectedImage(null)
                     }}
-                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold text-sm"
+                    className="px-4 py-2 bg-danger hover:bg-danger/90 text-white rounded-lg font-semibold text-sm"
                   >
                     <i className="fas fa-trash"></i>
                   </button>
                 )}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+              <p className="text-xs glass-text-muted mt-2">
                 Image will be auto-cropped to circular format
               </p>
             </div>
@@ -283,8 +283,8 @@ export default function AdminAddTeacher() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Teacher ID */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-              Teacher ID <span className="text-red-500">*</span>
+            <label className="block glass-text-muted font-semibold mb-2">
+              Teacher ID <span className="text-danger">*</span>
             </label>
             <input
               type="text"
@@ -297,15 +297,15 @@ export default function AdminAddTeacher() {
               title="Teacher ID must be exactly 12 digits"
               maxLength="12"
               minLength="12"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+              className="glass-input w-full px-4 py-3"
             />
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Must be 12 digits</p>
+            <p className="text-xs glass-text-muted mt-1">Must be 12 digits</p>
           </div>
 
           {/* Full Name */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-              Full Name <span className="text-red-500">*</span>
+            <label className="block glass-text-muted font-semibold mb-2">
+              Full Name <span className="text-danger">*</span>
             </label>
             <input
               type="text"
@@ -318,15 +318,15 @@ export default function AdminAddTeacher() {
               pattern="[A-Za-z\s.]+"
               title="Only letters, spaces, and dots allowed (max 32 characters)"
               style={{ textTransform: 'capitalize' }}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+              className="glass-input w-full px-4 py-3"
             />
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Max 32 characters, letters only</p>
+            <p className="text-xs glass-text-muted mt-1">Max 32 characters, letters only</p>
           </div>
 
           {/* Username */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-              Username <span className="text-red-500">*</span>
+            <label className="block glass-text-muted font-semibold mb-2">
+              Username <span className="text-danger">*</span>
             </label>
             <input
               type="text"
@@ -336,14 +336,14 @@ export default function AdminAddTeacher() {
               placeholder="Auto-captured"
               required
               readOnly
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none cursor-not-allowed transition-all"
+              className="glass-input w-full px-4 py-3"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-              Email <span className="text-red-500">*</span>
+            <label className="block glass-text-muted font-semibold mb-2">
+              Email <span className="text-danger">*</span>
             </label>
             <input
               type="email"
@@ -352,14 +352,14 @@ export default function AdminAddTeacher() {
               onChange={handleInputChange}
               placeholder="teacher@university.edu"
               required
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+              className="glass-input w-full px-4 py-3"
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-              Password {!isEditMode && <span className="text-red-500">*</span>}
+            <label className="block glass-text-muted font-semibold mb-2">
+              Password {!isEditMode && <span className="text-danger">*</span>}
             </label>
             <input
               type="password"
@@ -370,9 +370,9 @@ export default function AdminAddTeacher() {
               required={!isEditMode}
               minLength="8"
               title="Password must be at least 8 characters"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+              className="glass-input w-full px-4 py-3"
             />
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs glass-text-muted mt-1">
               {isEditMode ? 'Leave blank to keep current password' : 'Minimum 8 characters'}
             </p>
           </div>
@@ -383,7 +383,7 @@ export default function AdminAddTeacher() {
             value={formData.qualification}
             onChange={handleInputChange}
             options={qualificationOptions}
-            label={<>Qualification <span className="text-red-500">*</span></>}
+            label={<>Qualification <span className="text-danger">*</span></>}
             placeholder="Select qualification"
             icon="fas fa-graduation-cap"
           />
@@ -394,14 +394,14 @@ export default function AdminAddTeacher() {
             value={formData.department}
             onChange={handleInputChange}
             options={departmentOptions}
-            label={<>Department <span className="text-red-500">*</span></>}
+            label={<>Department <span className="text-danger">*</span></>}
             placeholder="Select department"
             icon="fas fa-building"
           />
 
           {/* Specialization */}
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
+            <label className="block glass-text-muted font-semibold mb-2">
               Specialization
             </label>
             <input
@@ -410,14 +410,14 @@ export default function AdminAddTeacher() {
               value={formData.specialization}
               onChange={handleInputChange}
               placeholder="e.g., Machine Learning, Data Structures"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+              className="glass-input w-full px-4 py-3"
             />
           </div>
 
           {/* Phone */}
           <div className="md:col-span-2">
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-              Phone Number <span className="text-red-500">*</span>
+            <label className="block glass-text-muted font-semibold mb-2">
+              Phone Number <span className="text-danger">*</span>
             </label>
             <input
               type="tel"
@@ -429,21 +429,21 @@ export default function AdminAddTeacher() {
               pattern="[0-9]{10,15}"
               title="Phone number must be 10-15 digits only"
               maxLength="15"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-500 focus:bg-white/70 dark:focus:bg-gray-700/70 transition-all"
+              className="glass-input w-full px-4 py-3"
             />
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">10-15 digits only, no spaces or symbols</p>
+            <p className="text-xs glass-text-muted mt-1">10-15 digits only, no spaces or symbols</p>
           </div>
 
           {/* Assigned Subjects */}
           </div>
 
           <div>
-            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">
-              Assign Subjects <span className="text-red-500">*</span> <span className="text-slate-500 text-sm">(Select at least one subject)</span>
+            <label className="block glass-text-muted font-semibold mb-2">
+              Assign Subjects <span className="text-danger">*</span> <span className="glass-text-muted text-sm">(Select at least one subject)</span>
             </label>
-            <div className="bg-white/50 dark:bg-gray-700/50 rounded-lg border border-gray-300 dark:border-gray-600 p-4 max-h-64 overflow-y-auto">
+            <div className="glass-card p-4 max-h-64 overflow-y-auto">
               {filteredSubjects.length === 0 ? (
-                <p className="text-slate-500 dark:text-slate-400 text-center py-4">
+                <p className="glass-text-muted text-center py-4">
                   No subjects available for {formData.department} department. Please add subjects first.
                 </p>
               ) : (
@@ -451,19 +451,19 @@ export default function AdminAddTeacher() {
                   {filteredSubjects.map(subject => (
                     <label
                       key={subject.id}
-                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-white/50 dark:hover:bg-gray-600/50 cursor-pointer transition-all"
+                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-primary/5 cursor-pointer transition-all"
                     >
                       <input
                         type="checkbox"
                         checked={formData.assigned_subjects.includes(subject.id)}
                         onChange={() => handleSubjectToggle(subject.id)}
-                        className="mt-1 w-4 h-4 text-green-500 rounded focus:ring-green-500"
+                        className="mt-1 w-4 h-4 text-primary rounded focus:ring-primary"
                       />
                       <div className="flex-1">
-                        <div className="font-semibold text-slate-800 dark:text-white">
+                        <div className="font-semibold glass-text">
                           {subject.subject_name}
                         </div>
-                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                        <div className="text-sm glass-text-muted">
                           {subject.subject_code} • Semester {subject.semester}
                         </div>
                       </div>
@@ -472,7 +472,7 @@ export default function AdminAddTeacher() {
                 </div>
               )}
             </div>
-            <p className={`text-sm mt-2 ${formData.assigned_subjects.length === 0 ? 'text-red-500' : 'text-slate-600 dark:text-slate-400'}`}>
+            <p className={`text-sm mt-2 ${formData.assigned_subjects.length === 0 ? 'text-danger' : 'glass-text-muted'}`}>
               Selected: {formData.assigned_subjects.length} subject(s) {formData.assigned_subjects.length === 0 && '(Required: At least 1)'}
             </p>
           </div>
@@ -482,7 +482,7 @@ export default function AdminAddTeacher() {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all disabled:opacity-50"
+              className="btn-primary flex-1 py-3 disabled:opacity-50"
             >
               <i className="fas fa-save mr-2"></i>
               {loading ? (isEditMode ? 'Updating...' : 'Adding...') : (isEditMode ? 'Update Teacher' : 'Add Teacher')}
@@ -490,7 +490,7 @@ export default function AdminAddTeacher() {
             <button
               type="button"
               onClick={() => navigate('/admin/teachers')}
-              className="flex-1 py-3 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
+              className="btn-glass flex-1 py-3"
             >
               <i className="fas fa-times mr-2"></i>
               Cancel
