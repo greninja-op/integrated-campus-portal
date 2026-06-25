@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "Auto Push on Agent Stop",
+  "description": "When an agent execution completes, stage all changes, commit with a timestamped message, and push to origin on the current branch (no force-push).",
+  "version": "1",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .kiro/auto-push.ps1",
+    "timeout": 120
+  }
+}
