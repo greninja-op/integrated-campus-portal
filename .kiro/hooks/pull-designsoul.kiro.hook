@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "Pull latest DesignSoul before each prompt",
+  "description": "Before each prompt, fast-forward pull the cloned DesignSoul skill repo so the skill stays up to date.",
+  "version": "1",
+  "when": {
+    "type": "promptSubmit"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "git -C DesignSoul pull --ff-only",
+    "timeout": 60
+  }
+}
