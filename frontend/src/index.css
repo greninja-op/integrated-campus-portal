@@ -11,14 +11,15 @@
   --accent-strong: #5b4ef0;
   --accent-contrast: #ffffff;
 
-  /* Glass surfaces (light mode — white-tinted glass, dark text) */
-  --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-bg-strong: rgba(255, 255, 255, 0.72);
-  --glass-bg-hover: rgba(255, 255, 255, 0.66);
+  /* Glass surfaces (light mode — white-tinted glass, dark text). Low fill so the
+     saturated background clearly shows through; border + highlight keep it "glass". */
+  --glass-bg: rgba(255, 255, 255, 0.34);
+  --glass-bg-strong: rgba(255, 255, 255, 0.42);
+  --glass-bg-hover: rgba(255, 255, 255, 0.46);
   --glass-border: rgba(255, 255, 255, 0.6);
   --glass-highlight: rgba(255, 255, 255, 0.9);
-  --glass-blur: 18px;
-  --glass-blur-heavy: 28px;
+  --glass-blur: 10px;
+  --glass-blur-heavy: 12px;
   --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.12);
   --glass-shadow-lg: 0 16px 48px rgba(31, 38, 135, 0.18);
 
