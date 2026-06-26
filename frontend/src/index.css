@@ -240,6 +240,18 @@
   .glass-text { color: var(--text); text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5); }
   .glass-text-muted { color: var(--text-muted); text-shadow: 0 1px 2px rgba(255, 255, 255, 0.45); }
   .dark .glass-text, .dark .glass-text-muted { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55); }
+
+  /* Secondary text that sits DIRECTLY on the vivid background (NOT on a glass
+     card) — e.g. the header date and department line. Near-solid high-contrast
+     color + a scrim so it stays legible over the most saturated glow. */
+  .text-on-bg {
+    color: var(--text);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 1px 2px rgba(255, 255, 255, 0.95);
+  }
+  .dark .text-on-bg {
+    color: var(--text);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.65), 0 1px 2px rgba(0, 0, 0, 0.75);
+  }
 }
 
 /* Visible focus ring for keyboard users (a11y) */
