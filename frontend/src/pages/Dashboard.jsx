@@ -136,11 +136,11 @@ export default function Dashboard() {
         {/* Greeting band — the single entry point and identity */}
         <header className="flex items-start justify-between gap-4 mb-8">
           <div className="min-w-0">
-            <p className="text-sm glass-text-muted">{today}</p>
+            <p className="text-sm text-on-bg">{today}</p>
             <h1 className="text-3xl sm:text-4xl font-display font-bold glass-text mt-1 truncate">
               {getGreeting()}, {firstName}
             </h1>
-            <p className="glass-text-muted mt-2">
+            <p className="text-on-bg mt-2">
               {[user?.department, user?.semester && `Semester ${user.semester}`].filter(Boolean).join(' · ') ||
                 'Welcome back to your campus portal.'}
             </p>
