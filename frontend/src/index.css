@@ -43,9 +43,9 @@
   --accent: #8b7cff;
   --accent-strong: #6d5efc;
 
-  --glass-bg: rgba(22, 24, 44, 0.45);
-  --glass-bg-strong: rgba(22, 24, 44, 0.62);
-  --glass-bg-hover: rgba(34, 37, 62, 0.55);
+  --glass-bg: rgba(22, 24, 44, 0.32);
+  --glass-bg-strong: rgba(22, 24, 44, 0.42);
+  --glass-bg-hover: rgba(34, 37, 62, 0.44);
   --glass-border: rgba(255, 255, 255, 0.12);
   --glass-highlight: rgba(255, 255, 255, 0.16);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
